@@ -1,6 +1,6 @@
 #include "common.h"
 #include "domain.h"
-
+//This is a test modification
 
 //The domain description TODO: have this as a singleton somewhere
 extern DOM* DOM_; 
@@ -142,6 +142,7 @@ static double uctRecurse(treeNode* node, double C, double (*heuristic)(int board
   if (node->children[move] == NULL) {
     mm_Counter++;
     node->children[move] = calloc(1, sizeof(treeNode));
+    // Dangling pointer !!
     cloneBoard(node->board, node->children[move]->board); // copy over the current board to child
     node->children[move]->side = node->side; // copy over the current side on move to child
 

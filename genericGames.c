@@ -10,11 +10,11 @@ int log_this_iteration=-1;
 DOM* _DOM;
 
 static int isSuper(int firstOutcome, int secondOutcome);
-
+static int printMessage();
 
 int main(int argc, char* argv[]) {
 
-  _DOM = init_domain(SYNTH);
+  _DOM = init_domain(MANCALA);
   int maxWins=0,draws=0,minWins=0,incompletes=0,maxSuper=0,minSuper=0,same=0;
   int nodeLimit = -1;
   int i, j;
@@ -219,12 +219,12 @@ int main(int argc, char* argv[]) {
 
   // Seed the random number generator
   srandom(seed);
-
+  
   // Print out the parameter settings (always done, regardless of verbosity level).
   printf("Parameters:\n");
   printf("Random seed: %d\n", seed);
-  printf("Domain used is: ");
-  printf("# Pits: %d, Stones per pit: %d\n", NUM_PITS, SHELLS_PER_PIT);
+  printf("Domain used is: %d\n",_DOM->dom_name);
+  printf("# Pits: %d, Stones per pit: %d\n", NUM_PITS, SHELLS_PER_PIT); //TODO: domain specific parameters.
   if (noisyHeuristic)
     printf("H1 is being corrupted by noise with max. magnitude %d, probability %f\n", noiseMag, noiseProb);
   for (i = max; i <= min; i++) {
@@ -274,11 +274,10 @@ int main(int argc, char* argv[]) {
         origSide = side; /* this is who is currently on move -- since this is not a strict turn taking game,
 			    we need to keep track of this for later bookkeeping/diagnostic messages */
         start = startTiming();
-        moveMade = makeMMUCTMove(state, &side, numIterations[side], C[side], (heuristics_t)heuristic[side], budget[side], bestMoves, &numBestMoves, backupOp[side], mmTreeSize[side], nodeLimit, traps, howManyTraps);
+        moveMade = 0;//makeMMUCTMove(state, &side, numIterations[side], C[side], (heuristics_t)heuristic[side], budget[side], bestMoves, &numBestMoves, backupOp[side], mmTreeSize[side], nodeLimit, traps, howManyTraps);
         if (VERBOSE)
           printf("Elapsed time: %f\n", getElapsed(start));
         moveCount++;
-
         if (VERBOSE) {
           printf("Move #%d -- player %d made move %d\n", moveCount, origSide, moveMade);
           fflush(stdout);
@@ -336,7 +335,6 @@ int main(int argc, char* argv[]) {
   }
    _DOM->destructRep(state);
    _DOM->destructRep(randState);
-    free(traps);
   // Print Summary
   if(!PRINT_CSV){
       printf("------------------------------\n");
@@ -348,7 +346,6 @@ int main(int argc, char* argv[]) {
       printf("Total min won games: %d\n",minSuper);
       printf("Max *superiority* rate: %f\n",(float)maxSuper/(maxSuper+minSuper));
       printf("Min *superiority* rate: %f\n",(float)minSuper/(maxSuper+minSuper));
-      printf("Trap-gap: %d Size-of-Trap: %d # of-Traps: %d\n",trap_gap,sizeofTrap,howManyTraps);
       printf("------------------------------\n");
   }else {
       puts("Game played,Draws,Incomplete games,Max/won games,Min/won games,TrapGap,TrapSize,Number of Traps, Total won games\n");
@@ -357,7 +354,6 @@ int main(int argc, char* argv[]) {
       printf("%d,",incompletes);
       printf("%f,",(float)maxSuper/(maxSuper+minSuper));
       printf("%f,",(float)minSuper/(maxSuper+minSuper));
-      printf("%d,%d,%d,",trap_gap,sizeofTrap,howManyTraps);
       printf("%d\n",maxSuper);
   }
   printMmUctStats();
@@ -367,39 +363,12 @@ int main(int argc, char* argv[]) {
 }
 
 
-static int initTrapVars(int i, char* argv[]){
 
-        trap_gap = atoi(argv[++i]);
-        sizeofTrap = atoi(argv[++i]);
-        howManyTraps = atoi(argv[++i]);
-        traps = (uid*)malloc(sizeof(uid)*howManyTraps);
-        //TODO - check if correct
-        return true;
-}
-
-
-
-
-/*
-* is it supperrior
-*/
-//static int isSuper(int firstOutcome, int secondOutcome){
-//    if(firstOutcome==MAX_WINS){
-//        if(secondOutcome==MIN_WINS||secondOutcome==DRAW){
-//            return true;
-//        }
-//    }
-//    if(firstOutcome==DRAW){
-//        if(secondOutcome==MIN_WINS){
-//            return true;
-//        }
-//    }
-//    return false;
-//}
 
 static int isSuper(int firstOutcome, int secondOutcome){
     return (firstOutcome-secondOutcome);
 }
+
 static int printMessage(){
    puts("");
    puts("Usage: games <optional-flags>");

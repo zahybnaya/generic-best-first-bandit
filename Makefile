@@ -8,6 +8,10 @@ all:
 	make bestmoves
 
 
+
+ggames: common.h domain.h mancala.h domain.c mancala.c genericGames.c uct.c minmax.c heuristic.c move.c board.c util.c random.c 
+	gcc genericGames.c minmax.c uct.c heuristic.c move.c board.c util.c random.c domain.c mancala.c -o ggames -lm -Wall -g
+
 games: common.h domain.h mancala.h domain.c mancala.c games.c uct.c minmax.c heuristic.c move.c board.c util.c random.c 
 	gcc games.c minmax.c uct.c heuristic.c move.c board.c util.c random.c domain.c mancala.c -o games -lm -Wall -g
 
