@@ -8,7 +8,6 @@ extern int debuglog;
 extern int logIteration;
 extern int log_this_iteration;
 
-
 // File scope globals
 static short dotFormat = false; // determines if search tree is printed out
 static int id = 0; // used to determine next node id to assign
@@ -142,6 +141,8 @@ static double uctRecurse(treeNode* node, double C, double (*heuristic)(int board
   if (node->children[move] == NULL) {
     mm_Counter++;
     node->children[move] = calloc(1, sizeof(treeNode));
+    //Alon
+    node->children[move]->children = calloc(NUM_PITS+1, sizeof(treeNode*));
     cloneBoard(node->board, node->children[move]->board); // copy over the current board to child
     node->children[move]->side = node->side; // copy over the current side on move to child
 
@@ -212,6 +213,8 @@ int makeUCTMove(int board[2][NUM_PITS+1], int *side, int numIterations, double C
   rootNode = calloc(1, sizeof(treeNode));
   cloneBoard(board, rootNode->board);
   rootNode->side = *side;
+  //Alon
+  rootNode->children = calloc(NUM_PITS+1, sizeof(treeNode*));
 
   // Run specified number of iterations of UCT
   for (i = 0; i < numIterations; i++){
@@ -294,6 +297,8 @@ void genUCTTree(int board[2][NUM_PITS+1], int side, int numIterations, double C,
   cloneBoard(board, rootNode->board);
   rootNode->side = side;
   rootNode->id = ++id;
+  //Alon
+  rootNode->children = calloc(NUM_PITS+1, sizeof(treeNode*));
 
   // Run specified number of iterations of UCT (this outputs the search tree)
   for (i = 0; i < numIterations; i++)
@@ -363,6 +368,8 @@ int makeMinmaxOnUCTMove(int board[2][NUM_PITS+1], int *side, int numIterations, 
   rootNode = (treeNode*)calloc(1, sizeof(treeNode));
   cloneBoard(board, rootNode->board);
   rootNode->side = *side;
+  //Alon
+  rootNode->children = calloc(NUM_PITS+1, sizeof(treeNode*));
 
   // Run specified number of iterations of UCT
   for (i = 0; i < numIterations; i++)
