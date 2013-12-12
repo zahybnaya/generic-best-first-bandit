@@ -1,8 +1,7 @@
 
 #include "common.h"
-
 /* Routines related to the Minimax algorithm, with alpha-beta pruning */
-
+int verbose_MINIMAX = false;
 // File scope globals
 static int numNodes; // tracks number of nodes visited
 static short dotFormat = false; // determines whether the search tree is printed out in dot format
@@ -129,13 +128,13 @@ int makeMinmaxMove(int board[2][NUM_PITS+1], int* side, int depth, double (*heur
     else if ((scores[i] == bestScore) && (randomTieBreaks))
       bestMoves[(*numBestMoves)++] = i;
 
-    if (verbose)
+    if (verbose_MINIMAX)
       printf("Move # %d -- Value %f\n", i, val);
   }
   *side = origSide;
   bestMove = bestMoves[random() % *numBestMoves]; // pick a best move at random among the set of best moves
 
-  if (verbose)
+  if (verbose_MINIMAX)
     printf("Value of root node: %f\n", (origSide == min) ? -bestScore : bestScore);
 
   // Find second best move -- note that the score of the second best move must be within 3 of the best move
@@ -151,7 +150,7 @@ int makeMinmaxMove(int board[2][NUM_PITS+1], int* side, int depth, double (*heur
     }
   }
 
-  if (verbose)
+  if (verbose_MINIMAX)
     printf("Best move: %d \t Second best move: %d\n", bestMove, secondBestMove);
 
   // If 'noisy MM' option was selected at command-line and there is a candidate second-best move,
@@ -165,7 +164,7 @@ int makeMinmaxMove(int board[2][NUM_PITS+1], int* side, int depth, double (*heur
 
   makeMove(board, side, bestMove); // make the chosen move (updates game state)
 
-  if (verbose)
+  if (verbose_MINIMAX)
     printf("Examined %d nodes\n", numNodes);
 
   *termPercentage = (double)termCount / (double)numNodes; // compute percentage of nodes in tree that were terminal

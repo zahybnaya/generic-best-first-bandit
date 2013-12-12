@@ -2,19 +2,21 @@
 #include "domain.h"
 #include "synth.h"
 #define PRINT_CSV false
-int VERBOSE = false;
+int VERBOSE = false; //TODO get rid of one
+int verbose = false;
 int isToPrintToDot = false;
 int isDotLabel = false;
 int debuglog = false;
 int log_this_iteration=-1;
+int logIteration=0;
 DOM* _DOM;
 
 static int isSuper(int firstOutcome, int secondOutcome);
 static int printMessage();
 
 int main(int argc, char* argv[]) {
-
-  _DOM = init_domain(MANCALA);
+  
+  _DOM = init_domain(SYNTH);
   int maxWins=0,draws=0,minWins=0,incompletes=0,maxSuper=0,minSuper=0,same=0;
   int nodeLimit = -1;
   int i, j;
@@ -26,14 +28,9 @@ int main(int argc, char* argv[]) {
   int outcome;
   int moveCount = 0;
   Timer start;
-
-  //TODO: Make sure this is generic too 
-  double (*hOptions[])(int board[2][NUM_PITS+1],int,int) = {h1, h2, h3, h4, h5, h6}; // jump-table of possible heuristics
-
-  //TODO: This should be renamed to get number of best moves
+  heuristics_t hOptions[] = {h1, h2, h3, h4, h5, h6}; // jump-table of possible heuristics
   int bestMoves[_DOM->getNumOfChildren()];
   int numBestMoves;
-
 
   // Variables to store command-line parameters
   int player[2]; // the search algorithms used by the max and min players TODO: make enum
@@ -44,7 +41,7 @@ int main(int argc, char* argv[]) {
   char boardFileName[1024]; // if using boards from a file, this contains the file name
   int numGames = 1; // number of duplicate games to play
   unsigned int seed; // seed for random number generator
-  double (*heuristic[])(int board[2][NUM_PITS+1],int,int) = {h1, h1}; // the heuristics used by the max and min playersa TODO: make generic too
+  heuristics_t heuristic[] =  {h1, h1}; // the heuristics used by the max and min playersa 
   short noisyHeuristic = false; // whether we will add noise to heuristic estimate
   int noiseMag = 0; // maximum magnitude of the noise that will be added
   double noiseProb = 0.0; // probability with which heuristic estimate will be corrupted
@@ -259,7 +256,7 @@ int main(int argc, char* argv[]) {
   while (1) {
     if (usingRandomStartBoard) {
       _DOM->generateRandomStart(state,max);/*Sending rootSide always generates from the same max side*/
-      resetTrapCounter();
+      //resetTrapCounter();
     }
     // Store start board, so that we can restore it when we switch player sides
     _DOM->copy(state,randState);
@@ -356,7 +353,7 @@ int main(int argc, char* argv[]) {
       printf("%f,",(float)minSuper/(maxSuper+minSuper));
       printf("%d\n",maxSuper);
   }
-  printMmUctStats();
+  //printMmUctStats();
   printUctStats();
 
   return 0;

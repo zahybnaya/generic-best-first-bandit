@@ -22,18 +22,18 @@ DOM* init_domain(DOM_NAME name){
             retVal->copy = copy_mancala;
             break;
         case SYNTH:
-//            retVal->dom_name=SYNTH;
-//            retVal->getNumOfChildren = getNumOfChildren_synth;
-//            retVal->estimateTreeSize  = estimateTreeSize_synth;
-//            retVal->isValidChild = isValidChild_synth;
-//            retVal->applyHeuristics = applyHeuristics_synth;
-//            retVal->cloneRep = cloneRep_synth;
-//            retVal->makeMove = makeMove_synth;
-//            retVal->getGameStatus = getGameStatus_synth;
-//            retVal->destructRep = destructRep_synth;
-//            retVal->allocate = allocate_synth;
-//            retVal->generateRandomStart = generateRandomStart_synth;
-//            retVal->copy = copy_synth;
+            retVal->dom_name=SYNTH;
+            retVal->getNumOfChildren = getNumOfChildren_synth;
+            retVal->estimateTreeSize  = estimateTreeSize_synth;
+            retVal->isValidChild = isValidChild_synth;
+            retVal->applyHeuristics = applyHeuristics_synth;
+            retVal->cloneRep = cloneRep_synth;
+            retVal->makeMove = makeMove_synth;
+            retVal->getGameStatus = getGameStatus_synth;
+            retVal->destructRep = destructRep_synth;
+            retVal->allocate = allocate_synth;
+            retVal->generateRandomStart = generateRandomStart_synth;
+            retVal->copy = copy_synth;
         break;
         case CHESS:
 //            retVal->dom_name=CHESS;
