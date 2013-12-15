@@ -1,6 +1,5 @@
 #include "common.h"
 #include "domain.h"
-//This is a test modification
 
 //The domain description TODO: have this as a singleton somewhere
 extern DOM* DOM_; 

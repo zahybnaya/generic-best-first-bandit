@@ -22,7 +22,7 @@
 */
 
 
-int debuglog = false;
+extern int debuglog ;
 struct Hvals_s {
     uid* ids;
     double * vals;

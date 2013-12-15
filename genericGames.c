@@ -15,8 +15,7 @@ static int isSuper(int firstOutcome, int secondOutcome);
 static int printMessage();
 
 int main(int argc, char* argv[]) {
-  
-  _DOM = init_domain(SYNTH);
+  _DOM = init_domain(MANCALA);
   int maxWins=0,draws=0,minWins=0,incompletes=0,maxSuper=0,minSuper=0,same=0;
   int nodeLimit = -1;
   int i, j;
