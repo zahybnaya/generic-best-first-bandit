@@ -36,6 +36,7 @@ static void freeTree(treeNode* node) {
     }
   }
 
+  free(node->children);
   free(node);
 }
 //TODO: 
