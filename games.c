@@ -50,6 +50,7 @@ int main(int argc, char* argv[]) {
   double noiseProb = 0.0; // probability with which heuristic estimate will be corrupted
   int backupOp[2] = {AVERAGE, AVERAGE}; // back-up operator to be used by UCT
   int mmTreeSize[2] = {3, 3}; // back-up operator to be used by UCT
+  int pruning[2] = {true, true}; //will the minimax players use alpha-beta pruning.
 
   // Variables used for pretty printing parameter settings
   char* playerStrings[] = {"max", "min"};
@@ -88,6 +89,7 @@ int main(int argc, char* argv[]) {
     puts("-nh <m> <p>:   Adds noise to the heuristic h1. The maximum magnitude of the noise is m. With probability p/2m,");
     puts("               the noise takes one of the values {+/-1, +/-2, ..., +/-m}. With probability 1-p, the magnitude of the noise");
     puts("               is 0.");
+    puts("-ab1/ab2:      Disable alpha-beta pruning for minimax player 1/2. Enabled by default."); //Alon
     puts("-v:            Enables verbose output for tracing");
     puts("-h:            Displays this message");
     puts("");
@@ -140,6 +142,15 @@ int main(int argc, char* argv[]) {
       }
       else
 	MISSING("h2")
+    }
+    //Alon
+    else if OPTION("-ab1") {
+      CHECK(max, MINMAX, "-ab1")
+      pruning[max] = false;
+    }
+    else if OPTION("-ab2") {
+      CHECK(min, MINMAX, "-ab2")
+      pruning[min] = false;
     }
     else if OPTION("-d1") {
       CHECK(max, MINMAX, "-d1")
@@ -390,7 +401,8 @@ int main(int argc, char* argv[]) {
       if (i >= numGames) // if we have played 'numGames' duplicate games, we are done
 	break;
       // Otherwise, generate a new random board
-      genRandomBoard(board, &side, 0);
+      //genRandomBoard(board, &side, 0);
+      initBoard(board, &side);
     }
     else { // we are using board from a file
       if (!readBoard(boardFileName, board, &side, READ)) // if we've read to the end of the file, we're done
@@ -427,7 +439,7 @@ int main(int argc, char* argv[]) {
 	// Based on the search algorithm that was selected on the command line, invoke the appropriate
 	// 'makeMove' routine.
 	if (player[side] == MINMAX)
-	  moveMade = makeMinmaxMove(board, &side, depth[side], heuristic[side], budget[side],
+	  moveMade = makeMinmaxMove(board, &side, depth[side], heuristic[side], budget[side], pruning[side],
 				    randomTieBreaks, noisyMM, bestMoves, &numBestMoves, &termPercentage);
     	else if (player[side] == UCT) {
 	  if (numIterations[side] != 0) // if we are running a fixed number of iterations of UCT
@@ -510,6 +522,7 @@ int main(int argc, char* argv[]) {
       // Now swap sides and play this same board again. This is accomplished by simply swapping the
       // parameter settings for the search algorithms (and the algorithms themselves) that the two players use
       swapInts(&player[max], &player[min]);
+      swapInts(&pruning[max], &pruning[min]); //Alon
       swapInts(&depth[max], &depth[min]);
       swapInts(&numIterations[max], &numIterations[min]);
       swapInts(&budget[max], &budget[min]);
