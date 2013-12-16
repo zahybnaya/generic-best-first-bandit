@@ -270,7 +270,8 @@ int main(int argc, char* argv[]) {
         origSide = side; /* this is who is currently on move -- since this is not a strict turn taking game,
 			    we need to keep track of this for later bookkeeping/diagnostic messages */
         start = startTiming();
-        moveMade = 0;//makeMMUCTMove(state, &side, numIterations[side], C[side], (heuristics_t)heuristic[side], budget[side], bestMoves, &numBestMoves, backupOp[side], mmTreeSize[side], nodeLimit, traps, howManyTraps);
+	//Only UCT for now
+        moveMade =makeUCTMove(state, &side, numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, backupOp[side]);
         if (VERBOSE)
           printf("Elapsed time: %f\n", getElapsed(start));
         moveCount++;
