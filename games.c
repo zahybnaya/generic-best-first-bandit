@@ -401,8 +401,8 @@ int main(int argc, char* argv[]) {
       if (i >= numGames) // if we have played 'numGames' duplicate games, we are done
 	break;
       // Otherwise, generate a new random board
-      //genRandomBoard(board, &side, 0);
-      initBoard(board, &side);
+      genRandomBoard(board, &side, 0);
+      //initBoard(board, &side);
     }
     else { // we are using board from a file
       if (!readBoard(boardFileName, board, &side, READ)) // if we've read to the end of the file, we're done
