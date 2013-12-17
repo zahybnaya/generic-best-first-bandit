@@ -2,8 +2,6 @@
  *
  * UCT implementationa
  *
- *
- *
  * TODO: heuristics should be domain dependent.
  * TODO: Where to place the DOM
  *

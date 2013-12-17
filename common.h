@@ -111,9 +111,9 @@ void resetTrapCounter();
 
 
 // Minimax routines (minmax.c)
-int makeMinmaxMove(int board[2][NUM_PITS+1], int*, int, double (*heuristic)(int board[2][NUM_PITS+1],int,int), int, int, int, int*, int*, double*);
-int getAlphaBetaTreeSize(int board[2][NUM_PITS+1], int, int,  double (*heuristic)(int board[2][NUM_PITS+1],int,int), int);
-void genAlphaBetaTree(int board[2][NUM_PITS+1], int, int,  double (*heuristic)(int board[2][NUM_PITS+1],int,int), int);
+int makeMinmaxMove(rep_t rep, int* side, int depth, heuristics_t heuristic, int budget, int pruning, int randomTieBreaks, int noisyMM, int* bestMoves, int* numBestMoves, double* termPercentage) ;
+int getAlphaBetaTreeSize(rep_t rep, int, int,  heuristics_t heuristic, int);
+void genAlphaBetaTree(rep_t rep, int, int,  heuristics_t heuristic, int);
 
 // Heuristic routines (heuristic.c)
 double h1(int board[2][NUM_PITS+1], int side, int dummy);

@@ -304,8 +304,7 @@ int getGameStatus_synth(rep_t rep){
             }else{
                 winDetermine = crep;
             }
-            //int val = (winDetermine%2==0)?MAX_WINS:MIN_WINS;
-            int val = MAX_WINS;
+            int val = (winDetermine%2==0)?MAX_WINS:MIN_WINS;
             addH(hvals,crep,val);
             return val;
     }
