@@ -1,6 +1,12 @@
 /**
  *
- * UCT implementation
+ * UCT implementationa
+ *
+ *
+ *
+ * TODO: heuristics should be domain dependent.
+ * TODO: Where to place the DOM
+ *
  *
  * */
 
@@ -136,8 +142,8 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 	// If this board does not have a node already created for it, create one for it now
 	if (node->children[move] == NULL) {
 		mm_Counter++;
-		node->children[move] = calloc(1, sizeof(treeNode));
-		node->children[move]->children = calloc(_DOM->getNumOfChildren(), sizeof(treeNode*));
+		node->children[move] =(treeNode*) calloc(1, sizeof(treeNode));
+		node->children[move]->children =(treeNode**)  calloc(_DOM->getNumOfChildren(), sizeof(treeNode*));
 		node->children[move]->rep = _DOM->cloneRep(node->rep);// copy over the current board to child
 		node->children[move]->side = node->side; // copy over the current side on move to child
 		if (dotFormat) { // we are visiting a node for the first time -- assign it an id and print the edge leading to it
@@ -150,11 +156,6 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 		if(debuglog)printf("Created a node for move %d\n",move);
 	}
 
-	/*log*/
-	if(logIteration){
-	//	printBoard(node->children[move]->rep,node->children[move]->side);
-	}
-	/*log*/
 	// Descend recursively
 	ret = uctRecurse(node->children[move], C, heuristic, budget, backupOp);
 
@@ -201,10 +202,10 @@ int makeUCTMove(rep_t rep, int *side, int numIterations, double C,
 	*numBestMoves = 0; // reset size of set of best moves
 	if(debuglog)puts("UCT");
 	// Create the root node of the UCT tree; populate the board and side on move fields
-	rootNode = calloc(1, sizeof(treeNode));
+	rootNode = (treeNode*)calloc(1, sizeof(treeNode));
 	rootNode->rep = _DOM->cloneRep(rep);
 	rootNode->side = *side;
-	rootNode->children = calloc(_DOM->getNumOfChildren(), sizeof(treeNode*));
+	rootNode->children = (treeNode**)calloc(_DOM->getNumOfChildren(), sizeof(treeNode*));
 
 	// Run specified number of iterations of UCT
 	for (i = 0; i < numIterations; i++){
@@ -282,12 +283,12 @@ void genUCTTree(rep_t rep, int side, int numIterations, double C, heuristics_t h
 	assert(id == 0);  // for now, we only generate one graph per run
 
 	// Create the root node of the UCT tree; populate the board and side on move fields
-	rootNode = calloc(1, sizeof(treeNode));
+	rootNode =(treeNode*) calloc(1, sizeof(treeNode));
 	rootNode->rep=_DOM->cloneRep(rep);
 	rootNode->side = side;
 	rootNode->id = ++id;
 	//Alon
-	rootNode->children = calloc(_DOM->getNumOfChildren(), sizeof(treeNode*));
+	rootNode->children =(treeNode**) calloc(_DOM->getNumOfChildren(), sizeof(treeNode*));
 
 	// Run specified number of iterations of UCT (this outputs the search tree)
 	for (i = 0; i < numIterations; i++)
@@ -358,7 +359,7 @@ int makeMinmaxOnUCTMove(rep_t rep, int *side, int numIterations, double C,
 	rootNode = (treeNode*)calloc(1, sizeof(treeNode));
 	rootNode->rep = _DOM->cloneRep(rep);
 	rootNode->side = *side;
-	rootNode->children = calloc(_DOM->getNumOfChildren(), sizeof(treeNode*));
+	rootNode->children =(treeNode**) calloc(_DOM->getNumOfChildren(), sizeof(treeNode*));
 
 	// Run specified number of iterations of UCT
 	for (i = 0; i < numIterations; i++)
