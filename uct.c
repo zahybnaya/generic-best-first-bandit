@@ -37,7 +37,6 @@ static void freeTree(treeNode* node) {
 	for (i = 1; i < _DOM->getNumOfChildren(); i++) {
 		if (node->children[i]) {
 			freeTree(node->children[i]);
-			free(node->children[i]);
 			node->children[i] = NULL;
 		}
 	}
@@ -60,7 +59,7 @@ static int selectMove(treeNode* node, double C) {
 	double multiplier = (node->side == max) ? 1 : -1;
 
 	for (i = 1; i < _DOM->getNumOfChildren(); i++) { // iterate over all children
-		if(_DOM->isValidChild(node->rep, node->side, i)) // if the i^th move is illegal, skip it
+		if(!_DOM->isValidChild(node->rep, node->side, i)) // if the i^th move is illegal, skip it
 			continue;
 		// If the i^th child has never been visited before, select it first, before any other children are revisited
 		if (node->children[i] == NULL)

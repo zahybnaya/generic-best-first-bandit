@@ -6,7 +6,7 @@ int VERBOSE = false; //TODO get rid of one
 int verbose = false;
 int isToPrintToDot = false;
 int isDotLabel = false;
-int debuglog = false;
+int debuglog = true;
 int log_this_iteration=-1;
 int logIteration=0;
 DOM* _DOM;
@@ -271,7 +271,7 @@ int main(int argc, char* argv[]) {
 			    we need to keep track of this for later bookkeeping/diagnostic messages */
         start = startTiming();
 	//Only UCT for now
-        moveMade =makeUCTMove(state, &side, numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, backupOp[side]);
+        moveMade = makeUCTMove(state, &side, numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, backupOp[side]);
         if (VERBOSE)
           printf("Elapsed time: %f\n", getElapsed(start));
         moveCount++;
