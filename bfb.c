@@ -27,12 +27,10 @@ static void saveMMVal(int fd, int board[2][NUM_PITS + 1], int val) {
   
   //To differentiate an empty byte and a minimax value of zero, use a number out of the range
   //to denote zero
-  if (val == 0) {
+  if (val == 0)
     val = MAX_WINS + 1;
-    write(fd, &val, 1);
-  } else
-    write(fd, &val, 1);
-  printf("offset %d val %d\n" ,offset, val);
+
+  write(fd, &val, 1);
 }
 
 //Run minimax without pruning and store the minimax value of every traversed node in FD.
@@ -72,7 +70,7 @@ static double storeMinimax(int board[2][NUM_PITS+1], int searchDepth, int depth,
       makeMove(dummyBoard, &side, i); // generate i^th child
 
       val2 = storeMinimax(dummyBoard, searchDepth+1, depth, side, heuristic, budget, fd); // compute minimax value of this child
-      val1 = (val2 > val1) ? val2 : val1; // we have tightened our alpha bound
+      val1 = (val2 > val1) ? val2 : val1; // choose maximal child
     }
   }
   else { // at a Min node
@@ -85,7 +83,7 @@ static double storeMinimax(int board[2][NUM_PITS+1], int searchDepth, int depth,
       makeMove(dummyBoard, &side, i); // generate i^th child
 
       val2 = storeMinimax(dummyBoard, searchDepth+1, depth, side, heuristic, budget, fd); // compute minimax value of this child
-      val1 = (val2 < val1) ? val2 : val1; // we have tightened our beta bound
+      val1 = (val2 < val1) ? val2 : val1; //choose minimal child
     }
   }
   
@@ -93,11 +91,11 @@ static double storeMinimax(int board[2][NUM_PITS+1], int searchDepth, int depth,
   return val1;
 }
 
-void preComputeMM(int board[2][NUM_PITS+1], int side, double (*heuristic)(int board[2][NUM_PITS+1],int,int), int budget) {
+void preComputeMM(int board[2][NUM_PITS+1], int side) {
   char *path = "MMValues.txt";
   int fd = open(path, O_CREAT | O_TRUNC | O_RDWR, S_IRWXU);
 
-  storeMinimax(board, 0, ORACLE_DEPTH, side, heuristic, budget, fd);
+  storeMinimax(board, 0, ORACLE_DEPTH, side, h2, 0, fd);
   
   close(fd);
 }
