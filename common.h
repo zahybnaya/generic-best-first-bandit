@@ -116,14 +116,14 @@ int getAlphaBetaTreeSize(rep_t rep, int, int,  heuristics_t heuristic, int);
 void genAlphaBetaTree(rep_t rep, int, int,  heuristics_t heuristic, int);
 
 // Heuristic routines (heuristic.c)
-double h1(int board[2][NUM_PITS+1], int side, int dummy);
-double h2(int board[2][NUM_PITS+1], int side, int dummy);
-double h3(int board[2][NUM_PITS+1], int side, int numPlayouts);
-double h4(int board[2][NUM_PITS+1], int side, int dummy);
-double h5(int board[2][NUM_PITS+1], int side, int dummy);
-double h6(int board[2][NUM_PITS+1], int side, int numPlayouts);
+/*double h1(rep_t rep, int side, int dummy);
+double h2(rep_t rep, int side, int dummy);
+double h3(rep_t rep, int side, int numPlayouts);
+double h4(rep_t rep, int side, int dummy);
+double h5(rep_t rep, int side, int dummy);
+double h6(rep_t rep, int side, int numPlayouts);
+*/
 void setNoiseParams(int, double);
-
 // Random play routines (random.c)
 int pickRandomMove(int board[2][NUM_PITS+1], int side);
 int makeRandomMove(int board[2][NUM_PITS+1], int *side);

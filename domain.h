@@ -36,6 +36,13 @@ typedef struct {
     allocate_func allocate;
     generateRandomStart_func generateRandomStart;
     copy_func copy;
+    struct {heuristics_t h1;
+	    heuristics_t h2;
+	    heuristics_t h3;
+	    heuristics_t h4;
+	    heuristics_t h5;
+	    heuristics_t h6;
+    } hFunctions;
 } DOM;
 
 DOM* init_domain(DOM_NAME dom_name);

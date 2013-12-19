@@ -112,7 +112,7 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 		// those estimates are from the set {-1, 0, +1}. The terminal nodes are given values from the set {MIN_WINS, DRAW, MAX_WINS}
 		// which are substantially larger. To make these values comparable in magnitude, we need to rescale the terminal
 		// node values. If we are using engineered heuristics, then no rescaling is necessary.
-		if ((heuristic == h3) || (heuristic == h4) || (heuristic == h5))
+		if ((heuristic == _DOM->hFunctions.h3) || (heuristic == _DOM->hFunctions.h4) || (heuristic == _DOM->hFunctions.h5))
 			ret /= MAX_WINS; // rescale
 		if ((dotFormat) && (node->n == 0)) // on first visit to a terminal node, color it red
 			printf("n%d [color=\"red\"];", node->id);

@@ -10,7 +10,7 @@ int debuglog = true;
 int log_this_iteration=-1;
 int logIteration=0;
 DOM* _DOM;
-
+ 
 static int isSuper(int firstOutcome, int secondOutcome);
 static int printMessage();
 
@@ -27,12 +27,16 @@ int main(int argc, char* argv[]) {
   int outcome;
   int moveCount = 0;
   Timer start;
-  heuristics_t hOptions[] = {h1, h2, h3, h4, h5, h6}; // jump-table of possible heuristics
   int bestMoves[_DOM->getNumOfChildren()];
   int numBestMoves;
 
   // Variables to store command-line parameters
   int player[2]; // the search algorithms used by the max and min players TODO: make enum
+  int depth[2] = {8, 8}; // the search depth cutoff (only relevant to MM players)
+  int pruning[2] = {true, true}; //will the minimax players use alpha-beta pruning.
+  int noisyMM = false; // determine whether the MM player will play noisily (i.e. occasionally pick the second best move)
+  double termPercentage;
+  int randomTieBreaks = false; // determine whether the MM player will break ties randomly
   int numIterations[2] = {5000, 5000}; // number of iterations of UCT used by the max and min players
   double C[2] = {2.5, 2.5}; // exploration bias setting for UCT used by max and min players
   int budget[2] = {1, 1}; // if using playouts to estimate leaf utilities, these determine how many playouts are averaged
@@ -40,7 +44,7 @@ int main(int argc, char* argv[]) {
   char boardFileName[1024]; // if using boards from a file, this contains the file name
   int numGames = 1; // number of duplicate games to play
   unsigned int seed; // seed for random number generator
-  heuristics_t heuristic[] =  {h1, h1}; // the heuristics used by the max and min playersa 
+  heuristics_t heuristic[] =  {_DOM->hFunctions.h1, _DOM->hFunctions.h1}; // the heuristics used by the max and min playersa 
   short noisyHeuristic = false; // whether we will add noise to heuristic estimate
   int noiseMag = 0; // maximum magnitude of the noise that will be added
   double noiseProb = 0.0; // probability with which heuristic estimate will be corrupted
@@ -48,10 +52,10 @@ int main(int argc, char* argv[]) {
   int mmTreeSize[2] = {3, 3}; // back-up operator to be used by UCT TODO:enum this too
 
   // Variables used for pretty printing parameter settings
-  char* playerStrings[] = {"max", "min"};
-  char* hStrings[] = {"heuristic 1", "heuristic 2", "playouts", "random leaf values", "coarsened h1", "finer playouts"};
-  char heurString[][30] = {"heuristic 1", "heuristic 1"};
-  char* backupOpStrings[] = {"average", "minimax"};
+  const char* playerStrings[] = {"max", "min"};
+  const char* hStrings[] = {"heuristic 1", "heuristic 2", "playouts", "random leaf values", "coarsened h1", "finer playouts"};
+  const char heurString[][30] = {"heuristic 1", "heuristic 1"};
+  const char* backupOpStrings[] = {"average", "minimax"};
 
   // If we see too few arguments, print help message and bail
   if (argc < 3) {
@@ -68,6 +72,11 @@ int main(int argc, char* argv[]) {
        player[i-1] = UCT;
   }
 
+  //This is just for testing.  TODO: command line
+  player[0] = UCT; 
+  player[1] = MINMAX;
+
+
   // Optional args -- in each case, we make sure any necessary parameter values are specified
   // and that it makes sense to define the value of this parameter given the algorithm choices
   // selected earlier (for example, trying to set the value of exploration bias for a player,
@@ -76,7 +85,7 @@ int main(int argc, char* argv[]) {
     if OPTION("-h1") {
       CHECK(max, (MINMAX | UCT | MINMAX_ON_UCT | MMUCT), "-h1")
       if (++i < argc) {
-        heuristic[max] = hOptions[atoi(argv[i])-1];
+        heuristic[max] = _DOM->hFunctions.h1; //[atoi(argv[i])-1]; //TODO fix this. Currently not working and fixed on h1 (add identifier? or switch)
         strcpy(heurString[max], hStrings[atoi(argv[i])-1]);
       }
       else
@@ -85,7 +94,7 @@ int main(int argc, char* argv[]) {
     else if OPTION("-h2") {
       CHECK(min, (MINMAX | UCT | MINMAX_ON_UCT | MMUCT), "-h2")
       if (++i < argc) {
-	heuristic[min] = hOptions[atoi(argv[i])-1];
+	heuristic[min] = _DOM->hFunctions.h1; //[atoi(argv[i])-1]; //TODO fix this. Currently not working and fixed on h1 (add identifier? or switch)
 	strcpy(heurString[min], hStrings[atoi(argv[i])-1]);
       }
       else
@@ -208,7 +217,7 @@ int main(int argc, char* argv[]) {
   }
 
   // Only makes sense to specify noise parameters for heuristic when at least one of the players is using h1
-  if ((noisyHeuristic) && (heuristic[max] != h1) && (heuristic[min] != h1)) {
+  if ((noisyHeuristic) && (heuristic[max] !=_DOM->hFunctions.h1) && (heuristic[min] != _DOM->hFunctions.h1)) {
     puts("Error -- you have specified parameters for corrupting h1, yet neither player is using h1");
     exit(1);
   }
@@ -225,10 +234,10 @@ int main(int argc, char* argv[]) {
     printf("H1 is being corrupted by noise with max. magnitude %d, probability %f\n", noiseMag, noiseProb);
   for (i = max; i <= min; i++) {
     if (player[i] == MINMAX) {
-      printf("Player %d (%s) --- Minmax, Depth %d%s%s", i, playerStrings[i], 0,\
+      printf("Player %d (%s) --- Minmax, Depth %d%s%s", i, playerStrings[i], depth[i],\
 	     ((false) ? ", with random tie-breaks" : ""), ((false) ? ", with noise" : ""));
       printf(", using %s", heurString[i]);
-      if ((heuristic[i] == h3) || (heuristic[i] == h6))
+      if ((heuristic[i] == _DOM->hFunctions.h3) || (heuristic[i] == _DOM->hFunctions.h6))
 	printf(" (budget = %d)\n", budget[i]);
       else
 	printf("\n");
@@ -236,7 +245,7 @@ int main(int argc, char* argv[]) {
     else if (player[i] == UCT) {
       printf("Player %d (%s) --- UCT, C %.3f, Num iterations %d, with %s backups, using %s", i, playerStrings[i],
 	     C[i], numIterations[i], backupOpStrings[i], heurString[i]);
-      if ((heuristic[i] == h3) || (heuristic[i] == h6))
+      if ((heuristic[i] == _DOM->hFunctions.h3) || (heuristic[i] == _DOM->hFunctions.h6))
 	printf(" (budget = %d)\n", budget[i]);
       else
 	printf("\n");
@@ -271,7 +280,17 @@ int main(int argc, char* argv[]) {
 			    we need to keep track of this for later bookkeeping/diagnostic messages */
         start = startTiming();
 	//Only UCT for now
-        moveMade = makeUCTMove(state, &side, numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, backupOp[side]);
+	switch(player[side]){
+		case UCT:
+			moveMade = makeUCTMove(state, &side, numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, backupOp[side]);
+			break;
+		case MINMAX:
+			moveMade = makeMinmaxMove(state, &side,depth[side],heuristic[side],budget[side],pruning[side],randomTieBreaks,noisyMM,bestMoves,&numBestMoves, &termPercentage);
+			break;
+		default:
+			puts("Unknown algorithm\n");
+	}
+
         if (VERBOSE)
           printf("Elapsed time: %f\n", getElapsed(start));
         moveCount++;
@@ -372,11 +391,8 @@ static int printMessage(){
    puts("");
    puts("Plays complete duplicate games between the two specified algorithms");
    puts("");
+   puts("Note! not all options are supported");
    puts("Algorithm Options:");
-   puts("------------------");
-   puts("mmuct");
-   puts("");
-   puts("Parameter Options:");
    puts("------------------");
    puts("-T <trap_gap> <trap_size> <how_many_traps>");
    puts("-h1/h2 <n>:    Sets heuristic for player 1/2. Values = 1 (basic), 2 (alternate), 3 (playouts), 4 (random),");

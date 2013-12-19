@@ -20,6 +20,12 @@ DOM* init_domain(DOM_NAME name){
             retVal->allocate = allocate_mancala;
             retVal->generateRandomStart = generateRandomStart_mancala;
             retVal->copy = copy_mancala;
+	    retVal->hFunctions.h1  = h1; 
+	    retVal->hFunctions.h2  = h2; 
+	    retVal->hFunctions.h3  = h3; 
+	    retVal->hFunctions.h4  = h4; 
+	    retVal->hFunctions.h5  = h5; 
+	    retVal->hFunctions.h6  = h6; 
             break;
         case SYNTH:
             retVal->dom_name=SYNTH;
@@ -33,7 +39,13 @@ DOM* init_domain(DOM_NAME name){
             retVal->destructRep = destructRep_synth;
             retVal->allocate = allocate_synth;
             retVal->generateRandomStart = generateRandomStart_synth;
-            retVal->copy = copy_synth;
+            retVal->copy = copy_synth;	  
+	    retVal->hFunctions.h1  = h1; 
+	    retVal->hFunctions.h2  = h2; 
+	    retVal->hFunctions.h3  = h3; 
+	    retVal->hFunctions.h4  = h4; 
+	    retVal->hFunctions.h5  = h5; 
+	    retVal->hFunctions.h6  = h6; 
         break;
         case CHESS:
 //            retVal->dom_name=CHESS;

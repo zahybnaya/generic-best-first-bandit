@@ -161,7 +161,7 @@ int makeMinmaxMove(rep_t rep, int* side, int depth, heuristics_t heuristic, int 
   double bestScore;
   double secondBestScore = -INF;
   int origSide = *side;
-  double scores[NUM_PITS+1];
+  double scores[_DOM->getNumOfChildren()];
   double die;
 
   numNodes = 0; // reset node count
@@ -224,7 +224,7 @@ int makeMinmaxMove(rep_t rep, int* side, int depth, heuristics_t heuristic, int 
   // If 'noisy MM' option was selected at command-line and there is a candidate second-best move,
   // flip a coin and determine whether to pick that over the best move
   if ((secondBestMove != NULL_MOVE) && (noisyMM)) {
-    assert(heuristic != (heuristics_t)h3); // could mess up if using playouts to estimate leaves, so flag for now
+    assert(heuristic != (heuristics_t)_DOM->hFunctions.h3); // could mess up if using playouts to estimate leaves, so flag for now
     die = (double)(random() % 10000) / (double)(10000 - 1);
     if (die <= EPSILON)
       bestMove = secondBestMove;

@@ -210,11 +210,10 @@ static int addTrapById(const uid id, const int k, Hvals h){
 }
 
 
-
 /*
 * add a trap to h
 */
-static int addTrap(const int depth, const double r, const int k, Hvals h){
+static int ddTrap(const int depth, const double r, const int k, Hvals h){
     if(h==NULL){
         printf("H is null\n");
         return 0;

@@ -1,5 +1,6 @@
 
 #include "common.h"
+#include "mancala.h" 
 
 /* Set of routines that operate on boards */
 
