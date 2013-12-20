@@ -1,15 +1,15 @@
 
 all:
-	make genboards
-	make hybrid
-	make getest
+	#make genboards
+	#make hybrid
+	#make getest
 	make games
-	make gentree
-	make bestmoves
+	#make gentree
+	#make bestmoves
 
 
-games: common.h domain.h mancala.h domain.c mancala.c games.c uct.c minmax.c heuristic.c move.c board.c util.c random.c 
-	gcc games.c minmax.c uct.c heuristic.c move.c board.c util.c random.c domain.c mancala.c -o games -lm -Wall -g
+games: common.h domain.h mancala.h domain.c mancala.c games.c uct.c minmax.c heuristic.c move.c board.c util.c random.c bfb.c
+	gcc games.c minmax.c uct.c heuristic.c move.c board.c util.c random.c domain.c mancala.c bfb.c -o games -lm -Wall -g
 
 generalTests: generalTests.c
 	gcc generalTests.c -o generalTests -Wall -g
