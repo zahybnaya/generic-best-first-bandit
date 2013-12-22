@@ -2,6 +2,19 @@
 #define  __CHECKERS__H
 #include "domain.h"
 
+/***
+ * Zop domain (Zoog or pered "even or odd"). 
+ *
+ * Basically this is just a mock domain to test the generic code.
+ * 
+ * Two players. 
+ * Max player: always wants a an even number 
+ * Min Player: always wants a an odd number 
+ *
+ *
+ *
+ * */
+
 int getNumOfChildren_zop();
 int estimatedTreeSize_zop(int treeSize);
 int isValidChild_zop(rep_t rep, int side,int move);

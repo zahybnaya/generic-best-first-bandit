@@ -15,7 +15,7 @@ static int printMessage();
 
 int main(int argc, char* argv[]) {
 
-u int maxWins=0,draws=0,minWins=0,incompletes=0,maxSuper=0,minSuper=0,same=0;
+  int maxWins=0,draws=0,minWins=0,incompletes=0,maxSuper=0,minSuper=0,same=0;
   int i, j;
   int playedGames=0;
   int side = max;
