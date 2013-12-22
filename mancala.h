@@ -4,6 +4,9 @@
 #include "domain.h"
 #define ESTIMATED_MANCALA_BRANCHING_FACTOR 3.4
 
+/*
+ * This macro generates a real "continues" array called __board
+ * */
 #define TO_REGULAR_ARR(board) \
     int __board[2][NUM_PITS+1];\
     int i_TRA,pit_TRA;\
@@ -27,4 +30,13 @@ rep_t allocate_mancala();
 void destructRep_mancala(rep_t rep);
 void generateRandomStart_mancala(rep_t state,int);
 void copy_mancala(rep_t src,rep_t dst);
+
+// Heuristic routines (heuristic.c)
+double h1(rep_t rep, int side, int dummy);
+double h2(rep_t rep, int side, int dummy);
+double h3(rep_t rep, int side, int numPlayouts);
+double h4(rep_t rep, int side, int dummy);
+double h5(rep_t rep, int side, int dummy);
+double h6(rep_t rep, int side, int numPlayouts);
+
 #endif // MANCALA_H_INCLUDED
