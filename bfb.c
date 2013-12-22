@@ -188,8 +188,13 @@ static void assignToType(treeNode *node, double (*heuristic)(int board[2][NUM_PI
     t->openList = realloc(t->openList, t->capacity * sizeof(treeNode *));
   }
   
-  t->openList[t->tail] = node;
-  t->tail++;
+  if (t->empty != -1) {
+    t->openList[t->empty] = node;
+    t->empty = -1;
+  } else {
+    t->openList[t->tail] = node;
+    t->tail++;
+  }
 }
 
 /* Invoked by bfbIteration to decide which type of node should be expanded */
@@ -229,17 +234,17 @@ static int selectType(double C, int visits) {
   return bestTypes[random() % numBestTypes];
 }
 
-static void bfbIteration(int visits, double C, double (*heuristic)(int board[2][NUM_PITS+1],int,int), int budget, int backupOp) {
+static void bfbIteration(int visits, double C, double (*heuristic)(int board[2][NUM_PITS+1],int,int), int budget, int backupOp) {  
   //Choose type that maximizes UCB1
-  struct type *t = type_system[s];
+  struct type *t = type_system[selectType(C, visits)];
  
   //Choose random node from type, take it out, update type->empty
   int randomIndex = random() % t->tail;
   treeNode *node = t->openList[randomIndex];
-  t->empty = t->openList[randomIndex];
+  t->empty = randomIndex;
   
   //rollout
-  ret = heuristic(node->board, node->side, budget);
+  int ret = heuristic(node->board, node->side, budget);
   
   //update type ucb stats and backpropagate
   t->visits++;
@@ -252,7 +257,20 @@ static void bfbIteration(int visits, double C, double (*heuristic)(int board[2][
   }
   
   //generate the children and place them in the type system
-  for (i = 1; i < NUM_PITS+1; i++)
+  int i;
+  for (i = 1; i < NUM_PITS + 1; i++) {
+    if (node->board[node->side][i] == 0) // if the i^th move is illegal, skip it
+      continue;
+    
+    node->children[i] = calloc(1, sizeof(treeNode));
+    node->children[i]->children = calloc(NUM_PITS + 1, sizeof(treeNode*));
+    cloneBoard(node->board, node->children[i]->board); // copy over the current board to child
+    node->children[i]->side = node->side; // copy over the current side on move to child
+    makeMove(node->children[i]->board, &(node->children[i]->side), i); //Make the i-th move
+    node->children[i]->parent = node;
+    
+    assignToType(node->children[i], heuristic, node->children[i]->side, budget);
+  }
 }
 
 int makeBFBMove(int board[2][NUM_PITS+1], int *side, int numIterations, double C,
@@ -272,8 +290,10 @@ int makeBFBMove(int board[2][NUM_PITS+1], int *side, int numIterations, double C
   //Init type system to the maximum possible number of types. TODO will need to change this for other typs... TODO put somewhere else
   numTypes = MAX_WINS * 2;
   type_system = calloc(numTypes, sizeof(struct type *));
-  for (i = 0; i < numTypes; i++)
+  for (i = 0; i < numTypes; i++) {
     type_system[i] = calloc(1, sizeof(struct type));
+    type_system[i]->empty = -1;
+  }
   
   // Create the root node of the UCT tree; populate the board and side on move fields
   rootNode = calloc(1, sizeof(treeNode));
@@ -289,7 +309,7 @@ int makeBFBMove(int board[2][NUM_PITS+1], int *side, int numIterations, double C
     bfbIteration(i, C, heuristic, budget, backupOp);
 
   close(oraclefd); //TODO: do something with this when done with POC
-  return 0;
+
   // Now look at the children 1-ply deep and determing the best one (break ties
   // randomly)
   for (i = 1; i < NUM_PITS+1; i++) { // for each move
