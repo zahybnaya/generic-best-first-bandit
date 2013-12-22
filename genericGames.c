@@ -2,7 +2,6 @@
 #include "domain.h"
 #include "synth.h"
 #define PRINT_CSV false
-int VERBOSE = false; //TODO get rid of one
 int verbose = false;
 int isToPrintToDot = false;
 int isDotLabel = false;
@@ -15,9 +14,8 @@ static int isSuper(int firstOutcome, int secondOutcome);
 static int printMessage();
 
 int main(int argc, char* argv[]) {
-  _DOM = init_domain(MANCALA);
-  int maxWins=0,draws=0,minWins=0,incompletes=0,maxSuper=0,minSuper=0,same=0;
-  int nodeLimit = -1;
+
+u int maxWins=0,draws=0,minWins=0,incompletes=0,maxSuper=0,minSuper=0,same=0;
   int i, j;
   int playedGames=0;
   int side = max;
@@ -27,7 +25,6 @@ int main(int argc, char* argv[]) {
   int outcome;
   int moveCount = 0;
   Timer start;
-  int bestMoves[_DOM->getNumOfChildren()];
   int numBestMoves;
 
   // Variables to store command-line parameters
@@ -44,7 +41,6 @@ int main(int argc, char* argv[]) {
   char boardFileName[1024]; // if using boards from a file, this contains the file name
   int numGames = 1; // number of duplicate games to play
   unsigned int seed; // seed for random number generator
-  heuristics_t heuristic[] =  {_DOM->hFunctions.h1, _DOM->hFunctions.h1}; // the heuristics used by the max and min playersa 
   short noisyHeuristic = false; // whether we will add noise to heuristic estimate
   int noiseMag = 0; // maximum magnitude of the noise that will be added
   double noiseProb = 0.0; // probability with which heuristic estimate will be corrupted
@@ -54,12 +50,13 @@ int main(int argc, char* argv[]) {
   // Variables used for pretty printing parameter settings
   const char* playerStrings[] = {"max", "min"};
   const char* hStrings[] = {"heuristic 1", "heuristic 2", "playouts", "random leaf values", "coarsened h1", "finer playouts"};
-  const char heurString[][30] = {"heuristic 1", "heuristic 1"};
+  char heurString[][30] = {"heuristic 1", "heuristic 1"};
   const char* backupOpStrings[] = {"average", "minimax"};
 
   // If we see too few arguments, print help message and bail
-  if (argc < 3) {
+  if (argc < 2) {
 	printMessage();
+	return (-1);
   }
 
   // The default seed for the random number generator comes from the OS -- this may be overridden
@@ -75,7 +72,28 @@ int main(int argc, char* argv[]) {
   //This is just for testing.  TODO: command line
   player[0] = UCT; 
   player[1] = MINMAX;
+  /*Domain name initializaiont*/
+  int dom_name = atoi(argv[1]);
+  switch(dom_name){
+	  case 0:
+		  _DOM = init_domain(MANCALA);
+		  break;
+	  case 1:
+		  _DOM = init_domain(SYNTH);
+		  break;
+	  case 2:
+		  _DOM = init_domain(CHESS);
+		  break;
 
+	  case 3:
+		  _DOM = init_domain(ZOP);
+		  break;
+	  default:
+		  puts("Unrecognized domain description.");
+		  return (-1);
+  }
+  int bestMoves[_DOM->getNumOfChildren()];
+  heuristics_t heuristic[] =  {_DOM->hFunctions.h1, _DOM->hFunctions.h1}; // the heuristics used by the max and min playersa 
 
   // Optional args -- in each case, we make sure any necessary parameter values are specified
   // and that it makes sense to define the value of this parameter given the algorithm choices
@@ -158,7 +176,7 @@ int main(int argc, char* argv[]) {
         MISSING("a2")
     }
     else if OPTION("-v") {
-      VERBOSE = true;
+      verbose = true;
     }
 
     else if OPTION("-l") {
@@ -291,15 +309,15 @@ int main(int argc, char* argv[]) {
 			puts("Unknown algorithm\n");
 	}
 
-        if (VERBOSE)
+        if (verbose)
           printf("Elapsed time: %f\n", getElapsed(start));
         moveCount++;
-        if (VERBOSE) {
+        if (verbose) {
           printf("Move #%d -- player %d made move %d\n", moveCount, origSide, moveMade);
           fflush(stdout);
         }
     } // end of game
-      if (VERBOSE)
+      if (verbose)
         printf("Result: %d\n", outcome/MAX_WINS);
       else
         printf("%d ", outcome/MAX_WINS);
@@ -387,11 +405,14 @@ static int isSuper(int firstOutcome, int secondOutcome){
 
 static int printMessage(){
    puts("");
-   puts("Usage: games <optional-flags>");
+   puts("Usage: games <DOMAIN> <optional-flags>");
    puts("");
    puts("Plays complete duplicate games between the two specified algorithms");
    puts("");
    puts("Note! not all options are supported");
+   puts("Available DOMAIN names:");
+   puts("------------------");
+   puts("(0) MANCALA (1) SYNTH (2) CHESS (3) ZOP"); 
    puts("Algorithm Options:");
    puts("------------------");
    puts("-T <trap_gap> <trap_size> <how_many_traps>");

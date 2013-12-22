@@ -125,8 +125,8 @@ double h3(rep_t rep, int side, int numPlayouts) {
 /* Heuristic that returns a value at random from the set {-1, 0, 1}. This allows us to recognize true 
    terminal nodes, while providing a random evaluation of all non-terminal positions */
 double h4(rep_t rep, int side, int dummy) {
-	int ** board =(int**)rep;
-	TO_REGULAR_ARR(board);
+	//int ** board =(int**)rep;
+	//TO_REGULAR_ARR(board);
 	double die;
 
 	// Make sure that the values {-1, 0, 1} do not clash with MIN_WINS, MAX_WINS and DRAW

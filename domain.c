@@ -2,6 +2,7 @@
 #include "mancala.h"
 #include "synth.h"
 #include "chess.h"
+#include "zop.h"
 
 
 DOM* init_domain(DOM_NAME name){
@@ -61,6 +62,28 @@ DOM* init_domain(DOM_NAME name){
 //            retVal->generateRandomStart = generateRandomStart_chess;
 //            retVal->copy = copy_chess;
         break;
+	case ZOP: 
+	retVal->dom_name=ZOP ;
+	retVal->getNumOfChildren = getNumOfChildren_zop;
+	retVal->estimateTreeSize  = estimatedTreeSize_zop;
+	retVal->isValidChild = isValidChild_zop;
+	retVal->applyHeuristics = applyHeuristics_zop;
+	retVal->cloneRep = cloneRep_zop;
+	retVal->makeMove = makeMove_zop;
+	retVal->getGameStatus = getGameStatus_zop;
+	retVal->destructRep = destructRep_zop;
+	retVal->allocate = allocate_zop;
+	retVal->generateRandomStart = generateRandomStart_zop;
+	retVal->copy = copy_zop;	  
+	retVal->hFunctions.h1  = h1_zop; 
+	retVal->hFunctions.h2  = h1_zop; 
+	retVal->hFunctions.h3  = h1_zop; 
+	retVal->hFunctions.h4  = h1_zop; 
+	retVal->hFunctions.h5  = h1_zop; 
+	retVal->hFunctions.h6  = h1_zop; 
+	break;
+
+
     }
     return retVal;
 }
