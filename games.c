@@ -465,7 +465,8 @@ int main(int argc, char* argv[]) {
 	}
 	else if (player[side] == RANDOM)
 	  moveMade = makeRandomMove(board, &side);
-
+	else if (player[side] == BFB)
+	  moveMade = int makeBFBMove(board, &side, numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, backupOp[side]);
 
 	if (verbose)
 	  printf("Elapsed time: %f\n", getElapsed(start));

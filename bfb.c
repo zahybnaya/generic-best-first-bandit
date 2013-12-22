@@ -101,12 +101,13 @@ static int readMMVal(int board[2][NUM_PITS + 1]) {
   lseek(oraclefd, mancalaStateToOffset(board), SEEK_SET);
   read(oraclefd, &val, 1);
   
-  if (val == MAX_WINS + 1)
-    val = 0;
-  
   //NO mm value
   if (val == 0)
     val = -1;
+  
+  //Shift back special value for zero
+  if (val == MAX_WINS + 1)
+    val = 0;
   
   return val;
 }
@@ -168,6 +169,7 @@ static double storeMinimax(int board[2][NUM_PITS+1], int searchDepth, int depth,
   return val1;
 }
 
+//Calculate the type of a node and place it within its open list, allocating more space as needed.
 static void assignToType(treeNode *node, double (*heuristic)(int board[2][NUM_PITS+1],int,int), int side, int budget) {
   int mmVal = readMMVal(node->board);
   
@@ -231,9 +233,15 @@ static int selectType(double C, int visits) {
   }
 
   // Return the next type to explore (break ties randomly)
+  printf("random type %d\n", random() % numBestTypes); //TODO delete
   return bestTypes[random() % numBestTypes];
 }
 
+//An iteration of BFB:
+//select the best type
+//extract a node from its open list
+//rollout and backpropagate from selected nodes
+//place children in thier respective type open lists
 static void bfbIteration(int visits, double C, double (*heuristic)(int board[2][NUM_PITS+1],int,int), int budget, int backupOp) {  
   //Choose type that maximizes UCB1
   struct type *t = type_system[selectType(C, visits)];
@@ -249,11 +257,11 @@ static void bfbIteration(int visits, double C, double (*heuristic)(int board[2][
   //update type ucb stats and backpropagate
   t->visits++;
   t->scoreSum = t->scoreSum + ret;
-  treeNode *bnode = node;
-  while (bnode != NULL) {
-    bnode->n++;
-    bnode->scoreSum = bnode->scoreSum + ret;
-    bnode = bnode->parent;
+  treeNode *bp = node;
+  while (bp != NULL) {
+    bp->n++;
+    bp->scoreSum = bp->scoreSum + ret;
+    bp = bp->parent;
   }
   
   //generate the children and place them in the type system
@@ -267,7 +275,7 @@ static void bfbIteration(int visits, double C, double (*heuristic)(int board[2][
     cloneBoard(node->board, node->children[i]->board); // copy over the current board to child
     node->children[i]->side = node->side; // copy over the current side on move to child
     makeMove(node->children[i]->board, &(node->children[i]->side), i); //Make the i-th move
-    node->children[i]->parent = node;
+    node->children[i]->parent = node; //save parent
     
     assignToType(node->children[i], heuristic, node->children[i]->side, budget);
   }
@@ -356,11 +364,3 @@ int makeBFBMove(int board[2][NUM_PITS+1], int *side, int numIterations, double C
   
   return bestMove;
 }
-
-/* TODO:
- * allocate type_system
- * allocate types and ope lists
- * free type_system and types and open lists
- * make type system generic, for now it will be just the oracle semi-hard-coded
- * notic that rollouts is h3/h6 - should it be hard coded? or also as user input
- * */
