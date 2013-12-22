@@ -15,7 +15,7 @@ zop: zop.c zop.h
 	gcc -c zop.c -o zop.o ${CFLAGS}
 
 
-mancala: mancala.c mancala.h move.c board.c heuristic.h heuristic.c 
+mancala: mancala.c mancala.h move.c board.c heuristic.c 
 	gcc -c mancala.c -o tmpmancala.o $(CFLAGS) 
 	gcc -c move.c -o tmpmove.o $(CFLAGS) 
 	gcc -c board.c -o tmpboard.o $(CFLAGS) 
