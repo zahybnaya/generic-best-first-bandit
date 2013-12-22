@@ -97,10 +97,10 @@ void swapPtrs(void** val1, void** val2);
 void swapInts(int* val1, int* val2);
 
 // UCT routines (uct.c)
-int makeUCTMove(int board[2][NUM_PITS+1], int*, int, double, double (*heuristic)(int board[2][NUM_PITS+1],int,int), int, int*, int*, int);
-void genUCTTree(int board[2][NUM_PITS+1], int side, int numIterations, double C, double (*heuristic)(int board[2][NUM_PITS+1],int,int), int budget);
+int makeUCTMove(rep_t rep, int *side, int numIterations, double C, heuristics_t heuristic, int budget, int* bestMoves, int* numBestMoves, int backupOp);
+void genUCTTree(rep_t rep, int side, int numIterations, double C, heuristics_t heuristic, int budget);
 void printUctStats();
-int makeMinmaxOnUCTMove(int board[2][NUM_PITS+1], int*, int, double, double (*heuristic)(int board[2][NUM_PITS+1],int,int), int, int*, int*);
+int makeMinmaxOnUCTMove(rep_t rep, int *side, int numIterations, double C, heuristics_t heuristic, int budget, int* bestMoves, int* numBestMoves);
 
 
 //MMUCT (mmuct.c)
@@ -111,19 +111,19 @@ void resetTrapCounter();
 
 
 // Minimax routines (minmax.c)
-int makeMinmaxMove(int board[2][NUM_PITS+1], int*, int, double (*heuristic)(int board[2][NUM_PITS+1],int,int), int, int, int, int, int*, int*, double*);
-int getAlphaBetaTreeSize(int board[2][NUM_PITS+1], int, int,  double (*heuristic)(int board[2][NUM_PITS+1],int,int), int);
-void genAlphaBetaTree(int board[2][NUM_PITS+1], int, int,  double (*heuristic)(int board[2][NUM_PITS+1],int,int), int);
+int makeMinmaxMove(rep_t rep, int* side, int depth, heuristics_t heuristic, int budget, int pruning, int randomTieBreaks, int noisyMM, int* bestMoves, int* numBestMoves, double* termPercentage) ;
+int getAlphaBetaTreeSize(rep_t rep, int, int,  heuristics_t heuristic, int);
+void genAlphaBetaTree(rep_t rep, int, int,  heuristics_t heuristic, int);
 
 // Heuristic routines (heuristic.c)
-double h1(int board[2][NUM_PITS+1], int side, int dummy);
-double h2(int board[2][NUM_PITS+1], int side, int dummy);
-double h3(int board[2][NUM_PITS+1], int side, int numPlayouts);
-double h4(int board[2][NUM_PITS+1], int side, int dummy);
-double h5(int board[2][NUM_PITS+1], int side, int dummy);
-double h6(int board[2][NUM_PITS+1], int side, int numPlayouts);
+/*double h1(rep_t rep, int side, int dummy);
+double h2(rep_t rep, int side, int dummy);
+double h3(rep_t rep, int side, int numPlayouts);
+double h4(rep_t rep, int side, int dummy);
+double h5(rep_t rep, int side, int dummy);
+double h6(rep_t rep, int side, int numPlayouts);
+*/
 void setNoiseParams(int, double);
-
 // Random play routines (random.c)
 int pickRandomMove(int board[2][NUM_PITS+1], int side);
 int makeRandomMove(int board[2][NUM_PITS+1], int *side);

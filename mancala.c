@@ -3,6 +3,9 @@
 
 typedef int board_t [2][NUM_PITS+1];
 
+
+
+
 /*
  implementation of the getNumOfChildren
 */
