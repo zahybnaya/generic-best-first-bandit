@@ -4,6 +4,11 @@
 #include <sys/stat.h>
 
 #define ORACLE_DEPTH 12
+#define ORACLE_PATH "MMValues.txt"
+//heuristic used by the oracle minimax
+#define ORACLE_H h2
+//heuristic used by assign to type for mystery nodes
+#define ORACLE_MISSING_H h2
 
 static int oraclefd;
 static int mysteryNodes = 0;
@@ -13,6 +18,7 @@ typedef struct node {
   double scoreSum; // stores the sum of the rewards of the episodes that have gone through this node
   int n; // tracks the visit count
   int id; // used for graph visualization purposes
+  int depth;
   int board[2][NUM_PITS+1]; // board position corresponding to this node
   int side; // side on move at this board position
   struct node *parent; //the parent node
@@ -31,10 +37,12 @@ struct type {
   int capacity; //Maximum current capacity of the open list.
   int tail;  //The first empty index in the open list.
   int empty; //If a node was extracted from the open list than this will be its index until filled again, else -1.
+  int size; //Current number of nodes in the open list
 };
 
 static struct type **type_system;
 static int numTypes; //number of types currently in the type system
+static int visits;
 
 /* Routine to free up UCT tree */
 static void freeTree(treeNode* node) {
@@ -96,11 +104,11 @@ static void saveMMVal(int board[2][NUM_PITS + 1], int val) {
 //Opposite of saveMMVal
 //Return -1 if no mm value found
 static int readMMVal(int board[2][NUM_PITS + 1]) {
-  int val;
+  char val; //char so the correct signed value will be read
   
   lseek(oraclefd, mancalaStateToOffset(board), SEEK_SET);
   read(oraclefd, &val, 1);
-  
+
   //NO mm value
   if (val == 0)
     val = -1;
@@ -180,9 +188,9 @@ static void assignToType(treeNode *node, double (*heuristic)(int board[2][NUM_PI
   }
 
   mmVal = mmVal + MAX_WINS; //Shift possible mm values to natural numbers so they can be used as an index into the type system.
-  
+
   struct type *t = type_system[mmVal];
-  
+
   //if the open list of this type is full,
   //allocate a new open list for it and copy the new one into it.
   if (t->tail == t->capacity) {
@@ -190,6 +198,9 @@ static void assignToType(treeNode *node, double (*heuristic)(int board[2][NUM_PI
     t->openList = realloc(t->openList, t->capacity * sizeof(treeNode *));
   }
   
+  /*t->openList[t->tail] = node;
+  t->tail++;
+  t->size++;*/
   if (t->empty != -1) {
     t->openList[t->empty] = node;
     t->empty = -1;
@@ -197,10 +208,16 @@ static void assignToType(treeNode *node, double (*heuristic)(int board[2][NUM_PI
     t->openList[t->tail] = node;
     t->tail++;
   }
+  t->size++;
+  
+  if (t->size == 1) {
+    
+  }
+  
 }
 
 /* Invoked by bfbIteration to decide which type of node should be expanded */
-static int selectType(double C, int visits) {
+static int selectType(double C, int visits, int side) {
   int i;
   double qhat;
   double score;
@@ -208,8 +225,14 @@ static int selectType(double C, int visits) {
   double bestScore;
   int bestTypes[numTypes];
 
+  // The multiplier is used to set the sign of the exploration bonus term (should be negative
+  // for the min player and positive for the max player) i.e. so that we correctly compute
+  // an upper confidence bound for Max and a lower confidence bound for Min
+  double multiplier = (side == max) ? 1 : -1;
+  
   for (i = 0; i < numTypes; i++) { // iterate over all types
-    if (type_system[i]->tail == 0) // if no nodes in type continue
+//printf("type %d, val %f, size %d\n", i - MAX_WINS, type_system[i]->scoreSum / (double) type_system[i]->visits, type_system[i]->size);
+    if (type_system[i]->size == 0) // if no nodes in type continue
       continue;
 
     //If the type has never been visited before, select it first
@@ -219,8 +242,17 @@ static int selectType(double C, int visits) {
     // Otherwise, compute this type's UCB1 index (will be used to pick best type if it transpires that all
     // types have been visited at least once)
     qhat = type_system[i]->scoreSum / (double)type_system[i]->visits;  // exploitation component (this is the average utility)
-    score = qhat + C * sqrt(log(visits) / (double)type_system[i]->visits); // add exploration component
+    score = qhat + (multiplier * C) * sqrt(log(visits) / (double)type_system[i]->visits); // add exploration component
+    
+    // Negamax formulation -- since min(s1,s2,...) = -max(-s1,-s2,...), negating the indices when it
+    // is min's turn means we can always just take the maximum
+    score = (side == min) ? -score : score;
 
+     printf("type %d ", i);
+printf("ucb score %f ", score);
+printf("scoreSum %f ", type_system[i]->scoreSum);
+printf("visits %d ", type_system[i]->visits);
+printf("qhat %f\n", qhat);
     // If this is either the first type, or the best scoring type, store it
     if ((numBestTypes == 0) || (score > bestScore)) {
       bestTypes[0] = i;
@@ -231,9 +263,11 @@ static int selectType(double C, int visits) {
       bestTypes[numBestTypes++] = i;
     
   }
-
+  //printf("\n");
+//printf("best score %f numBestTypes %d\n", bestScore, numBestTypes);
   // Return the next type to explore (break ties randomly)
-  printf("random type %d\n", random() % numBestTypes); //TODO delete
+  if (numBestTypes == 0)
+    return -1; //open lists are all empty
   return bestTypes[random() % numBestTypes];
 }
 
@@ -242,17 +276,52 @@ static int selectType(double C, int visits) {
 //extract a node from its open list
 //rollout and backpropagate from selected nodes
 //place children in thier respective type open lists
-static void bfbIteration(int visits, double C, double (*heuristic)(int board[2][NUM_PITS+1],int,int), int budget, int backupOp) {  
+static void bfbIteration(int visits, double C, double (*heuristic)(int board[2][NUM_PITS+1],int,int), int budget, int backupOp, int side) { 
+  int i;
+  
   //Choose type that maximizes UCB1
-  struct type *t = type_system[selectType(C, visits)];
- 
+  int yo = selectType(C, visits, side);
+  //printf("selected type %d\n", (yo - MAX_WINS));
+  if (yo == -1)
+    return;
+  struct type *t = type_system[yo];
+
+  /*
   //Choose random node from type, take it out, update type->empty
   int randomIndex = random() % t->tail;
+  printf("randomIdex %d\n", randomIndex);
   treeNode *node = t->openList[randomIndex];
-  t->empty = randomIndex;
+  t->empty = randomIndex;*/
   
-  //rollout
-  int ret = heuristic(node->board, node->side, budget);
+  //Choose lowest depth node
+  treeNode *node;
+  int min_depth = INF;
+  int min_node;
+  for (i = 0; i < t->tail; i++) {
+    if (t->openList[i] && t->openList[i]->depth < min_depth) {
+      min_node = i;
+      min_depth = t->openList[i]->depth;
+    }
+  }
+  node = t->openList[min_node];
+  t->openList[min_node] = 0;
+  t->size--;
+  t->empty = min_node;
+  
+  double ret;
+  int gameOver = 0;
+  if ((ret = getGameStatus(node->board)) != INCOMPLETE) {
+    gameOver = 1;
+    // This is a terminal node (i.e. can't generate any more children)
+    // If we are estimating the leaf nodes using coarse random playout(s), coarsened h1 or random values, then all
+    // those estimates are from the set {-1, 0, +1}. The terminal nodes are given values from the set {MIN_WINS, DRAW, MAX_WINS}
+    // which are substantially larger. To make these values comparable in magnitude, we need to rescale the terminal
+    // node values. If we are using engineered heuristics, then no rescaling is necessary.
+    if ((heuristic == h3) || (heuristic == h4) || (heuristic == h5))
+      ret /= MAX_WINS; // rescale
+
+  } else
+    ret = heuristic(node->board, node->side, budget);
   
   //update type ucb stats and backpropagate
   t->visits++;
@@ -264,8 +333,10 @@ static void bfbIteration(int visits, double C, double (*heuristic)(int board[2][
     bp = bp->parent;
   }
   
+  if (gameOver)
+    return;
+  
   //generate the children and place them in the type system
-  int i;
   for (i = 1; i < NUM_PITS + 1; i++) {
     if (node->board[node->side][i] == 0) // if the i^th move is illegal, skip it
       continue;
@@ -276,8 +347,8 @@ static void bfbIteration(int visits, double C, double (*heuristic)(int board[2][
     node->children[i]->side = node->side; // copy over the current side on move to child
     makeMove(node->children[i]->board, &(node->children[i]->side), i); //Make the i-th move
     node->children[i]->parent = node; //save parent
-    
-    assignToType(node->children[i], heuristic, node->children[i]->side, budget);
+    node->children[i]->depth = node->depth + 1;
+    assignToType(node->children[i], ORACLE_MISSING_H, node->children[i]->side, budget);
   }
 }
 
@@ -291,12 +362,13 @@ int makeBFBMove(int board[2][NUM_PITS+1], int *side, int numIterations, double C
   treeNode* rootNode;
 
   *numBestMoves = 0; // reset size of set of best moves
-
+  mysteryNodes = 0; //reset
+  
   //Oracle - TODO remove or parametrize when done with the POC
-  oraclefd = open("MMValues.txt", O_CREAT | O_TRUNC | O_RDWR, S_IRWXU);
-  storeMinimax(board, 0, ORACLE_DEPTH, *side, h2, 0); 
+  oraclefd = open(ORACLE_PATH, O_CREAT | O_TRUNC | O_RDWR, S_IRWXU);
+  storeMinimax(board, 0, ORACLE_DEPTH, *side, ORACLE_H, 0); 
   //Init type system to the maximum possible number of types. TODO will need to change this for other typs... TODO put somewhere else
-  numTypes = MAX_WINS * 2;
+  numTypes = MAX_WINS * 2 + 1; //Number of possible minmax values
   type_system = calloc(numTypes, sizeof(struct type *));
   for (i = 0; i < numTypes; i++) {
     type_system[i] = calloc(1, sizeof(struct type));
@@ -308,15 +380,15 @@ int makeBFBMove(int board[2][NUM_PITS+1], int *side, int numIterations, double C
   rootNode->children = calloc(NUM_PITS+1, sizeof(treeNode*));
   cloneBoard(board, rootNode->board);
   rootNode->side = *side;
-
+  rootNode->depth = 0;
+  
   //assign the root to a type
-  assignToType(rootNode, heuristic, *side, budget);
+  assignToType(rootNode, ORACLE_MISSING_H, *side, budget);
 
   // Run specified number of iterations of BFB
-  for (i = 0; i < 1; i++)
-    bfbIteration(i, C, heuristic, budget, backupOp);
-
-  close(oraclefd); //TODO: do something with this when done with POC
+  //Starts at one because i is also used as the total number of visits
+  for (i = 1; i < numIterations + 1; i++)
+    bfbIteration(i, C, heuristic, budget, backupOp, *side);
 
   // Now look at the children 1-ply deep and determing the best one (break ties
   // randomly)
@@ -326,9 +398,10 @@ int makeBFBMove(int board[2][NUM_PITS+1], int *side, int numIterations, double C
 
     if (!rootNode->children[i]) // this node was not created since # iterations was too small
       continue;
-
+    //int MMval = readMMVal(rootNode->children[i]->board) + MAX_WINS;
     // Compute average utility of this child
     val = rootNode->children[i]->scoreSum / (double)rootNode->children[i]->n;
+    //  val = type_system[MMval]->scoreSum / (double)type_system[MMval]->visits;
 
     // If this was min's move, negate the utility value (this makes things a little cleaner
     // as we can then always take the max of the children, since min(s1,s2,...) = -max(-s1,-s2,...))
@@ -343,10 +416,18 @@ int makeBFBMove(int board[2][NUM_PITS+1], int *side, int numIterations, double C
     else if (val == bestScore) // child ties with currently best scoring one; store it
       bestMoves[(*numBestMoves)++] = i;
 
-    if (verbose)
-      printf("Move # %d -- Value %f, Count %d\n", i, ((*side == min) ? -val : val), rootNode->children[i]->n);
+    if (verbose) {
+      int type = readMMVal(rootNode->children[i]->board);
+      struct type *t = type_system[type + MAX_WINS];
+      printf("Move # %d -- Value %f, Count %d, Type %d, Type Visits %d, Type Val %f\n", i, ((*side == min) ? -val : val), rootNode->children[i]->n, type, t->visits, t->scoreSum / (double) t->visits);
+    }
   }
-
+/*
+  for (i = 0; i < numTypes; i++){
+    printf("type %d, val %f, size %d\n", i - MAX_WINS, type_system[i]->scoreSum / (double) type_system[i]->visits, type_system[i]->size);
+  }
+  */
+  
   // We should have at least looked at one child
   assert(*numBestMoves != 0);
 
@@ -361,6 +442,9 @@ int makeBFBMove(int board[2][NUM_PITS+1], int *side, int numIterations, double C
   // Clean up before returning
   freeTree(rootNode);
   freeTypeSystem();
+  
+  close(oraclefd); //TODO: do something with this when done with POC
+  remove(ORACLE_PATH);
   
   return bestMove;
 }
