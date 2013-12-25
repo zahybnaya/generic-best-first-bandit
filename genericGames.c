@@ -1,7 +1,8 @@
 #include "common.h"
 #include "domain.h"
 #include "synth.h"
-#define PRINT_CSV false
+#include <string.h>
+#define PRINT_CSV true
 int verbose = false;
 int isToPrintToDot = false;
 int isDotLabel = false;
@@ -12,6 +13,7 @@ DOM* _DOM;
  
 static int isSuper(int firstOutcome, int secondOutcome);
 static int printMessage();
+static char* createAlgorithmDecription(int player[],int player_side);
 
 int main(int argc, char* argv[]) {
 
@@ -369,7 +371,8 @@ int main(int argc, char* argv[]) {
   }
    _DOM->destructRep(state);
    _DOM->destructRep(randState);
-  // Print Summary
+   char* algDescription []={createAlgorithmDecription(player,max),createAlgorithmDecription(player,min)};
+
   if(!PRINT_CSV){
       printf("------------------------------\n");
       printf("Game played: %d\n",numGames);
@@ -382,7 +385,10 @@ int main(int argc, char* argv[]) {
       printf("Min *superiority* rate: %f\n",(float)minSuper/(maxSuper+minSuper));
       printf("------------------------------\n");
   }else {
-      puts("Game played,Draws,Incomplete games,Max/won games,Min/won games,TrapGap,TrapSize,Number of Traps, Total won games\n");
+      puts("domain, max_alg, min_alg ,num_of_games,num_of_draws,num_of_incomplete,max_win,min_win,total_win_games\n");
+      printf("%d,",_DOM->dom_name);
+      printf("%s,",algDescription[max]);
+      printf("%s,",algDescription[min]);
       printf("%d,",numGames);
       printf("%d,",same);
       printf("%d,",incompletes);
@@ -390,8 +396,10 @@ int main(int argc, char* argv[]) {
       printf("%f,",(float)minSuper/(maxSuper+minSuper));
       printf("%d\n",maxSuper);
   }
-  //printMmUctStats();
   printUctStats();
+  free(algDescription[0]);
+  free(algDescription[1]);
+
 
   return 0;
 }
@@ -438,5 +446,19 @@ static int printMessage(){
    puts("-h:            Displays this message");
    puts("");
    return 0;
+}
+
+/**
+ * describe an algorithm
+ * */
+static char* createAlgorithmDecription(int player[],int playerInd){
+ char* ret = (char*)malloc(sizeof(char)*128);
+ sprintf(ret,"%s",player[playerInd]==UCT?"UCT":"MINMAX");
+ return ret;
 
 }
+
+
+
+
+
