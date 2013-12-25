@@ -25,6 +25,7 @@
 #define COARSE_HEURISTIC 64
 #define FINE_HEURISTIC 128
 #define MMUCT 256
+#define BFB 512
 
 // UCT back-up operator choices
 #define AVERAGE 0
@@ -127,5 +128,10 @@ void setNoiseParams(int, double);
 // Random play routines (random.c)
 int pickRandomMove(int board[2][NUM_PITS+1], int side);
 int makeRandomMove(int board[2][NUM_PITS+1], int *side);
+
+//BFB (bfb.c)
+int makeBFBMove(int board[2][NUM_PITS+1], int *side, int numIterations, double C,
+		double (*heuristic)(int board[2][NUM_PITS+1],int,int), int budget,
+		int* bestMoves, int* numBestMoves, int backupOp);
 
 #endif //__COMMON__H__
