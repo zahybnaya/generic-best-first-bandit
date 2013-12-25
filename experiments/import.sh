@@ -6,7 +6,7 @@ PDIR=`pwd`
 ./create_table.sh $1 > ${TMP_FILE}
 echo "LOAD DATA LOCAL INFILE '${PDIR}/${CSV_FILE}' INTO TABLE ${TABLE_NAME} COLUMNS TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES;" >> ${TMP_FILE}
 
-mysql --local-infile -uroot -pthkbK2bh 'best_first_bandit' < ${TMP_FILE}
+mysql --local-infile -uroot -pXXX 'best_first_bandit' < ${TMP_FILE}
 
 rm ${TMP_FILE} 
 
