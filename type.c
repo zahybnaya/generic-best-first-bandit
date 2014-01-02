@@ -68,7 +68,7 @@ static int mancalaStateToOffset(rep_t rep) {
       for (k = _DOM->getNumOfChildren() - 1 - j; k > 0; k--)
 	baseTothePowerOfIndex = baseTothePowerOfIndex * MAX_WINS;
       
-      offset = offset + baseTothePowerOfIndex * (int[][])rep[i][j];
+      offset = offset + baseTothePowerOfIndex * ((int**)rep)[i][j];
     }
   }
   
@@ -262,7 +262,7 @@ void furtherInit_mmOracle(void *void_ts, rep_t rep, int side) {
       
   ts->extra = calloc(1, sizeof(int));
   *(int *)(ts->extra) = open(ORACLE_PATH, O_CREAT | O_TRUNC | O_RDWR, S_IRWXU);
-  storeMinimax(*(int *)(ts->extra), board, 0, ORACLE_DEPTH, side, ORACLE_H, 0); 
+  storeMinimax(*(int *)(ts->extra), rep, 0, ORACLE_DEPTH, side, ORACLE_H, 0); 
 }
 
 void furtherInit_sts(void *void_ts, rep_t rep, int side) {

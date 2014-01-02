@@ -130,8 +130,10 @@ int pickRandomMove(int board[2][NUM_PITS+1], int side);
 int makeRandomMove(int board[2][NUM_PITS+1], int *side);
 
 //BFB (bfb.c)
-int makeBFBMove(int board[2][NUM_PITS+1], int *side, int numIterations, double C,
-		double (*heuristic)(int board[2][NUM_PITS+1],int,int), int budget,
-		int* bestMoves, int* numBestMoves, int backupOp);
+int makeBFBMove(rep_t rep, int *side, void *void_ts, int numIterations, double C, heuristics_t heuristic, int budget,
+		int* bestMoves, int* numBestMoves, int backupOp, int threshold);
+
+//Type system (type.c)
+void destroyTypeSystem(void *void_ts);
 
 #endif //__COMMON__H__

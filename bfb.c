@@ -47,7 +47,7 @@ static void bfbIteration(type_system *ts, int visits, double C, heuristics_t heu
     if ((heuristic == _DOM->hFunctions.h3) || (heuristic == _DOM->hFunctions.h4) || (heuristic == _DOM->hFunctions.h5))
       ret /= MAX_WINS; // rescale
   } else
-    ret = heuristic(rep, node->side, budget);
+    ret = heuristic(node->rep, node->side, budget);
   
   //update type ucb stats
   t->visits++;
@@ -100,14 +100,14 @@ static void bfbIteration(type_system *ts, int visits, double C, heuristics_t heu
   //generate the children and place them in the type system
   int numOfChildren = 0; //number of children actually generated
   for (i = 1; i < _DOM->getNumOfChildren(); i++) {
-    if (!_DOM->isValidChild(rep,*side, i)) // if the i^th move is illegal, skip it
+    if (!_DOM->isValidChild(node->rep,side, i)) // if the i^th move is illegal, skip it
       continue;
     
     node->children[i] = calloc(1, sizeof(treeNode));
     node->children[i]->children = calloc(_DOM->getNumOfChildren(), sizeof(treeNode*));
     node->rep = _DOM->cloneRep(node->children[i]->rep); // copy over the current board to child
     node->children[i]->side = node->side; // copy over the current side on move to child
-    _DOM->makeMove(node->children[i]->rep, &(node->children[i]->side), bestMove); //Make the i-th move
+    _DOM->makeMove(node->children[i]->rep, &(node->children[i]->side), i); //Make the i-th move
     node->children[i]->parent = node; //save parent
     node->children[i]->depth = node->depth + 1;
     ts->assignToType(ts, node->children[i], typeId, threshold);

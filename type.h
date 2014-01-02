@@ -1,11 +1,12 @@
 #include "common.h"
+#include "domain.h"
 
 #define ORACLE_DEPTH 12
 #define ORACLE_PATH "MMValues.txt"
 //heuristic used by the oracle minimax
-#define ORACLE_H h2
+#define ORACLE_H _DOM->hFunctions.h2
 //heuristic used by assign to type for mystery nodes
-#define ORACLE_MISSING_H(x,y) h2(x, y, 1)
+#define ORACLE_MISSING_H(x,y) _DOM->hFunctions.h2(x, y, 1)
 
 extern DOM* _DOM;
 
