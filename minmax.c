@@ -81,74 +81,9 @@ static double alphaBeta(rep_t rep, int searchDepth, int depth, int side, double 
   return val1;
 }
 
-/* Recursively compute the minimax value of a given node, without alpha-beta pruning. The search is cutoff
-   at a maximum depth given by depth. searchDepth keeps track of how deep we already are in the tree */ 
-static double noPruningMM(rep_t rep, int searchDepth, int depth, int side, heuristics_t heuristic, int budget, int currentNodeId) {
-  double val1, val2;
-  int i;
-  rep_t dummyRep;
-  int origSide = side;
-
-  numNodes++; // track number of nodes expanded
-  
-  // Hit terminal node -- return value is one of {MAX_WINS, MIN_WINS, DRAW}
-  if ((val1 = _DOM->getGameStatus(rep)) != INCOMPLETE) {
-    termCount++; // update terminal node count
-    if (dotFormat)
-      printf("n%d [color=\"red\"];", currentNodeId); // terminal nodes are colored red
-    return val1;
-  }
-
-  // Hit search depth cutoff -- apply the chosen heuristic function to this node and return that value
-  if (searchDepth >= depth) {
-    val1 = heuristic(rep, side, budget);
-    // Ensure that the heuristic value is always bounded by the values assigned to terminal nodes (i.e. true win/loss
-    // positions)
-    assert ((val1 < MAX_WINS) && (val1 > MIN_WINS));
-
-    return val1;
-  }
-
-  // Otherwise, recurse
-  if (side == max) { // at a Max node
-    val1 = -INF;
-    for (i = 1; i < _DOM->getNumOfChildren(); i++) { // iterate over all possible moves
-      side = origSide;
-      if (!_DOM->isValidChild(rep,side,i))
-	continue;
-      dummyRep = _DOM->cloneRep(rep);// clone starting board so it can be restored on next pass through loop
-      _DOM->makeMove(dummyRep,&side,i);// generate i^th child
-      // About to visit a new node, so add the edge to the graph
-      if (dotFormat)
-	printf("n%d -> n%d;\n", currentNodeId, ++id);
-      val2 = noPruningMM(dummyRep, searchDepth+1, depth, side, heuristic, budget, id); // compute minimax value of this child
-      val1 = (val2 > val1) ? val2 : val1; // we have tightened our alpha bound
-    }
-  }
-  else { // at a Min node
-    val1 = INF;
-    for (i = 1; i < NUM_PITS+1; i++) { // iterate over all possible moves
-      side = origSide;
-      if (!_DOM->isValidChild(rep,side,i))
-	continue;
-      dummyRep = _DOM->cloneRep(rep);// clone starting board so it can be restored on next pass through loop
-      _DOM->makeMove(dummyRep,&side,i);// generate i^th child
-
-      // About to visit a new node, so add the edge to the graph
-      if (dotFormat)
-	printf("n%d -> n%d;\n", currentNodeId, ++id);
-      val2 = noPruningMM(dummyRep , searchDepth+1, depth, side, heuristic, budget, id); // compute minimax value of this child
-      val1 = (val2 < val1) ? val2 : val1; // we have tightened our beta bound
-    }
-  }
-
-  return val1;
-}
-
 /* Perform alpha-beta search from given board position, and make the best move
    The set of bestMoves is returned via parameter bestMoves[] */
-int makeMinmaxMove(rep_t rep, int* side, int depth, heuristics_t heuristic, int budget, int pruning,
-	       	int randomTieBreaks, int noisyMM, int* bestMoves, int* numBestMoves, double* termPercentage) {
+int makeMinmaxMove(rep_t rep, int* side, int depth, heuristics_t heuristic, int budget, int randomTieBreaks, int noisyMM, int* bestMoves, int* numBestMoves, double* termPercentage) {
   int i;
   rep_t dummyRep;
   double val;
@@ -173,10 +108,7 @@ int makeMinmaxMove(rep_t rep, int* side, int depth, heuristics_t heuristic, int 
 
     // Compute MM-(k-1) value of i^th child (since the children are already at depth 1 from the root node,
     // and we do a search from each child)
-    if(pruning) //Alon
-      val = alphaBeta(dummyRep , 1, depth, *side, MIN_WINS, MAX_WINS, heuristic, budget, id);
-    else
-      val = noPruningMM(dummyRep , 1, depth, *side, heuristic, budget, id);
+    val = alphaBeta(dummyRep , 1, depth, *side, MIN_WINS, MAX_WINS, heuristic, budget, id);
 
     // If this was min's move, negate the utility value (this makes things a little cleaner
     // as we can then always take the max of the children, since min(s1,s2,...) = -max(-s1,-s2,...))    

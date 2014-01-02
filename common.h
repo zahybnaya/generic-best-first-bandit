@@ -112,7 +112,7 @@ void resetTrapCounter();
 
 
 // Minimax routines (minmax.c)
-int makeMinmaxMove(rep_t rep, int* side, int depth, heuristics_t heuristic, int budget, int pruning, int randomTieBreaks, int noisyMM, int* bestMoves, int* numBestMoves, double* termPercentage) ;
+int makeMinmaxMove(rep_t rep, int* side, int depth, heuristics_t heuristic, int budget, int randomTieBreaks, int noisyMM, int* bestMoves, int* numBestMoves, double* termPercentage) ;
 int getAlphaBetaTreeSize(rep_t rep, int, int,  heuristics_t heuristic, int);
 void genAlphaBetaTree(rep_t rep, int, int,  heuristics_t heuristic, int);
 
