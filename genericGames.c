@@ -48,6 +48,8 @@ int main(int argc, char* argv[]) {
   double noiseProb = 0.0; // probability with which heuristic estimate will be corrupted
   int backupOp[2] = {MINMAX, MINMAX}; // back-up operator to be used by UCT
   int mmTreeSize[2] = {3, 3}; // back-up operator to be used by UCT TODO:enum this too
+  void *type_system[2] = {0, 0}; //the type system used by BFB.
+  int threshold[2] = {100, 100}; //the maximal number of nodes in a type for the STS type system
 
   // Variables used for pretty printing parameter settings
   const char* playerStrings[] = {"max", "min"};
@@ -65,15 +67,6 @@ int main(int argc, char* argv[]) {
   // if the user invokes the '-s' flag (enables repeatable runs)
   seed = (unsigned int)devrand();
 
-  // Process command-line args
-  // Mandatory args -- the search algorithms the two players will use
-  for (i = 1; i <= 2; i++) {
-       player[i-1] = UCT;
-  }
-
-  //This is just for testing.  TODO: command line
-  player[0] = UCT; 
-  player[1] = MINMAX;
   /*Domain name initializaiont*/
   int dom_name = atoi(argv[1]);
   switch(dom_name){
@@ -97,6 +90,28 @@ int main(int argc, char* argv[]) {
   int bestMoves[_DOM->getNumOfChildren()];
   heuristics_t heuristic[] =  {_DOM->hFunctions.h1, _DOM->hFunctions.h1}; // the heuristics used by the max and min playersa 
 
+  // Process command-line args
+  // Mandatory args -- the search algorithms the two players will use
+  for (i = 1; i <= 2; i++) {
+    if (strcmp(argv[i], "m") == 0)
+      player[i-1] = MINMAX;
+    /*Zahy*/
+    else if (strcmp(argv[i], "mmuct") == 0)
+      player[i-1] = MMUCT;
+    else if (strcmp(argv[i], "u") == 0)
+      player[i-1] = UCT;
+    else if (strcmp(argv[i], "r") == 0)
+      player[i-1] = RANDOM;
+    else if (strcmp(argv[i], "mu") == 0)
+      player[i-1] = MINMAX_ON_UCT;
+    else if (strcmp(argv[i], "b") == 0)
+      player[i-1] = BFB;
+    else {
+      printf("Unrecognized algorithm choice %s", argv[i]);
+      return 0;
+    }
+  }
+  
   // Optional args -- in each case, we make sure any necessary parameter values are specified
   // and that it makes sense to define the value of this parameter given the algorithm choices
   // selected earlier (for example, trying to set the value of exploration bias for a player,
@@ -305,7 +320,7 @@ int main(int argc, char* argv[]) {
 			moveMade = makeUCTMove(state, &side, numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, backupOp[side]);
 			break;
 		case MINMAX:
-			moveMade = makeMinmaxMove(state, &side,depth[side],heuristic[side],budget[side],pruning[side],randomTieBreaks,noisyMM,bestMoves,&numBestMoves, &termPercentage);
+			moveMade = makeMinmaxMove(state, &side,depth[side],heuristic[side],budget[side],randomTieBreaks,noisyMM,bestMoves,&numBestMoves, &termPercentage);
 			break;
 		default:
 			puts("Unknown algorithm\n");
@@ -442,6 +457,8 @@ static int printMessage(){
    puts("-nh <m> <p>:   Adds noise to the heuristic h1. The maximum magnitude of the noise is m. With probability p/2m,");
    puts("               the noise takes one of the values {+/-1, +/-2, ..., +/-m}. With probability 1-p, the magnitude of the noise");
    puts("               is 0.");
+   puts("-ts1/ts2:      Set the type system for bfb player 1/2. Values = 1 (Oracle), 2 (STS)");
+   puts("-t1/t2:        Set the maximal size for bfb player 1/2 using STS type system. Default = 100");
    puts("-v:            Enables VERBOSE output for tracing");
    puts("-h:            Displays this message");
    puts("");
