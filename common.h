@@ -77,18 +77,15 @@ extern int verbose; // sets whether output is verbose (defined in file with main
 /* Function prototypes */
 // Board-related routines (board.c)
 void initBoard(int board[2][NUM_PITS+1], int* side);
-//void genRandomBoard(int board[2][NUM_PITS+1], int* side, int depth);
-void genRandomBoard(int **board, int* side, int depth);
+void genRandomBoard(int board[2][NUM_PITS+1], int* side, int depth);
 void cloneBoard(int srcBoard[2][NUM_PITS+1] , int dstBoard[2][NUM_PITS+1]);
 int readBoard(char* fileName, int board[2][NUM_PITS+1], int* side, short mode);
 void writeBoard(char* fileName, int board[2][NUM_PITS+1], int side, short mode);
 int isEqual(int board1[2][NUM_PITS+1], int board2[2][NUM_PITS+1]);
-//void printBoard(int board[2][NUM_PITS+1], int side);
 void printBoard(int **board, int side);
 
 // Game-rules related routines (move.c)
-//int getGameStatus(int board[2][NUM_PITS+1]);
-int getGameStatus(int **board);
+int getGameStatus(int board[2][NUM_PITS+1]);
 void makeMove(int board[2][NUM_PITS+1] , int* side, int move);
 int getNumLegalMoves(int board[2][NUM_PITS+1], int side);
 
@@ -138,5 +135,6 @@ int makeBFBMove(rep_t rep, int *side, void *void_ts, int numIterations, double C
 
 //Type system (type.c)
 void destroyTypeSystem(void *void_ts);
+void *init_type_system(int t);
 
 #endif //__COMMON__H__

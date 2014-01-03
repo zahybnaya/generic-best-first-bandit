@@ -295,7 +295,7 @@ static void assignToType_sts(void *void_ts, treeNode *node, int fatherType, int 
 	newFather = newFather->parent;
       
       for (i = 1; i < _DOM->getNumOfChildren(); i++) {
-	if (root->children[i] == NULL || root->children[i] == newFather) //skip empty children or this is the new father (will be taken care of later)
+	if (!_DOM->isValidChild(root->rep, root->side, i) || root->children[i] == newFather) //skip empty children or this is the new father (will be taken care of later)
 	  continue;
 	
 	ts->numTypes++;
@@ -403,26 +403,7 @@ static int selectMove(treeNode* node) {
 }
 
 static treeNode *selectFromType_sts(type *t) {
-  //int i;
   treeNode *node = t->openList[0];
-  //treeNode *possibleChildren[NUM_PITS];
-  //int numChildren;
-  /*
-  //walk randomly down the tree
-  while (true) {
-    numChildren = 0;
-    for (i = 1; i < NUM_PITS + 1; i++) {
-      if (node->children[i] == NULL) //skip empty children
-	continue;
-      
-      possibleChildren[numChildren++] = node->children[i];
-    }
-    
-    if (numChildren == 0)
-      return node;
-    
-    node = possibleChildren[random() % numChildren];
-  }*/
   
   //travel down the tree using ucb
   while (_DOM->getGameStatus(node->rep) == INCOMPLETE && node->n > 0)
@@ -431,7 +412,7 @@ static treeNode *selectFromType_sts(type *t) {
   return node;
 }
 
-void *init_type(int t) {
+void *init_type_system(int t) {
   type_system *ts = calloc(1, sizeof(type_system));
   
   switch (t) {

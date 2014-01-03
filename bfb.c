@@ -74,38 +74,39 @@ static void bfbIteration(type_system *ts, int visits, double C, heuristics_t heu
       //If first visit to node than the value is set by default      
       if (bp->n == 1) 
 	bp->scoreSum = ret;
-      else if (gameOver == 1)
+      else if (gameOver == 1 && bp == node)
 	bp->scoreSum = bp->scoreSum + ret;
       else { //Else, compute minimax
 	double bestScore = (bp->side == max) ? MIN_WINS : MAX_WINS;
 	
 	for (i = 1; i < _DOM->getNumOfChildren(); i++) {
-	  if (bp->children[i]) { // if child exists, is it the best scoring child?
+	  if (_DOM->isValidChild(bp->rep, bp->side, i)) { // if child exists, is it the best scoring child?
 	    double score = bp->children[i]->scoreSum / (double)(bp->children[i]->n);
 	    if ((bp->side == max && score > bestScore) || (bp->side == min && score < bestScore))
 	      bestScore = score;
 	  }
 	}
-
+	
 	bp->scoreSum = bestScore * bp->n;
       }
     }
     
     bp = bp->parent;
+    
   }
-  
+   
   if (gameOver) //terminal node - no need to expand
     return;
   
   //generate the children and place them in the type system
   int numOfChildren = 0; //number of children actually generated
   for (i = 1; i < _DOM->getNumOfChildren(); i++) {
-    if (!_DOM->isValidChild(node->rep,side, i)) // if the i^th move is illegal, skip it
+    if (!_DOM->isValidChild(node->rep, node->side, i)) // if the i^th move is illegal, skip it
       continue;
     
     node->children[i] = calloc(1, sizeof(treeNode));
     node->children[i]->children = calloc(_DOM->getNumOfChildren(), sizeof(treeNode*));
-    node->rep = _DOM->cloneRep(node->children[i]->rep); // copy over the current board to child
+    node->children[i]->rep = _DOM->cloneRep(node->rep); // copy over the current board to child
     node->children[i]->side = node->side; // copy over the current side on move to child
     _DOM->makeMove(node->children[i]->rep, &(node->children[i]->side), i); //Make the i-th move
     node->children[i]->parent = node; //save parent
@@ -154,7 +155,7 @@ int makeBFBMove(rep_t rep, int *side, void *void_ts, int numIterations, double C
 
   //Now look at the children 1-ply deep and determing the best one (break ties randomly)
   for (i = 1; i < _DOM->getNumOfChildren(); i++) { //For each move
-    if (!_DOM->isValidChild(rep,*side, i)) //Skip illegal moves
+    if (!_DOM->isValidChild(rootNode->rep, rootNode->side, i)) //Skip illegal moves
       continue;
 
     if (!rootNode->children[i]) //This node was not created since # iterations was too small

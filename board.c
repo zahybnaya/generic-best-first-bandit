@@ -39,8 +39,7 @@ void initBoard(int board[2][NUM_PITS+1], int* side) {
 
 
 /* Generates a random starting configuration for the game at the specified depth */
-//void genRandomBoard(int board[2][NUM_PITS+1], int* side, int depth) {
-  void genRandomBoard(int **board, int* side, int depth) {
+void genRandomBoard(int board[2][NUM_PITS+1], int* side, int depth) {
   int j;
   int pitCount;
   int numBestMoves;
@@ -244,20 +243,18 @@ int isEqual(int board1[2][NUM_PITS+1], int board2[2][NUM_PITS+1]) {
 
 
 /* Utility to pretty print the given board. Side on move is indicated with a '*' */
-//void printBoard(int board[2][NUM_PITS+1], int side) {
-  void printBoard(int **board, int side) {
-  printf("board add in %p %p\n", board[0], board[1]);
-  
-  printf("max %d store %d board[0][0] %d\n", max, store, board[0][0]);
+void printBoard(int **board, int side) {
+  TO_REGULAR_ARR(board);
+
   int i;
   printf("%s: ", (side == max) ? "*Max" : " Max");
-  printf("%2d ", board[max][store]);
+  printf("%2d ", __board[max][store]);
   for (i = 1; i < NUM_PITS+1; i++)
-    printf("%d ", board[max][i]);
+    printf("%d ", __board[max][i]);
   printf("\n");
 
   printf("%s:    ", (side == min) ? "*Min" : " Min");
   for (i = NUM_PITS; i >= 0; i--)
-    printf("%d ", board[min][i]);
+    printf("%d ", __board[min][i]);
   printf("\n");
 }

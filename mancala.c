@@ -40,9 +40,8 @@ int isValidChild_mancala(rep_t rep, int side, int move){
 int getGameStatus_mancala(rep_t rep){
 
     int ** board = rep;
-    //TO_REGULAR_ARR(board);
-    //return getGameStatus(__board);
-    return getGameStatus(board);
+    TO_REGULAR_ARR(board);
+    return getGameStatus(__board);
 }
 
 
@@ -64,8 +63,8 @@ rep_t cloneRep_mancala(rep_t orig){
     int **orig_board = orig;
     int **board  = calloc(2,sizeof(int*));
     int i=0; for (;i<2;i++)
-        board[i] = (int *)calloc(NUM_PITS+1,sizeof(int));
-   COPY_ARR(orig_board,board);
+    board[i] = (int *)calloc(NUM_PITS+1,sizeof(int));
+    COPY_ARR(orig_board,board);
 
    return board;
 }
@@ -78,14 +77,8 @@ rep_t cloneRep_mancala(rep_t orig){
 void generateRandomStart_mancala(rep_t rep, int side){
     int** board = rep;
     int dummy[2][NUM_PITS+1];
-    genRandomBoard(board, &side, 0);
-    //COPY_ARR(dummy,board);
-    
-    //printf("sizeof board %d sizeof dummy %d\n", sizeof(board), sizeof(dummy));
-    
-    printf("board add %p %p\n", board[0], board[1]);
-    printBoard(board, side);
-	  fflush(stdout);
+    genRandomBoard(dummy, &side, 0);
+    COPY_ARR(dummy,board);
 }
 
 /**
