@@ -32,11 +32,12 @@ int main(int argc, char* argv[]) {
   // Variables to store command-line parameters
   int player[2]; // the search algorithms used by the max and min players TODO: make enum
   int depth[2] = {8, 8}; // the search depth cutoff (only relevant to MM players)
+  int pruning[2] = {true, true}; //will the minimax players use alpha-beta pruning.
   int noisyMM = false; // determine whether the MM player will play noisily (i.e. occasionally pick the second best move)
   double termPercentage;
   int randomTieBreaks = false; // determine whether the MM player will break ties randomly
   int numIterations[2] = {5000, 5000}; // number of iterations of UCT used by the max and min players
-  double C[2] = {0.5, 0.5}; // exploration bias setting for UCT used by max and min players
+  double C[2] = {2.5, 2.5}; // exploration bias setting for UCT used by max and min players
   int budget[2] = {1, 1}; // if using playouts to estimate leaf utilities, these determine how many playouts are averaged
   short usingRandomStartBoard = true; // are we using random start boards or boards from a file?
   char boardFileName[1024]; // if using boards from a file, this contains the file name
@@ -92,18 +93,18 @@ int main(int argc, char* argv[]) {
   // Process command-line args
   // Mandatory args -- the search algorithms the two players will use
   for (i = 1; i <= 2; i++) {
-    if (strcmp(argv[i + 1], "m") == 0)
+    if (strcmp(argv[i], "m") == 0)
       player[i-1] = MINMAX;
     /*Zahy*/
-    else if (strcmp(argv[i + 1], "mmuct") == 0)
+    else if (strcmp(argv[i], "mmuct") == 0)
       player[i-1] = MMUCT;
-    else if (strcmp(argv[i + 1], "u") == 0)
+    else if (strcmp(argv[i], "u") == 0)
       player[i-1] = UCT;
-    else if (strcmp(argv[i + 1], "r") == 0)
+    else if (strcmp(argv[i], "r") == 0)
       player[i-1] = RANDOM;
-    else if (strcmp(argv[i + 1], "mu") == 0)
+    else if (strcmp(argv[i], "mu") == 0)
       player[i-1] = MINMAX_ON_UCT;
-    else if (strcmp(argv[i + 1], "b") == 0)
+    else if (strcmp(argv[i], "b") == 0)
       player[i-1] = BFB;
     else {
       printf("Unrecognized algorithm choice %s", argv[i]);
@@ -115,9 +116,9 @@ int main(int argc, char* argv[]) {
   // and that it makes sense to define the value of this parameter given the algorithm choices
   // selected earlier (for example, trying to set the value of exploration bias for a player,
   // when that player is not using UCT will throw an error).
-  for (i = 4; i < argc; i++) {
+  for (i = 3; i < argc; i++) {
     if OPTION("-h1") {
-      CHECK(max, (MINMAX | UCT | MINMAX_ON_UCT | MMUCT | BFB), "-h1")
+      CHECK(max, (MINMAX | UCT | MINMAX_ON_UCT | MMUCT), "-h1")
       if (++i < argc) {
         heuristic[max] = _DOM->hFunctions.h1; //[atoi(argv[i])-1]; //TODO fix this. Currently not working and fixed on h1 (add identifier? or switch)
         strcpy(heurString[max], hStrings[atoi(argv[i])-1]);
@@ -126,7 +127,7 @@ int main(int argc, char* argv[]) {
         MISSING("h1")
     }
     else if OPTION("-h2") {
-      CHECK(min, (MINMAX | UCT | MINMAX_ON_UCT | MMUCT | BFB), "-h2")
+      CHECK(min, (MINMAX | UCT | MINMAX_ON_UCT | MMUCT), "-h2")
       if (++i < argc) {
 	heuristic[min] = _DOM->hFunctions.h1; //[atoi(argv[i])-1]; //TODO fix this. Currently not working and fixed on h1 (add identifier? or switch)
 	strcpy(heurString[min], hStrings[atoi(argv[i])-1]);
@@ -136,28 +137,28 @@ int main(int argc, char* argv[]) {
     }
 
     else if OPTION("-c1") {
-      CHECK(max, (UCT | MINMAX_ON_UCT | MMUCT | BFB), "-c1")
+      CHECK(max, (UCT | MINMAX_ON_UCT | MMUCT), "-c1")
       if (++i < argc)
 	C[max] = atof(argv[i]);
       else
 	MISSING("c1")
     }
     else if OPTION("-c2") {
-      CHECK(min, (UCT | MINMAX_ON_UCT | MMUCT | BFB), "-c2")
+      CHECK(min, (UCT | MINMAX_ON_UCT | MMUCT), "-c2")
       if (++i < argc)
 	C[min] = atof(argv[i]);
       else
 	MISSING("c2")
     }
     else if OPTION("-i1") {
-      CHECK(max, (UCT | MINMAX_ON_UCT| MMUCT | BFB), "-i1")
+      CHECK(max, (UCT | MINMAX_ON_UCT| MMUCT), "-i1")
       if (++i < argc)
 	numIterations[max] = atoi(argv[i]);
       else
 	MISSING("i1")
     }
     else if OPTION("-i2") {
-      CHECK(min, (UCT | MINMAX_ON_UCT | MMUCT | BFB), "-i2")
+      CHECK(min, (UCT | MINMAX_ON_UCT | MMUCT), "-i2")
       if (++i < argc)
 	numIterations[min] = atoi(argv[i]);
       else
@@ -178,14 +179,14 @@ int main(int argc, char* argv[]) {
 	MISSING("b2")
     }
     else if OPTION("-a1") {
-      CHECK(max, (UCT | BFB), "-a1")
+      CHECK(max, UCT, "-a1")
       if (++i < argc)
         backupOp[max] = atoi(argv[i]) - 1;
       else
         MISSING("a1")
     }
     else if OPTION("-a2") {
-      CHECK(min, (UCT | BFB), "-a2")
+      CHECK(min, UCT, "-a2")
       if (++i < argc)
         backupOp[min] = atoi(argv[i]) - 1;
       else
@@ -195,36 +196,6 @@ int main(int argc, char* argv[]) {
       verbose = true;
     }
 
-    else if OPTION("-ts1") {
-      CHECK(max, BFB, "-ts1")
-      if (++i < argc)
-	type_system[max] = init_type_system(atoi(argv[i]));
-      else
-	MISSING("ts1")
-    }
-    else if OPTION("-ts2") {
-      CHECK(min, BFB, "-ts2")
-      if (++i < argc)
-	type_system[min] = init_type_system(atoi(argv[i]));
-      else
-	MISSING("ts2")
-    }
-    else if OPTION("-t1") {
-      CHECK(max, BFB, "-t1")
-      if (++i < argc)
-	threshold[max] = atoi(argv[i]);
-      else
-	MISSING("t1")
-    }
-    else if OPTION("-t2") {
-      CHECK(min, BFB, "-t2")
-      if (++i < argc)
-	threshold[min] = atoi(argv[i]);
-      else
-	MISSING("t2")
-    }
-    
-    
     else if OPTION("-l") {
       if (++i < argc) {
         strcpy(boardFileName, argv[i]);
@@ -308,14 +279,7 @@ int main(int argc, char* argv[]) {
     }
     else if (player[i] == UCT) {
       printf("Player %d (%s) --- UCT, C %.3f, Num iterations %d, with %s backups, using %s", i, playerStrings[i],
-	     C[i], numIterations[i], backupOpStrings[backupOp[i]], heurString[i]);
-      if ((heuristic[i] == _DOM->hFunctions.h3) || (heuristic[i] == _DOM->hFunctions.h6))
-	printf(" (budget = %d)\n", budget[i]);
-      else
-	printf("\n");
-    } else if (player[i] == BFB) {
-      printf("Player %d (%s) --- BFB, C %.3f, Num iterations %d, with %s backups, using %s", i, playerStrings[i],
-	     C[i], numIterations[i], backupOpStrings[backupOp[i]], heurString[i]);
+	     C[i], numIterations[i], backupOpStrings[i], heurString[i]);
       if ((heuristic[i] == _DOM->hFunctions.h3) || (heuristic[i] == _DOM->hFunctions.h6))
 	printf(" (budget = %d)\n", budget[i]);
       else
@@ -357,9 +321,6 @@ int main(int argc, char* argv[]) {
 			break;
 		case MINMAX:
 			moveMade = makeMinmaxMove(state, &side,depth[side],heuristic[side],budget[side],randomTieBreaks,noisyMM,bestMoves,&numBestMoves, &termPercentage);
-			break;
-		case BFB:
-			moveMade = makeBFBMove(state, &side, type_system[side], numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, backupOp[side], threshold[side]);
 			break;
 		default:
 			puts("Unknown algorithm\n");
@@ -417,8 +378,6 @@ int main(int argc, char* argv[]) {
       swapInts(&mmTreeSize[max], &mmTreeSize[min]);
       swapDbls(&C[max], &C[min]);
       swapPtrs((void**)&heuristic[max], (void**)&heuristic[min]);
-      swapPtrs((void**)&type_system[max], (void**)&type_system[min]);
-      swapInts(&threshold[max], &threshold[min]);
     }
 
     printf("\n");
@@ -488,7 +447,7 @@ static int printMessage(){
    puts("-i1/i2 <n>:    Sets number of iterations of UCT for player 1/2. The special value of 0 makes the UCT player match it's");
    puts("               number of iterations to the number of nodes that its opponent minimax player would expand. Default = 5000.");
    puts("-b1/b2 <n>:    Sets playout budget for player 1/2. Specified number of playouts are performed at each leaf node. Default = 1.");
-   puts("-a1/a2 <n>:    Back-up operator to be used for UCT player 1/2. Values = 1 (average), 2 (minimax), 3 (semimax). Default = 2.");
+   puts("-a1/a2 <n>:    Back-up operator to be used for UCT player 1/2. Values = 1 (average), 2 (minimax), 3 (semimax). Default = 1.");
    puts("-n:            Makes minimax player noisy (disabled by default)");
    puts("-r:            Enables random tie-breaking for minimax player (disabled by default)");
    puts("-s <n>:        Sets seed of random number generator to n. By default, seeded with system noise.");

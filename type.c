@@ -363,14 +363,14 @@ static int selectMove(treeNode* node) {
   int numBestMoves = 0;
   double bestScore;
   int bestMoves[_DOM->getNumOfChildren()];
-  int C = 2.5; //TODO
+  int C = 0.5; //TODO
   // The multiplier is used to set the sign of the exploration bonus term (should be negative
   // for the min player and positive for the max player) i.e. so that we correctly compute
   // an upper confidence bound for Max and a lower confidence bound for Min
   double multiplier = (node->side == max) ? 1 : -1;
 
   for (i = 1; i < _DOM->getNumOfChildren(); i++) { // iterate over all children
-    if (!node->children[i]) // if the i^th move is illegal, skip it
+    if (!_DOM->isValidChild(node->rep, node->side, i)) // if the i^th move is illegal, skip it
       continue;
 
     // If the i^th child has never been visited before, select it first, before any other children are revisited
@@ -431,7 +431,7 @@ static treeNode *selectFromType_sts(type *t) {
   return node;
 }
 
-void *init_type_system(int t) {
+void *init_type(int t) {
   type_system *ts = calloc(1, sizeof(type_system));
   
   switch (t) {

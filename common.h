@@ -137,7 +137,6 @@ int makeBFBMove(rep_t rep, int *side, void *void_ts, int numIterations, double C
 		int* bestMoves, int* numBestMoves, int backupOp, int threshold);
 
 //Type system (type.c)
-void *init_type_system(int t);
 void destroyTypeSystem(void *void_ts);
 
 #endif //__COMMON__H__

@@ -105,7 +105,7 @@ static void bfbIteration(type_system *ts, int visits, double C, heuristics_t heu
     
     node->children[i] = calloc(1, sizeof(treeNode));
     node->children[i]->children = calloc(_DOM->getNumOfChildren(), sizeof(treeNode*));
-    node->children[i]->rep = _DOM->cloneRep(node->rep); // copy over the current board to child
+    node->rep = _DOM->cloneRep(node->children[i]->rep); // copy over the current board to child
     node->children[i]->side = node->side; // copy over the current side on move to child
     _DOM->makeMove(node->children[i]->rep, &(node->children[i]->side), i); //Make the i-th move
     node->children[i]->parent = node; //save parent
