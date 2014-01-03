@@ -32,7 +32,7 @@
 // Note that MINMAX is already defined above as 1, so we'll just use that
 
 // Game parameters
-#define NUM_PITS 6 // affects branching factor
+#define NUM_PITS 4 // affects branching factor
 #define SHELLS_PER_PIT 4 // affects depth of tree
 
 // Useful constants to index into arrays. For example, can use heuristic[max] to refer to the heuristic
@@ -77,15 +77,18 @@ extern int verbose; // sets whether output is verbose (defined in file with main
 /* Function prototypes */
 // Board-related routines (board.c)
 void initBoard(int board[2][NUM_PITS+1], int* side);
-void genRandomBoard(int board[2][NUM_PITS+1], int* side, int depth);
+//void genRandomBoard(int board[2][NUM_PITS+1], int* side, int depth);
+void genRandomBoard(int **board, int* side, int depth);
 void cloneBoard(int srcBoard[2][NUM_PITS+1] , int dstBoard[2][NUM_PITS+1]);
 int readBoard(char* fileName, int board[2][NUM_PITS+1], int* side, short mode);
 void writeBoard(char* fileName, int board[2][NUM_PITS+1], int side, short mode);
 int isEqual(int board1[2][NUM_PITS+1], int board2[2][NUM_PITS+1]);
-void printBoard(int board[2][NUM_PITS+1], int side);
+//void printBoard(int board[2][NUM_PITS+1], int side);
+void printBoard(int **board, int side);
 
 // Game-rules related routines (move.c)
-int getGameStatus(int board[2][NUM_PITS+1]);
+//int getGameStatus(int board[2][NUM_PITS+1]);
+int getGameStatus(int **board);
 void makeMove(int board[2][NUM_PITS+1] , int* side, int move);
 int getNumLegalMoves(int board[2][NUM_PITS+1], int side);
 

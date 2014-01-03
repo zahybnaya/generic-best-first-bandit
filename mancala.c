@@ -40,8 +40,9 @@ int isValidChild_mancala(rep_t rep, int side, int move){
 int getGameStatus_mancala(rep_t rep){
 
     int ** board = rep;
-    TO_REGULAR_ARR(board);
-    return getGameStatus(__board);
+    //TO_REGULAR_ARR(board);
+    //return getGameStatus(__board);
+    return getGameStatus(board);
 }
 
 
@@ -74,11 +75,17 @@ rep_t cloneRep_mancala(rep_t orig){
 /*
 * Write random state to rep
 */
-void generateRandomStart_mancala(rep_t rep,int side){
+void generateRandomStart_mancala(rep_t rep, int side){
     int** board = rep;
     int dummy[2][NUM_PITS+1];
-    genRandomBoard(dummy, &side, 0);
-    COPY_ARR(dummy,board);
+    genRandomBoard(board, &side, 0);
+    //COPY_ARR(dummy,board);
+    
+    //printf("sizeof board %d sizeof dummy %d\n", sizeof(board), sizeof(dummy));
+    
+    printf("board add %p %p\n", board[0], board[1]);
+    printBoard(board, side);
+	  fflush(stdout);
 }
 
 /**
@@ -95,10 +102,10 @@ void copy_mancala (rep_t src,rep_t dst){
   Allocate a new mancala board
 */
 rep_t allocate_mancala(){
-    int ** board = (int**)malloc(sizeof(int*)*2);
+    int ** board = (int**)calloc(2, sizeof(int *));
     int i;
     for(i=0;i<2;i++){
-        board[i]= (int*)malloc(sizeof(int)*(NUM_PITS+1));
+        board[i]= (int*)calloc(NUM_PITS + 1, sizeof(int));
     }
     return board;
 }

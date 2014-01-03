@@ -59,7 +59,7 @@ int getNumLegalMoves(int board[2][NUM_PITS+1], int side) {
 
 /* Returns the current status of the board -- a value from the set {MAX_WINS, DRAW, MIN_WINS,
    INCOMPLETE} */
-int getGameStatus(int board[2][NUM_PITS+1]) {
+int getGameStatus(int **board) {
   int i, j;
   int gameOver = true;
   int maxScore, minScore;
