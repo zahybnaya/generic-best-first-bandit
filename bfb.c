@@ -11,7 +11,7 @@ static void freeTree(treeNode* node) {
       node->children[i] = NULL;
     }
   }
-
+  _DOM->destructRep(node->rep);
   free(node->children);
   free(node);
 }
