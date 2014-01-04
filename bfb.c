@@ -33,7 +33,7 @@ static void bfbIteration(type_system *ts, int visits, double C, heuristics_t heu
   
   type *t = ts->types[typeId];
   
-  treeNode *node = ts->selectFromType(t);
+  treeNode *node = ts->selectFromType(t, C);
 
   double ret;
   int gameOver = 0;

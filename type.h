@@ -41,7 +41,7 @@ typedef struct {
 
 typedef void (*assignToType_func)(void *void_ts, treeNode *node, int fatherType, int threshold);
 typedef int (*selectType_func)(void *void_ts, double C, int visits, int side);
-typedef treeNode *(*selectFromType_func)(type *t);
+typedef treeNode *(*selectFromType_func)(type *t, double C);
 typedef void (*furtherInit_func)(void *void_ts, rep_t rep, int side);
 
 typedef struct {

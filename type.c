@@ -28,7 +28,7 @@ void destroyTypeSystem(void *void_ts) {
   free(ts->extra);
 }
 
-static treeNode *selectFromType_mmOracle(type *t) {
+static treeNode *selectFromType_mmOracle(type *t, double C) {
   int i;
   /*
   //Choose random node from type, take it out, update type->empty
@@ -356,14 +356,14 @@ static int selectType_sts(void *void_ts, double C, int visits, int side) {
   return bestTypes[random() % numBestTypes];
 }
 
-static int selectMove(treeNode* node) {
+static int selectMove(treeNode* node, double C) {
   int i;
   double qhat;
   double score;
   int numBestMoves = 0;
   double bestScore;
   int bestMoves[_DOM->getNumOfChildren()];
-  int C = 0.5; //TODO
+
   // The multiplier is used to set the sign of the exploration bonus term (should be negative
   // for the min player and positive for the max player) i.e. so that we correctly compute
   // an upper confidence bound for Max and a lower confidence bound for Min
@@ -402,12 +402,12 @@ static int selectMove(treeNode* node) {
   return bestMoves[0];
 }
 
-static treeNode *selectFromType_sts(type *t) {
+static treeNode *selectFromType_sts(type *t, double C) {
   treeNode *node = t->openList[0];
   
   //travel down the tree using ucb
   while (_DOM->getGameStatus(node->rep) == INCOMPLETE && node->n > 0)
-    node = node->children[selectMove(node)];
+    node = node->children[selectMove(node, C)];
  
   return node;
 }
