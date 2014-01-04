@@ -194,60 +194,6 @@ static void assignToType_mmOracle(void *void_ts, treeNode *node, int fatherType,
   t->size++;
 }
 
-/* Invoked by bfbIteration to decide which type of node should be expanded */
-static int selectType_mmOracle(void *void_ts, double C, int visits, int side) {
-  type_system *ts = (type_system *)void_ts;
-  int i;
-  double qhat;
-  double score;
-  int numBestTypes = 0;
-  double bestScore;
-  int bestTypes[ts->numTypes];
-
-  // The multiplier is used to set the sign of the exploration bonus term (should be negative
-  // for the min player and positive for the max player) i.e. so that we correctly compute
-  // an upper confidence bound for Max and a lower confidence bound for Min
-  double multiplier = (side == max) ? 1 : -1;
-  
-  for (i = 0; i < ts->numTypes; i++) { // iterate over all types
-    if (ts->types[i]->size == 0) // if no nodes in type continue
-      continue;
-
-    //If the type has never been visited before, select it first
-    if (ts->types[i]->visits == 0)
-      return i;
-
-    // Otherwise, compute this type's UCB1 index (will be used to pick best type if it transpires that all
-    // types have been visited at least once)
-    qhat = ts->types[i]->scoreSum / (double)ts->types[i]->visits;  // exploitation component (this is the average utility)
-    score = qhat + (multiplier * C) * sqrt(log(visits) / (double)ts->types[i]->visits); // add exploration component
-    
-    // Negamax formulation -- since min(s1,s2,...) = -max(-s1,-s2,...), negating the indices when it
-    // is min's turn means we can always just take the maximum
-    score = (side == min) ? -score : score;
-
-    // If this is either the first type, or the best scoring type, store it
-    if ((numBestTypes == 0) || (score > bestScore)) {
-      bestTypes[0] = i;
-      bestScore = score;
-      numBestTypes = 1;
-    }
-    else if (score == bestScore) // if this child ties with the best scoring type, store it
-      bestTypes[numBestTypes++] = i;
-    
-  }
-
-  //Return the next type to explore (break ties randomly)
-  if (numBestTypes == 0)
-    return -1; //Open lists are all empty
-    
-  //if min player, return the lowest minimax type
-  if (side == min)
-    return bestTypes[0];
-  return bestTypes[numBestTypes - 1];
-  //return ts->types[bestTypes[random() % numBestTypes]];
-}
-
 void furtherInit_mmOracle(void *void_ts, rep_t rep, int side) {
   int i;
   type_system *ts = (type_system *)void_ts;
@@ -313,49 +259,6 @@ static void assignToType_sts(void *void_ts, treeNode *node, int fatherType, int 
   } 
 }
 
-//Notice that the minimax/score sum value of a type is that of the root of that type
-static int selectType_sts(void *void_ts, double C, int visits, int side) {
-  type_system *ts = (type_system *)void_ts;
-  int i;
-  double qhat;
-  double score;
-  int numBestTypes = 0;
-  double bestScore;
-  int bestTypes[ts->numTypes];
-  
-  // The multiplier is used to set the sign of the exploration bonus term (should be negative
-  // for the min player and positive for the max player) i.e. so that we correctly compute
-  // an upper confidence bound for Max and a lower confidence bound for Min
-  double multiplier = (side == max) ? 1 : -1;
-
-  for (i = 0; i < ts->numTypes; i++) { // iterate over all types
-    //If the type has never been visited before, select it first
-    if (ts->types[i]->openList[0]->n == 0)
-      return i;
-
-    // Otherwise, compute this type's UCB1 index (will be used to pick best type if it transpires that all
-    // types have been visited at least once)
-    qhat = ts->types[i]->openList[0]->scoreSum / (double)ts->types[i]->openList[0]->n;  // exploitation component (this is the average utility or minimax value)
-    score = qhat + (multiplier * C) * sqrt(log(visits) / (double)ts->types[i]->openList[0]->n); // add exploration component
-    
-    // Negamax formulation -- since min(s1,s2,...) = -max(-s1,-s2,...), negating the indices when it
-    // is min's turn means we can always just take the maximum
-    score = (side == min) ? -score : score;
-    
-    // If this is either the first child, or the best scoring child, store it
-    if ((numBestTypes == 0) || (score > bestScore)) {
-      bestTypes[0] = i;
-      bestScore = score;
-      numBestTypes = 1;
-    }
-    else if (score == bestScore) // if this child ties with the best scoring child, store it
-      bestTypes[numBestTypes++] = i;
-  }
-  
-  // Return the next type to explore (break ties randomly)
-  return bestTypes[random() % numBestTypes];
-}
-
 static int selectMove(treeNode* node, double C) {
   int i;
   double qhat;
@@ -419,13 +322,11 @@ void *init_type_system(int t) {
     case MM_ORACLE:      
       ts->furtherInit = furtherInit_mmOracle;
       ts->assignToType = assignToType_mmOracle;
-      ts->selectType = selectType_mmOracle;
       ts->selectFromType = selectFromType_mmOracle;
       break;
     case STS:
       ts->furtherInit = furtherInit_sts;
       ts->assignToType = assignToType_sts;
-      ts->selectType = selectType_sts;
       ts->selectFromType = selectFromType_sts;
       break;
   }

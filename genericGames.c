@@ -166,14 +166,14 @@ int main(int argc, char* argv[]) {
     
     
     else if OPTION("-c1") {
-      CHECK(max, (UCT | MINMAX_ON_UCT | MMUCT), "-c1")
+      CHECK(max, (UCT | MINMAX_ON_UCT | MMUCT | BFB), "-c1")
       if (++i < argc)
 	C[max] = atof(argv[i]);
       else
 	MISSING("c1")
     }
     else if OPTION("-c2") {
-      CHECK(min, (UCT | MINMAX_ON_UCT | MMUCT), "-c2")
+      CHECK(min, (UCT | MINMAX_ON_UCT | MMUCT | BFB), "-c2")
       if (++i < argc)
 	C[min] = atof(argv[i]);
       else
@@ -308,7 +308,15 @@ int main(int argc, char* argv[]) {
     }
     else if (player[i] == UCT) {
       printf("Player %d (%s) --- UCT, C %.3f, Num iterations %d, with %s backups, using %s", i, playerStrings[i],
-	     C[i], numIterations[i], backupOpStrings[i], heurString[i]);
+	     C[i], numIterations[i], backupOpStrings[backupOp[i]], heurString[i]);
+      if ((heuristic[i] == _DOM->hFunctions.h3) || (heuristic[i] == _DOM->hFunctions.h6))
+	printf(" (budget = %d)\n", budget[i]);
+      else
+	printf("\n");
+    }
+    else if (player[i] == BFB) {
+      printf("Player %d (%s) --- BFB, C %.3f, Num iterations %d, with %s backups, using %s", i, playerStrings[i],
+	     C[i], numIterations[i], backupOpStrings[backupOp[i]], heurString[i]);
       if ((heuristic[i] == _DOM->hFunctions.h3) || (heuristic[i] == _DOM->hFunctions.h6))
 	printf(" (budget = %d)\n", budget[i]);
       else
@@ -320,9 +328,10 @@ int main(int argc, char* argv[]) {
   // If we are adding noise to h1, set that up now
   if (noisyHeuristic)
     setNoiseParams(noiseMag, noiseProb);
-    rep_t state, randState;
-    state = _DOM->allocate();
-    randState = _DOM->allocate();
+  
+  rep_t state, randState;
+  state = _DOM->allocate();
+  randState = _DOM->allocate();
 
   /* Loops until end of games*/
   while (1) {
@@ -332,7 +341,8 @@ int main(int argc, char* argv[]) {
     }
     // Store start board, so that we can restore it when we switch player sides
     _DOM->copy(state,randState);
-    rootSide = max;
+    
+rootSide = max;
     int _outcome;
     for (j = 0; j <= 1 ; j++) {
       moveCount = 0; // reset move count

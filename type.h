@@ -40,7 +40,6 @@ typedef struct {
 } type;
 
 typedef void (*assignToType_func)(void *void_ts, treeNode *node, int fatherType, int threshold);
-typedef int (*selectType_func)(void *void_ts, double C, int visits, int side);
 typedef treeNode *(*selectFromType_func)(type *t, double C);
 typedef void (*furtherInit_func)(void *void_ts, rep_t rep, int side);
 
@@ -52,7 +51,6 @@ typedef struct {
   
   furtherInit_func furtherInit;
   assignToType_func assignToType;
-  selectType_func selectType;
   selectFromType_func selectFromType;
 } type_system;
 

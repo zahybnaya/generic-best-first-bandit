@@ -16,6 +16,49 @@ static void freeTree(treeNode* node) {
   free(node);
 }
 
+//Invoked by bfbIteration to select a type out of the type system based on UCB1
+static int selectType(void *void_ts, double C, int visits, int side) {
+  type_system *ts = (type_system *)void_ts;
+  int i;
+  double qhat;
+  double score;
+  int numBestTypes = 0;
+  double bestScore;
+  int bestTypes[ts->numTypes];
+  
+  // The multiplier is used to set the sign of the exploration bonus term (should be negative
+  // for the min player and positive for the max player) i.e. so that we correctly compute
+  // an upper confidence bound for Max and a lower confidence bound for Min
+  double multiplier = (side == max) ? 1 : -1;
+
+  for (i = 0; i < ts->numTypes; i++) { // iterate over all types
+    //If the type has never been visited before, select it first
+    if (ts->types[i]->openList[0]->n == 0)
+      return i;
+
+    // Otherwise, compute this type's UCB1 index (will be used to pick best type if it transpires that all
+    // types have been visited at least once)
+    qhat = ts->types[i]->openList[0]->scoreSum / (double)ts->types[i]->openList[0]->n;  // exploitation component (this is the average utility or minimax value)
+    score = qhat + (multiplier * C) * sqrt(log(visits) / (double)ts->types[i]->openList[0]->n); // add exploration component
+    
+    // Negamax formulation -- since min(s1,s2,...) = -max(-s1,-s2,...), negating the indices when it
+    // is min's turn means we can always just take the maximum
+    score = (side == min) ? -score : score;
+    
+    // If this is either the first child, or the best scoring child, store it
+    if ((numBestTypes == 0) || (score > bestScore)) {
+      bestTypes[0] = i;
+      bestScore = score;
+      numBestTypes = 1;
+    }
+    else if (score == bestScore) // if this child ties with the best scoring child, store it
+      bestTypes[numBestTypes++] = i;
+  }
+  
+  // Return the next type to explore (break ties randomly)
+  return bestTypes[random() % numBestTypes];
+}
+
 //TODO: change the way you handle empty open lists - should stop the main iteration loop and also maybe should not be returned from here or from select type
 //An iteration of BFB:
 //select the best type
@@ -26,7 +69,7 @@ static void bfbIteration(type_system *ts, int visits, double C, heuristics_t heu
   int i;
   
   //Choose type and node from the chosen type
-  int typeId = ts->selectType(ts, C, visits, side);
+  int typeId = selectType(ts, C, visits, side);
   
   if (typeId == -1)  //Open lists are all empty
     return;
