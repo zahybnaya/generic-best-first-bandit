@@ -33,13 +33,13 @@ static int selectType(void *void_ts, double C, int visits, int side) {
 
   for (i = 0; i < ts->numTypes; i++) { // iterate over all types
     //If the type has never been visited before, select it first
-    if (ts->types[i]->openList[0]->n == 0)
+    if (ts->types[i]->visits == 0)
       return i;
 
     // Otherwise, compute this type's UCB1 index (will be used to pick best type if it transpires that all
     // types have been visited at least once)
-    qhat = ts->types[i]->openList[0]->scoreSum / (double)ts->types[i]->openList[0]->n;  // exploitation component (this is the average utility or minimax value)
-    score = qhat + (multiplier * C) * sqrt(log(visits) / (double)ts->types[i]->openList[0]->n); // add exploration component
+    qhat = ts->types[i]->scoreSum / (double)ts->types[i]->visits;  // exploitation component (this is the average utility or minimax value)
+    score = qhat + (multiplier * C) * sqrt(log(visits) / (double)ts->types[i]->visits); // add exploration component
     
     // Negamax formulation -- since min(s1,s2,...) = -max(-s1,-s2,...), negating the indices when it
     // is min's turn means we can always just take the maximum
@@ -238,7 +238,7 @@ int makeBFBMove(rep_t rep, int *side, void *void_ts, int numIterations, double C
 
   // Clean up before returning
   freeTree(rootNode);
-  destroyTypeSystem(ts);
+  ts->destroy(ts);
   
   return bestMove;
 }

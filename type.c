@@ -6,36 +6,26 @@
 
 static int mysteryNodes = 0;
 
-//free type system
-void destroyTypeSystem(void *void_ts) {
+static void destroy_mmOracle(void *void_ts) {
   int i;
   type_system *ts = (type_system *)void_ts;
   
   for (i = 0; i < ts->numTypes; i++) {
-    free(ts->types[i]->openList);
+    free(((type_mmOracle *)ts->types[i])->openList);
     free(ts->types[i]);
   }
   
   free(ts->types);
 
-  switch (ts->name) {
-    case MM_ORACLE:
-      close(*(int *)(ts->extra));
-      remove(ORACLE_PATH);
-      break;
-  }
-  
+  //Clode and free the minmax lookup file
+  close(*(int *)(ts->extra));
+  remove(ORACLE_PATH);
   free(ts->extra);
 }
 
-static treeNode *selectFromType_mmOracle(type *t, double C) {
+static treeNode *selectFromType_mmOracle(void *void_t, double C) {
   int i;
-  /*
-  //Choose random node from type, take it out, update type->empty
-  int randomIndex = random() % t->tail;
-  printf("randomIdex %d\n", randomIndex);
-  treeNode *node = t->openList[randomIndex];
-  t->empty = randomIndex;*/
+  type_mmOracle *t = (type_mmOracle *)void_t;
   
   //Choose lowest depth node
   treeNode *node;
@@ -175,12 +165,12 @@ static void assignToType_mmOracle(void *void_ts, treeNode *node, int fatherType,
 
   mmVal = mmVal + MAX_WINS; //Shift possible mm values to natural numbers so they can be used as an index into the type system.
 
-  type *t = ts->types[mmVal];
+  type_mmOracle *t = (type_mmOracle *)ts->types[mmVal];
 
   //if the open list of this type is full,
   //allocate a new open list for it and copy the new one into it.
   if (t->tail == t->capacity) {
-    t->capacity = 2 * (t->capacity + 1); //TODO maybe init types before hand and set capacity
+    t->capacity = 2 * (t->capacity + 1);
     t->openList = realloc(t->openList, t->capacity * sizeof(treeNode *));
   }
   
@@ -199,11 +189,11 @@ void furtherInit_mmOracle(void *void_ts, rep_t rep, int side) {
   type_system *ts = (type_system *)void_ts;
   
   ts->numTypes = MAX_WINS * 2 + 1; //Number of possible minmax values
-  ts->types = calloc(ts->numTypes, sizeof(type *));
+  ts->types = calloc(ts->numTypes, sizeof(type_mmOracle *));
       
   for (i = 0; i < ts->numTypes; i++) {
-     ts->types[i] = calloc(1, sizeof(type));
-     ts->types[i]->empty = -1;
+     ts->types[i] = calloc(1, sizeof(type_mmOracle));
+     ((type_mmOracle *)ts->types[i])->empty = -1;
   }
       
   ts->extra = calloc(1, sizeof(int));
@@ -215,45 +205,42 @@ void furtherInit_sts(void *void_ts, rep_t rep, int side) {
   type_system *ts = (type_system *)void_ts;
   
   ts->numTypes = 1;
-  ts->types = calloc(ts->numTypes, sizeof(type *));
-  ts->types[0] = calloc(1, sizeof(type));
+  ts->types = calloc(ts->numTypes, sizeof(type_sts *));
+  ts->types[0] = calloc(1, sizeof(type_sts));
 }
 
 static void assignToType_sts(void *void_ts, treeNode *node, int fatherType, int threshold) {
   type_system *ts = (type_system *)void_ts;
   int i;
   
-  if (fatherType == -1) { //no father means root node
-    ts->types[0]->openList = calloc(1, sizeof(treeNode *));
-    ts->types[0]->openList[0] = node;
-  } else {
-    type *t = ts->types[fatherType];
-    treeNode *root = t->openList[0];
+  if (fatherType == -1) //no father means root node
+    ((type_sts *)ts->types[0])->root = node;
+  else {
+    type_sts *t = (type_sts *)ts->types[fatherType];
     
     //The size of a type is the size of the subtree rooted at the node representing the type
     //which is updated at the expansion phase, so only need to take care of splitting types
-    if (root->subtreeSize > threshold) {
+    if (t->root->subtreeSize > threshold) {
       //In order to stay consistent with the type to insert into all current children, find out who of the children of the root of the type
       //is the ancestor of the current node to be inserted.
       //This ancestor will become the root of a new type which will be in the same index as the old type.
       treeNode *newFather = node;
-      while (newFather->parent != root)
+      while (newFather->parent != t->root)
 	newFather = newFather->parent;
       
       for (i = 1; i < _DOM->getNumOfChildren(); i++) {
-	if (!_DOM->isValidChild(root->rep, root->side, i) || root->children[i] == newFather) //skip empty children or this is the new father (will be taken care of later)
+	if (!_DOM->isValidChild(t->root->rep, t->root->side, i) || t->root->children[i] == newFather) //skip empty children or this is the new father (will be taken care of later)
 	  continue;
 	
 	ts->numTypes++;
-	ts->types = realloc(ts->types, ts->numTypes * sizeof(type *)); //alocate a new type
+	ts->types = realloc(ts->types, ts->numTypes * sizeof(type_sts *)); //alocate a new type
 	
-	ts->types[ts->numTypes - 1] = calloc(1, sizeof(type));
-	ts->types[ts->numTypes - 1]->openList = calloc(1, sizeof(treeNode *));
-	ts->types[ts->numTypes - 1]->openList[0] = root->children[i];
-	ts->types[ts->numTypes - 1]->visits = root->children[i]->n;
+	ts->types[ts->numTypes - 1] = calloc(1, sizeof(type_sts));
+	((type_sts *)ts->types[ts->numTypes - 1])->root = t->root->children[i];
+	ts->types[ts->numTypes - 1]->visits = t->root->children[i]->n;
       }
       
-      t->openList[0] = node;
+      t->root = node;
       t->visits = node->n;
     }
   } 
@@ -297,22 +284,25 @@ static int selectMove(treeNode* node, double C) {
     }
     else if (score == bestScore) // if this child ties with the best scoring child, store it
       bestMoves[numBestMoves++] = i;
-      //printf("Added a best move: %d\n",i);
   }
-  // Return the next child to explore (break ties randomly)
-  //int chosenBestMove = bestMoves[random() % numBestMoves];
 
   return bestMoves[0];
 }
 
-static treeNode *selectFromType_sts(type *t, double C) {
-  treeNode *node = t->openList[0];
+static treeNode *selectFromType_sts(void *void_t, double C) {
+  type_sts *t = (type_sts *)void_t;
+  treeNode *node = t->root;
   
   //travel down the tree using ucb
   while (_DOM->getGameStatus(node->rep) == INCOMPLETE && node->n > 0)
     node = node->children[selectMove(node, C)];
  
   return node;
+}
+
+static void destroy_sts(void *void_ts) {
+  type_system *ts = (type_system *)void_ts;
+  free(ts->types);
 }
 
 void *init_type_system(int t) {
@@ -323,11 +313,13 @@ void *init_type_system(int t) {
       ts->furtherInit = furtherInit_mmOracle;
       ts->assignToType = assignToType_mmOracle;
       ts->selectFromType = selectFromType_mmOracle;
+      ts->destroy = destroy_mmOracle;
       break;
     case STS:
       ts->furtherInit = furtherInit_sts;
       ts->assignToType = assignToType_sts;
       ts->selectFromType = selectFromType_sts;
+      ts->destroy = destroy_sts;
       break;
   }
   return ts;
