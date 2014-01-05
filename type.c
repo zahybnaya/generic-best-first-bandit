@@ -184,31 +184,6 @@ static void assignToType_mmOracle(void *void_ts, treeNode *node, int fatherType,
   t->size++;
 }
 
-void furtherInit_mmOracle(void *void_ts, rep_t rep, int side) {
-  int i;
-  type_system *ts = (type_system *)void_ts;
-  
-  ts->numTypes = MAX_WINS * 2 + 1; //Number of possible minmax values
-  ts->types = calloc(ts->numTypes, sizeof(type_mmOracle *));
-      
-  for (i = 0; i < ts->numTypes; i++) {
-     ts->types[i] = calloc(1, sizeof(type_mmOracle));
-     ((type_mmOracle *)ts->types[i])->empty = -1;
-  }
-      
-  ts->extra = calloc(1, sizeof(int));
-  *(int *)(ts->extra) = open(ORACLE_PATH, O_CREAT | O_TRUNC | O_RDWR, S_IRWXU);
-  storeMinimax(*(int *)(ts->extra), rep, 0, ORACLE_DEPTH, side, ORACLE_H, 0); 
-}
-
-void furtherInit_sts(void *void_ts, rep_t rep, int side) {
-  type_system *ts = (type_system *)void_ts;
-  
-  ts->numTypes = 1;
-  ts->types = calloc(ts->numTypes, sizeof(type_sts *));
-  ts->types[0] = calloc(1, sizeof(type_sts));
-}
-
 static void assignToType_sts(void *void_ts, treeNode *node, int fatherType, int threshold) {
   type_system *ts = (type_system *)void_ts;
   int i;
@@ -246,7 +221,9 @@ static void assignToType_sts(void *void_ts, treeNode *node, int fatherType, int 
   } 
 }
 
-static int selectMove(treeNode* node, double C) {
+//TODO merge with select move of uct.c
+//Select a child of a uct node based on ucb1
+int selectMove(treeNode* node, double C) {
   int i;
   double qhat;
   double score;
@@ -305,21 +282,38 @@ static void destroy_sts(void *void_ts) {
   free(ts->types);
 }
 
-void *init_type_system(int t) {
+void *init_type_system(int t, rep_t rep, int side) {
   type_system *ts = calloc(1, sizeof(type_system));
   
   switch (t) {
-    case MM_ORACLE:      
-      ts->furtherInit = furtherInit_mmOracle;
+    case MM_ORACLE:     
+      ts->name = MM_ORACLE;
       ts->assignToType = assignToType_mmOracle;
       ts->selectFromType = selectFromType_mmOracle;
       ts->destroy = destroy_mmOracle;
+      
+      ts->numTypes = MAX_WINS * 2 + 1; //Number of possible minmax values
+      ts->types = calloc(ts->numTypes, sizeof(type_mmOracle *));
+      
+      int i;
+      for (i = 0; i < ts->numTypes; i++) {
+	ts->types[i] = calloc(1, sizeof(type_mmOracle));
+	((type_mmOracle *)ts->types[i])->empty = -1;
+      }
+      
+      ts->extra = calloc(1, sizeof(int));
+      *(int *)(ts->extra) = open(ORACLE_PATH, O_CREAT | O_TRUNC | O_RDWR, S_IRWXU);
+      storeMinimax(*(int *)(ts->extra), rep, 0, ORACLE_DEPTH, side, ORACLE_H, 0);
       break;
     case STS:
-      ts->furtherInit = furtherInit_sts;
+      ts->name = STS;
       ts->assignToType = assignToType_sts;
       ts->selectFromType = selectFromType_sts;
       ts->destroy = destroy_sts;
+      
+      ts->numTypes = 1;
+      ts->types = calloc(ts->numTypes, sizeof(type_sts *));
+      ts->types[0] = calloc(1, sizeof(type_sts));
       break;
   }
   return ts;

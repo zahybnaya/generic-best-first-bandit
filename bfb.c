@@ -16,6 +16,15 @@ static void freeTree(treeNode* node) {
   free(node);
 }
 
+static void freeTypeSystems(type_system **type_systems) {
+  int i;
+  for (i = 1; i < _DOM->getNumOfChildren(); i++)
+    if (type_systems[i])
+      type_systems[i]->destroy(type_systems[i]);
+    
+  free(type_systems);
+}
+
 //Invoked by bfbIteration to select a type out of the type system based on UCB1
 static int selectType(void *void_ts, double C, int visits, int side) {
   type_system *ts = (type_system *)void_ts;
@@ -57,6 +66,18 @@ static int selectType(void *void_ts, double C, int visits, int side) {
   
   // Return the next type to explore (break ties randomly)
   return bestTypes[random() % numBestTypes];
+}
+
+//Generate the i'th child of a uct node
+static void generateChild(treeNode *node, int i) {
+  node->children[i] = calloc(1, sizeof(treeNode));
+  node->children[i]->children = calloc(_DOM->getNumOfChildren(), sizeof(treeNode*));
+  node->children[i]->rep = _DOM->cloneRep(node->rep); // copy over the current board to child
+  node->children[i]->side = node->side; // copy over the current side on move to child
+  _DOM->makeMove(node->children[i]->rep, &(node->children[i]->side), i); //Make the i-th move
+  node->children[i]->parent = node; //save parent
+  node->children[i]->depth = node->depth + 1;
+  node->children[i]->subtreeSize = 1;
 }
 
 //TODO: change the way you handle empty open lists - should stop the main iteration loop and also maybe should not be returned from here or from select type
@@ -147,15 +168,8 @@ static void bfbIteration(type_system *ts, int visits, double C, heuristics_t heu
     if (!_DOM->isValidChild(node->rep, node->side, i)) // if the i^th move is illegal, skip it
       continue;
     
-    node->children[i] = calloc(1, sizeof(treeNode));
-    node->children[i]->children = calloc(_DOM->getNumOfChildren(), sizeof(treeNode*));
-    node->children[i]->rep = _DOM->cloneRep(node->rep); // copy over the current board to child
-    node->children[i]->side = node->side; // copy over the current side on move to child
-    _DOM->makeMove(node->children[i]->rep, &(node->children[i]->side), i); //Make the i-th move
-    node->children[i]->parent = node; //save parent
-    node->children[i]->depth = node->depth + 1;
+    generateChild(node, i);
     ts->assignToType(ts, node->children[i], typeId, threshold);
-    node->children[i]->subtreeSize = 1;
     numOfChildren++;
   }
   
@@ -167,18 +181,16 @@ static void bfbIteration(type_system *ts, int visits, double C, heuristics_t heu
   }
 }
 
-int makeBFBMove(rep_t rep, int *side, void *void_ts, int numIterations, double C, heuristics_t heuristic, int budget,
+int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, heuristics_t heuristic, int budget,
 		int* bestMoves, int* numBestMoves, int backupOp, int threshold) {
   int i;
   double val;
   int bestMove = NULL_MOVE;
   double bestScore;
   treeNode* rootNode;
-  type_system *ts = (type_system *)void_ts;
+  type_system **type_systems = calloc(_DOM->getNumOfChildren(), sizeof(type_system *)); //Alocate a type system for every possible child of the root
   
   *numBestMoves = 0; // reset size of set of best moves
-  
-  ts->furtherInit(ts, rep, *side); //finish intilaizing the type system
   
   // Create the root node of the UCT tree; populate the board and side on move fields
   rootNode = calloc(1, sizeof(treeNode));
@@ -188,13 +200,23 @@ int makeBFBMove(rep_t rep, int *side, void *void_ts, int numIterations, double C
   rootNode->depth = 0;
   rootNode->subtreeSize = 1;
   
-  //Assign the root to a type
-  ts->assignToType(ts, rootNode, -1, threshold);
+  //Generate the children of the root node
+  for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+    if (!_DOM->isValidChild(rootNode->rep, rootNode->side, i)) // if the i^th move is illegal, skip it
+      continue;
+    
+    generateChild(rootNode, i);
+    rootNode->subtreeSize++;
+    
+    //Allocate aa type system for the i'th child and assign him to it
+    type_systems[i] = init_type_system(tsId, rep, *side);
+    type_systems[i]->assignToType(type_systems[i], rootNode->children[i], -1, threshold);
+  }
 
   //Run specified number of BFB iterations
   //Starts at one because i is also used as the total number of visits
   for (i = 1; i < numIterations + 1; i++)
-    bfbIteration(ts, i, C, heuristic, budget, backupOp, *side, threshold);
+    bfbIteration(type_systems[selectMove(rootNode, C)], i, C, heuristic, budget, backupOp, *side, threshold);
 
   //Now look at the children 1-ply deep and determing the best one (break ties randomly)
   for (i = 1; i < _DOM->getNumOfChildren(); i++) { //For each move
@@ -238,7 +260,7 @@ int makeBFBMove(rep_t rep, int *side, void *void_ts, int numIterations, double C
 
   // Clean up before returning
   freeTree(rootNode);
-  ts->destroy(ts);
+  freeTypeSystems(type_systems);
   
   return bestMove;
 }

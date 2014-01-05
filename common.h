@@ -27,6 +27,10 @@
 #define MMUCT 256
 #define BFB 512
 
+//Type systems for BFB
+#define MM_ORACLE 1
+#define STS 2
+
 // UCT back-up operator choices
 #define AVERAGE 0
 // Note that MINMAX is already defined above as 1, so we'll just use that
@@ -103,7 +107,6 @@ void genUCTTree(rep_t rep, int side, int numIterations, double C, heuristics_t h
 void printUctStats();
 int makeMinmaxOnUCTMove(rep_t rep, int *side, int numIterations, double C, heuristics_t heuristic, int budget, int* bestMoves, int* numBestMoves);
 
-
 //MMUCT (mmuct.c)
 int makeMMUCTMove(rep_t rep, int *side, int numIterations, double C, heuristics_t h, int budget,
 		int* bestMoves, int* numBestMoves, int backupOp,int mmTreeSize,int nodeLimit,uid* traps,int howManyTraps);
@@ -130,11 +133,7 @@ int pickRandomMove(int board[2][NUM_PITS+1], int side);
 int makeRandomMove(int board[2][NUM_PITS+1], int *side);
 
 //BFB (bfb.c)
-int makeBFBMove(rep_t rep, int *side, void *void_ts, int numIterations, double C, heuristics_t heuristic, int budget,
+int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, heuristics_t heuristic, int budget,
 		int* bestMoves, int* numBestMoves, int backupOp, int threshold);
-
-//Type system (type.c)
-void destroyTypeSystem(void *void_ts);
-void *init_type_system(int t);
 
 #endif //__COMMON__H__

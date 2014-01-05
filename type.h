@@ -56,7 +56,6 @@ typedef struct {
 
 typedef void (*assignToType_func)(void *void_ts, treeNode *node, int fatherType, int threshold);
 typedef treeNode *(*selectFromType_func)(void *void_t, double C);
-typedef void (*furtherInit_func)(void *void_ts, rep_t rep, int side);
 typedef void (*destroy_func)(void *void_ts);
 
 typedef struct {
@@ -65,10 +64,12 @@ typedef struct {
   int numTypes;
   void *extra; //extra data depending on the type system
   
-  furtherInit_func furtherInit;
   assignToType_func assignToType;
   selectFromType_func selectFromType;
   destroy_func destroy;
 } type_system;
 
-enum {MM_ORACLE = 1, STS = 2};
+//Type system (type.c)
+int selectMove(treeNode* node, double C);
+void *init_type_system(int t, rep_t rep, int side);
+void destroyTypeSystem(void *void_ts);

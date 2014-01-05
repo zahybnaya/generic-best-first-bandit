@@ -47,7 +47,7 @@ int main(int argc, char* argv[]) {
   double noiseProb = 0.0; // probability with which heuristic estimate will be corrupted
   int backupOp[2] = {MINMAX, MINMAX}; // back-up operator to be used by UCT
   int mmTreeSize[2] = {3, 3}; // back-up operator to be used by UCT TODO:enum this too
-  void *type_system[2] = {0, 0}; //the type system used by BFB.
+  int type_system[2] = {STS, STS}; //the type system used by BFB.
   int threshold[2] = {100, 100}; //the maximal number of nodes in a type for the STS type system
 
   // Variables used for pretty printing parameter settings
@@ -138,14 +138,14 @@ int main(int argc, char* argv[]) {
     else if OPTION("-ts1") {
       CHECK(max, BFB, "-ts1")
       if (++i < argc)
-	type_system[max] = init_type_system(atoi(argv[i]));
+	type_system[max] = atoi(argv[i]);
       else
 	MISSING("ts1")
     }
     else if OPTION("-ts2") {
       CHECK(min, BFB, "-ts2")
       if (++i < argc)
-	type_system[min] = init_type_system(atoi(argv[i]));
+	type_system[min] = atoi(argv[i]);
       else
 	MISSING("ts2")
     }
@@ -429,7 +429,7 @@ rootSide = max;
       swapInts(&mmTreeSize[max], &mmTreeSize[min]);
       swapDbls(&C[max], &C[min]);
       swapPtrs((void**)&heuristic[max], (void**)&heuristic[min]);
-      swapPtrs((void**)&type_system[max], (void**)&type_system[min]);
+      swapInts(&type_system[max], &type_system[min]);
       swapInts(&threshold[max], &threshold[min]);
     }
 
@@ -467,7 +467,6 @@ rootSide = max;
   printUctStats();
   free(algDescription[0]);
   free(algDescription[1]);
-
 
   return 0;
 }
