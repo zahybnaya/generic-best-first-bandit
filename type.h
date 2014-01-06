@@ -57,7 +57,7 @@ typedef struct {
   treeNode *root; //the root of the subtree that this type represents
 } type_sts;
 
-typedef void (*assignToType_func)(void *void_ts, treeNode *node, int fatherType, int threshold, int time);
+typedef void (*assignToType_func)(void *void_ts, treeNode *node, int fatherType, int threshold, int policy);
 typedef treeNode *(*selectFromType_func)(void *void_t, double C);
 typedef void (*destroy_func)(void *void_ts);
 
@@ -66,6 +66,7 @@ typedef struct {
   type **types;
   int numTypes;
   void *extra; //extra data depending on the type system
+  int visits;
   
   assignToType_func assignToType;
   selectFromType_func selectFromType;

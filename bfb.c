@@ -26,7 +26,7 @@ static void freeTypeSystems(type_system **type_systems) {
 }
 
 //Invoked by bfbIteration to select a type out of the type system based on UCB1
-static int selectType(void *void_ts, double C, int visits, int side, int policy) {
+static int selectType(void *void_ts, double C, int side, int policy) {
   type_system *ts = (type_system *)void_ts;
   int i;
   double qhat;
@@ -46,9 +46,11 @@ static int selectType(void *void_ts, double C, int visits, int side, int policy)
       return i;
 
     if (policy == MAB)
-      policyVisits = visits;
-    else if (policy == VMAB)
-      policyVisits = visits - ts->types[i]->birth;
+      policyVisits = ts->visits;
+    else if (policy == KEEP_VMAB)
+      policyVisits = ts->visits - ts->types[i]->birth + ts->types[i]->visits;
+    else if (policy == DELETE_VMAB)
+      policyVisits = ts->visits - ts->types[i]->birth;
     
     // Otherwise, compute this type's UCB1 index (will be used to pick best type if it transpires that all
     // types have been visited at least once)
@@ -91,11 +93,11 @@ static void generateChild(treeNode *node, int i) {
 //extract a node from its open list
 //rollout and backpropagate from selected nodes
 //place children in thier respective type open lists
-static void bfbIteration(type_system *ts, int visits, double C, heuristics_t heuristic, int budget, int backupOp, int side, int threshold, int policy) { 
+static void bfbIteration(type_system *ts, double C, heuristics_t heuristic, int budget, int backupOp, int side, int threshold, int policy) { 
   int i;
   
   //Choose type and node from the chosen type
-  int typeId = selectType(ts, C, visits, side, policy);
+  int typeId = selectType(ts, C, side, policy);
   
   if (typeId == -1)  //Open lists are all empty
     return;
@@ -174,7 +176,7 @@ static void bfbIteration(type_system *ts, int visits, double C, heuristics_t heu
       continue;
     
     generateChild(node, i);
-    ts->assignToType(ts, node->children[i], typeId, threshold, visits);
+    ts->assignToType(ts, node->children[i], typeId, threshold, policy);
     numOfChildren++;
   }
   
@@ -215,13 +217,16 @@ int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, heu
     
     //Allocate aa type system for the i'th child and assign him to it
     type_systems[i] = init_type_system(tsId, rep, *side);
-    type_systems[i]->assignToType(type_systems[i], rootNode->children[i], -1, threshold, 0);
+    type_systems[i]->assignToType(type_systems[i], rootNode->children[i], -1, threshold, policy);
   }
 
   //Run specified number of BFB iterations
   //Starts at one because i is also used as the total number of visits
-  for (i = 1; i < numIterations + 1; i++)
-    bfbIteration(type_systems[selectMove(rootNode, C)], i, C, heuristic, budget, backupOp, *side, threshold, policy);
+  for (i = 1; i < numIterations + 1; i++) {
+    type_system *ts = type_systems[selectMove(rootNode, C)];
+    ts->visits++;
+    bfbIteration(ts, C, heuristic, budget, backupOp, *side, threshold, policy);
+  }
 
   //Now look at the children 1-ply deep and determing the best one (break ties randomly)
   for (i = 1; i < _DOM->getNumOfChildren(); i++) { //For each move
