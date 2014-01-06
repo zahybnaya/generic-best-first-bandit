@@ -153,7 +153,7 @@ static double storeMinimax(int fd, rep_t rep, int searchDepth, int depth, int si
 }
 
 //Calculate the type of a node and place it within its open list, allocating more space as needed.
-static void assignToType_mmOracle(void *void_ts, treeNode *node, int fatherType, int threshold) {
+static void assignToType_mmOracle(void *void_ts, treeNode *node, int fatherType, int threshold, int time) {
   type_system *ts = (type_system *)void_ts;
   int mmVal = readMMVal(*(int *)ts->extra, node->rep);
   
@@ -184,13 +184,14 @@ static void assignToType_mmOracle(void *void_ts, treeNode *node, int fatherType,
   t->size++;
 }
 
-static void assignToType_sts(void *void_ts, treeNode *node, int fatherType, int threshold) {
+static void assignToType_sts(void *void_ts, treeNode *node, int fatherType, int threshold, int time) {
   type_system *ts = (type_system *)void_ts;
   int i;
   
-  if (fatherType == -1) //no father means root node
+  if (fatherType == -1) { //no father means root node
     ((type_sts *)ts->types[0])->root = node;
-  else {
+    ((type_sts *)ts->types[0])->birth = time;
+  } else {
     type_sts *t = (type_sts *)ts->types[fatherType];
     
     //The size of a type is the size of the subtree rooted at the node representing the type
@@ -213,10 +214,12 @@ static void assignToType_sts(void *void_ts, treeNode *node, int fatherType, int 
 	ts->types[ts->numTypes - 1] = calloc(1, sizeof(type_sts));
 	((type_sts *)ts->types[ts->numTypes - 1])->root = t->root->children[i];
 	ts->types[ts->numTypes - 1]->visits = t->root->children[i]->n;
+	((type_sts *)ts->types[ts->numTypes - 1])->birth = time;
       }
       
       t->root = node;
       t->visits = node->n;
+      t->birth = time;
     }
   } 
 }

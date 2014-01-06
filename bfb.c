@@ -26,7 +26,7 @@ static void freeTypeSystems(type_system **type_systems) {
 }
 
 //Invoked by bfbIteration to select a type out of the type system based on UCB1
-static int selectType(void *void_ts, double C, int visits, int side) {
+static int selectType(void *void_ts, double C, int visits, int side, int policy) {
   type_system *ts = (type_system *)void_ts;
   int i;
   double qhat;
@@ -39,16 +39,21 @@ static int selectType(void *void_ts, double C, int visits, int side) {
   // for the min player and positive for the max player) i.e. so that we correctly compute
   // an upper confidence bound for Max and a lower confidence bound for Min
   double multiplier = (side == max) ? 1 : -1;
-
+  int policyVisits;
   for (i = 0; i < ts->numTypes; i++) { // iterate over all types
     //If the type has never been visited before, select it first
     if (ts->types[i]->visits == 0)
       return i;
 
+    if (policy == MAB)
+      policyVisits = visits;
+    else if (policy == VMAB)
+      policyVisits = visits - ts->types[i]->birth;
+    
     // Otherwise, compute this type's UCB1 index (will be used to pick best type if it transpires that all
     // types have been visited at least once)
     qhat = ts->types[i]->scoreSum / (double)ts->types[i]->visits;  // exploitation component (this is the average utility or minimax value)
-    score = qhat + (multiplier * C) * sqrt(log(visits) / (double)ts->types[i]->visits); // add exploration component
+    score = qhat + (multiplier * C) * sqrt(log(policyVisits) / (double)ts->types[i]->visits); // add exploration component
     
     // Negamax formulation -- since min(s1,s2,...) = -max(-s1,-s2,...), negating the indices when it
     // is min's turn means we can always just take the maximum
@@ -86,11 +91,11 @@ static void generateChild(treeNode *node, int i) {
 //extract a node from its open list
 //rollout and backpropagate from selected nodes
 //place children in thier respective type open lists
-static void bfbIteration(type_system *ts, int visits, double C, heuristics_t heuristic, int budget, int backupOp, int side, int threshold) { 
+static void bfbIteration(type_system *ts, int visits, double C, heuristics_t heuristic, int budget, int backupOp, int side, int threshold, int policy) { 
   int i;
   
   //Choose type and node from the chosen type
-  int typeId = selectType(ts, C, visits, side);
+  int typeId = selectType(ts, C, visits, side, policy);
   
   if (typeId == -1)  //Open lists are all empty
     return;
@@ -169,7 +174,7 @@ static void bfbIteration(type_system *ts, int visits, double C, heuristics_t heu
       continue;
     
     generateChild(node, i);
-    ts->assignToType(ts, node->children[i], typeId, threshold);
+    ts->assignToType(ts, node->children[i], typeId, threshold, visits);
     numOfChildren++;
   }
   
@@ -182,7 +187,7 @@ static void bfbIteration(type_system *ts, int visits, double C, heuristics_t heu
 }
 
 int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, heuristics_t heuristic, int budget,
-		int* bestMoves, int* numBestMoves, int backupOp, int threshold) {
+		int* bestMoves, int* numBestMoves, int backupOp, int threshold, int policy) {
   int i;
   double val;
   int bestMove = NULL_MOVE;
@@ -210,13 +215,13 @@ int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, heu
     
     //Allocate aa type system for the i'th child and assign him to it
     type_systems[i] = init_type_system(tsId, rep, *side);
-    type_systems[i]->assignToType(type_systems[i], rootNode->children[i], -1, threshold);
+    type_systems[i]->assignToType(type_systems[i], rootNode->children[i], -1, threshold, 0);
   }
 
   //Run specified number of BFB iterations
   //Starts at one because i is also used as the total number of visits
   for (i = 1; i < numIterations + 1; i++)
-    bfbIteration(type_systems[selectMove(rootNode, C)], i, C, heuristic, budget, backupOp, *side, threshold);
+    bfbIteration(type_systems[selectMove(rootNode, C)], i, C, heuristic, budget, backupOp, *side, threshold, policy);
 
   //Now look at the children 1-ply deep and determing the best one (break ties randomly)
   for (i = 1; i < _DOM->getNumOfChildren(); i++) { //For each move

@@ -2,7 +2,7 @@
 #include "domain.h"
 #include "synth.h"
 #include <string.h>
-#define PRINT_CSV false
+#define PRINT_CSV true
 int verbose = false;
 int isToPrintToDot = false;
 int isDotLabel = false;
@@ -49,7 +49,8 @@ int main(int argc, char* argv[]) {
   int mmTreeSize[2] = {3, 3}; // back-up operator to be used by UCT TODO:enum this too
   int type_system[2] = {STS, STS}; //the type system used by BFB.
   int threshold[2] = {100, 100}; //the maximal number of nodes in a type for the STS type system
-
+  int policy[2] = {MAB, MAB}; //the policy used by BFB to choose types.
+  
   // Variables used for pretty printing parameter settings
   const char* playerStrings[] = {"max", "min"};
   const char* hStrings[] = {"heuristic 1", "heuristic 2", "playouts", "random leaf values", "coarsened h1", "finer playouts"};
@@ -162,6 +163,20 @@ int main(int argc, char* argv[]) {
 	threshold[min] = atoi(argv[i]);
       else
 	MISSING("t2")
+    }
+    else if OPTION("-p1") {
+      CHECK(max, BFB, "-p1")
+      if (++i < argc)
+	policy[max] = atoi(argv[i]);
+      else
+	MISSING("p1")
+    }
+    else if OPTION("-p2") {
+      CHECK(min, BFB, "-p2")
+      if (++i < argc)
+	policy[min] = atoi(argv[i]);
+      else
+	MISSING("p2")
     }
     
     
@@ -368,7 +383,7 @@ rootSide = max;
 			moveMade = makeMinmaxMove(state, &side,depth[side],heuristic[side],budget[side],randomTieBreaks,noisyMM,bestMoves,&numBestMoves, &termPercentage);
 			break;
 		case BFB:
-			moveMade = makeBFBMove(state, &side, type_system[side], numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, backupOp[side], threshold[side]);
+			moveMade = makeBFBMove(state, &side, type_system[side], numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, backupOp[side], threshold[side], policy[side]);
 			break;
 		default:
 			puts("Unknown algorithm\n");
@@ -431,6 +446,7 @@ rootSide = max;
       swapPtrs((void**)&heuristic[max], (void**)&heuristic[min]);
       swapInts(&type_system[max], &type_system[min]);
       swapInts(&threshold[max], &threshold[min]);
+      swapInts(&policy[max], &policy[min]);
     }
 
     printf("\n");
@@ -471,9 +487,6 @@ rootSide = max;
   return 0;
 }
 
-
-
-
 static int isSuper(int firstOutcome, int secondOutcome){
     return (firstOutcome-secondOutcome);
 }
@@ -511,6 +524,8 @@ static int printMessage(){
    puts("               is 0.");
    puts("-ts1/ts2:      Set the type system for bfb player 1/2. Values = 1 (Oracle), 2 (STS)");
    puts("-t1/t2:        Set the maximal size for bfb player 1/2 using STS type system. Default = 100");
+   puts("-p1/p2:        The policy used by player 1/2 for choosing types in BFB. Values = 1 (MAB), 2 (VMAB). Default = 1.");
+   //the policy used by BFB to choose types.
    puts("-v:            Enables VERBOSE output for tracing");
    puts("-h:            Displays this message");
    puts("");

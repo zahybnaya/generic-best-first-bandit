@@ -31,6 +31,10 @@
 #define MM_ORACLE 1
 #define STS 2
 
+//Type selection policies for BFB
+#define MAB 1
+#define VMAB 2
+
 // UCT back-up operator choices
 #define AVERAGE 0
 // Note that MINMAX is already defined above as 1, so we'll just use that
@@ -134,6 +138,6 @@ int makeRandomMove(int board[2][NUM_PITS+1], int *side);
 
 //BFB (bfb.c)
 int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, heuristics_t heuristic, int budget,
-		int* bestMoves, int* numBestMoves, int backupOp, int threshold);
+		int* bestMoves, int* numBestMoves, int backupOp, int threshold, int policy);
 
 #endif //__COMMON__H__

@@ -30,12 +30,14 @@ typedef struct {
   //UCB stats
   double scoreSum; // stores the sum of the rewards of the episodes that have gone through this type
   int visits; // tracks the visit count
+  int birth; //the iteration this type appeared
 } type;
 
 typedef struct {
   //UCB stats
   double scoreSum; // stores the sum of the rewards of the episodes that have gone through this type
   int visits; // tracks the visit count
+  int birth; //the iteration this type appeared
   
   //Type stats
   treeNode **openList; //tree nodes which havn't been fully expanded and are of the same type
@@ -49,12 +51,13 @@ typedef struct {
   //UCB stats
   double scoreSum; // stores the sum of the rewards of the episodes that have gone through this type
   int visits; // tracks the visit count
+  int birth; //the iteration this type appeared
   
   //Type stats: subtree size is updated within the node
   treeNode *root; //the root of the subtree that this type represents
 } type_sts;
 
-typedef void (*assignToType_func)(void *void_ts, treeNode *node, int fatherType, int threshold);
+typedef void (*assignToType_func)(void *void_ts, treeNode *node, int fatherType, int threshold, int time);
 typedef treeNode *(*selectFromType_func)(void *void_t, double C);
 typedef void (*destroy_func)(void *void_ts);
 
