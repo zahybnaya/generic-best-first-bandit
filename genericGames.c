@@ -525,7 +525,6 @@ static int printMessage(){
    puts("-ts1/ts2:      Set the type system for bfb player 1/2. Values = 1 (Oracle), 2 (STS)");
    puts("-t1/t2:        Set the maximal size for bfb player 1/2 using STS type system. Default = 100");
    puts("-p1/p2:        The policy used by player 1/2 for choosing types in BFB. Values = 1 (MAB), 2 (VMAB). Default = 1.");
-   //the policy used by BFB to choose types.
    puts("-v:            Enables VERBOSE output for tracing");
    puts("-h:            Displays this message");
    puts("");
@@ -537,12 +536,16 @@ static int printMessage(){
  * */
 static char* createAlgorithmDecription(int player[],int playerInd){
  char* ret = (char*)malloc(sizeof(char)*128);
- sprintf(ret,"%s",player[playerInd]==UCT?"UCT":"MINMAX");
+ switch (player[playerInd]) {
+   case MINMAX:
+     sprintf(ret,"%s", "MINMAX");
+     break;
+   case UCT:
+     sprintf(ret, "%s", "UCT");
+     break;
+   case BFB:
+     sprintf(ret, "%s", "BFB");
+     break;
+ }
  return ret;
-
 }
-
-
-
-
-
