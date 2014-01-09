@@ -33,7 +33,8 @@
 
 //Type selection policies for BFB
 #define MAB 1
-#define VMAB 2
+#define KEEP_VMAB 2
+#define DELETE_VMAB 3
 
 // UCT back-up operator choices
 #define AVERAGE 0
