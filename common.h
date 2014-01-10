@@ -41,7 +41,7 @@
 // Note that MINMAX is already defined above as 1, so we'll just use that
 
 // Game parameters
-#define NUM_PITS 4 // affects branching factor
+#define NUM_PITS 6 // affects branching factor
 #define SHELLS_PER_PIT 4 // affects depth of tree
 
 // Useful constants to index into arrays. For example, can use heuristic[max] to refer to the heuristic

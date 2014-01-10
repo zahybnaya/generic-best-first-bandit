@@ -88,7 +88,7 @@ int main(int argc, char* argv[]) {
 		  return (-1);
   }
   int bestMoves[_DOM->getNumOfChildren()];
-  heuristics_t heuristic[] =  {_DOM->hFunctions.h3, _DOM->hFunctions.h3}; // the heuristics used by the max and min playersa 
+  heuristics_t heuristic[] =  {_DOM->hFunctions.h1, _DOM->hFunctions.h1}; // the heuristics used by the max and min playersa 
 
   // Process command-line args
   // Mandatory args -- the search algorithms the two players will use
@@ -120,7 +120,27 @@ int main(int argc, char* argv[]) {
     if OPTION("-h1") {
       CHECK(max, (MINMAX | UCT | MINMAX_ON_UCT | MMUCT | BFB), "-h1")
       if (++i < argc) {
-        heuristic[max] = _DOM->hFunctions.h3; //[atoi(argv[i])-1]; //TODO fix this. Currently not working and fixed on h1 (add identifier? or switch)
+	switch(atoi(argv[i])) {
+	  case 1:
+	    heuristic[max] = _DOM->hFunctions.h1;
+	    break;
+	  case 2:
+	    heuristic[max] = _DOM->hFunctions.h2;
+	    break;
+	  case 3:
+	    heuristic[max] = _DOM->hFunctions.h3;
+	    break;
+	  case 4:
+	    heuristic[max] = _DOM->hFunctions.h4;
+	    break;
+	  case 5:
+	    heuristic[max] = _DOM->hFunctions.h5;
+	    break;
+	  case 6:
+	    heuristic[max] = _DOM->hFunctions.h6;
+	    break;
+	}
+        
         strcpy(heurString[max], hStrings[atoi(argv[i])-1]);
       }
       else
@@ -129,7 +149,26 @@ int main(int argc, char* argv[]) {
     else if OPTION("-h2") {
       CHECK(min, (MINMAX | UCT | MINMAX_ON_UCT | MMUCT | BFB), "-h2")
       if (++i < argc) {
-	heuristic[min] = _DOM->hFunctions.h3; //[atoi(argv[i])-1]; //TODO fix this. Currently not working and fixed on h1 (add identifier? or switch)
+	switch(atoi(argv[i])) {
+	  case 1:
+	    heuristic[min] = _DOM->hFunctions.h1;
+	    break;
+	  case 2:
+	    heuristic[min] = _DOM->hFunctions.h2;
+	    break;
+	  case 3:
+	    heuristic[min] = _DOM->hFunctions.h3;
+	    break;
+	  case 4:
+	    heuristic[min] = _DOM->hFunctions.h4;
+	    break;
+	  case 5:
+	    heuristic[min] = _DOM->hFunctions.h5;
+	    break;
+	  case 6:
+	    heuristic[min] = _DOM->hFunctions.h6;
+	    break;
+	}
 	strcpy(heurString[min], hStrings[atoi(argv[i])-1]);
       }
       else
