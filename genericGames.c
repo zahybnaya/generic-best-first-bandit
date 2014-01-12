@@ -2,7 +2,7 @@
 #include "domain.h"
 #include "synth.h"
 #include <string.h>
-#define PRINT_CSV false
+#define PRINT_CSV true
 int verbose = false;
 int isToPrintToDot = false;
 int isDotLabel = false;
