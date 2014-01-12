@@ -2,7 +2,7 @@
 #include "domain.h"
 #include "synth.h"
 #include <string.h>
-#define PRINT_CSV true
+#define PRINT_CSV false
 int verbose = false;
 int isToPrintToDot = false;
 int isDotLabel = false;
@@ -247,6 +247,23 @@ int main(int argc, char* argv[]) {
       else
 	MISSING("i2")
     }
+    
+    else if OPTION("-d1") {
+      CHECK(max, MINMAX, "-d1")
+      if (++i < argc)
+	depth[max] = atoi(argv[i]);
+      else
+	MISSING("d1")
+    }
+    else if OPTION("-d2") {
+      CHECK(min, MINMAX, "-d2")
+      if (++i < argc)
+	depth[min] = atoi(argv[i]);
+      else
+	MISSING("d2")
+    }
+    
+    
     else if OPTION("-b1") {
       CHECK(max, (MINMAX | UCT | MINMAX_ON_UCT), "-b1")
       if (++i < argc)
@@ -390,15 +407,16 @@ int main(int argc, char* argv[]) {
   /* Loops until end of games*/
   while (1) {
     if (usingRandomStartBoard) {
-      _DOM->generateRandomStart(state,max);/*Sending rootSide always generates from the same max side*/
+      _DOM->generateRandomStart(state,&side);/*Sending rootSide always generates from the same max side*/
       //resetTrapCounter();
     }
     // Store start board, so that we can restore it when we switch player sides
     _DOM->copy(state,randState);
-    
-rootSide = max;
+    rootSide = side;
+
     int _outcome;
     for (j = 0; j <= 1 ; j++) {
+      
       moveCount = 0; // reset move count
       side = rootSide; // Restore the starting board (which was either randomly generated or read from a file)
       _DOM->copy(randState,state);
@@ -486,6 +504,7 @@ rootSide = max;
       swapInts(&type_system[max], &type_system[min]);
       swapInts(&threshold[max], &threshold[min]);
       swapInts(&policy[max], &policy[min]);
+      swapInts(&depth[max], &depth[min]);
     }
 
     printf("\n");

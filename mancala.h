@@ -25,10 +25,9 @@ int getGameStatus_mancala(rep_t rep);
 void makeMove_mancala(rep_t rep,int * side, int move);
 rep_t cloneRep_mancala(rep_t orig);
 double applyHeuristics_mancala (heuristics_t h,rep_t rep,int side, int budget);
-void generateRandomStart_mancala(rep_t rep,int);
+void generateRandomStart_mancala(rep_t rep,int*);
 rep_t allocate_mancala();
 void destructRep_mancala(rep_t rep);
-void generateRandomStart_mancala(rep_t state,int);
 void copy_mancala(rep_t src,rep_t dst);
 
 // Heuristic routines (heuristic.c)

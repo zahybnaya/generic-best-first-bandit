@@ -74,10 +74,10 @@ rep_t cloneRep_mancala(rep_t orig){
 /*
 * Write random state to rep
 */
-void generateRandomStart_mancala(rep_t rep, int side){
+void generateRandomStart_mancala(rep_t rep, int *side){
     int** board = rep;
     int dummy[2][NUM_PITS+1];
-    genRandomBoard(dummy, &side, 0);
+    genRandomBoard(dummy, side, 0);
     COPY_ARR(dummy,board);
 }
 
