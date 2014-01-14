@@ -3,9 +3,20 @@ library('ggplot2')
 data=read.csv('mancala.csv')
 v=data[data$c==2.5 & data$policy == 2 & data$heuristics == 3 & data$min_alg == 'UCT' & data$pits == 6,]
 
-pdf('mancala6sts1000.pdf')
-ggplot(v,aes(x=v[v$sts_size=='1000',]$iterations, y=v[v$sts_size=='1000',]$max_win)) + geom_line() + geom_point(size=4) + ggtitle("Size based TS(1000)") + ylab(" % win rate") + xlab("#iterations")
+
+
+pdf('mancala6sts.pdf')
+ggplot(v,aes(x=v$iterations, y=v$max_win, group=factor(v$sts_size))) + geom_line(aes(linetype = factor(v$sts_size))) + geom_point(size=2) + ggtitle("Size based TS") + ylab(" % win rate") + xlab("#iterations") + scale_linetype_discrete(name="Threshould")
 dev.off()
+
+pdf('mancala6sts1000.pdf')
+ggplot(v,aes(x=v[v$sts_size=='1000',]$iterations, y=v[v$sts_size=='1000',]$max_win)) + geom_line(aes(size = 4)) + geom_point(size=4) + ggtitle("Size based TS(1000)") + ylab(" % win rate") + xlab("#iterations")
+dev.off()
+
+v=v[(v$sts_size=='1000' & v$iterations=='10000') | (v$sts_size=='100' & v$iterations=='1000') | (v$sts_size=='500' & v$iterations=='5000')] 
+ggplot(v,aes(x=v$iterations, y=v$max_win)) + geom_line(aes(size = 4)) + geom_point(size=4) + ggtitle("Size based TS(1000)") + ylab(" % win rate") + xlab("#iterations")
+
+
 
 
 pdf('mancala6sts100.pdf')
