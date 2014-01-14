@@ -106,5 +106,9 @@ Player 1 (min) --- Minmax, Depth 3, using playouts (budget = 1)
 1 -1 
 domain, max_alg, min_alg ,num_of_games,num_of_draws,num_of_incomplete,max_win,min_win,total_win_games
 
+<<<<<<< HEAD
 0,BFB,MINMAX,3,100,46,0,0.425926,0.574074,23
+=======
+0,BFB,MINMAX,100,46,0,0.425926,0.574074,23
+>>>>>>> c1bae7c5df5427657abd34680e1c98761c958027
 ** Total UCT nodes 0**
