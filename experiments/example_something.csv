@@ -1,2 +1,0 @@
-domain, max_alg, min_alg ,num_of_games,num_of_draws,num_of_incomplete,max_win,min_win,total_win_games
-0,UCT,MINMAX,1,1,0,-nan,-nan,0
