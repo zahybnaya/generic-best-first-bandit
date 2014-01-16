@@ -1,0 +1,6 @@
+Parameters:
+Random seed: 0
+Domain used is: 0
+# Pits: 6, Stones per pit: 4
+Player 0 (max) --- BFB, C 0.500, Num iterations 10000, with minimax backups, using random leaf values
+Player 1 (min) --- Minmax, Depth 4, using random leaf values
