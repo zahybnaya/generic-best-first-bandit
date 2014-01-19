@@ -1,0 +1,116 @@
+Parameters:
+Random seed: 0
+Domain used is: 0
+# Pits: 6, Stones per pit: 4
+Player 0 (max) --- BFB, C 0.500, Num iterations 100000, with minimax backups, using coarsened h1
+Player 1 (min) --- UCT,NA, C 0.500, Num iterations 100000, with minimax backups, using coarsened h1
+UCT
+UCT:Iteration: 0
+1 1 
+-1 1 
+-1 1 
+-1 -1 
+1 1 
+1 1 
+-1 -1 
+1 1 
+1 1 
+-1 1 
+1 1 
+-1 -1 
+-1 1 
+-1 1 
+-1 1 
+-1 -1 
+1 1 
+-1 1 
+0 1 
+0 -1 
+-1 1 
+0 1 
+-1 -1 
+1 1 
+-1 1 
+-1 1 
+-1 1 
+-1 -1 
+1 -1 
+-1 1 
+-1 -1 
+1 1 
+-1 1 
+-1 1 
+-1 -1 
+-1 -1 
+1 1 
+-1 1 
+-1 1 
+1 1 
+1 1 
+1 1 
+-1 1 
+1 1 
+1 1 
+1 1 
+0 1 
+-1 1 
+1 1 
+-1 -1 
+1 1 
+1 1 
+1 1 
+-1 -1 
+1 1 
+0 0 
+-1 -1 
+-1 -1 
+-1 1 
+1 1 
+1 1 
+-1 -1 
+1 -1 
+1 1 
+0 1 
+-1 1 
+-1 1 
+-1 1 
+1 1 
+-1 1 
+1 1 
+1 0 
+-1 -1 
+-1 -1 
+1 -1 
+-1 -1 
+1 1 
+1 0 
+-1 1 
+1 -1 
+-1 1 
+-1 1 
+1 1 
+1 1 
+-1 -1 
+-1 -1 
+-1 -1 
+1 1 
+-1 1 
+-1 1 
+-1 -1 
+-1 1 
+-1 -1 
+1 1 
+-1 -1 
+-1 -1 
+0 1 
+-1 1 
+-1 -1 
+-1 -1 
+domain, max_alg, min_alg ,num_of_games,num_of_draws,num_of_incomplete,max_win,min_win,total_win_games
+
+<<<<<<< HEAD
+0,BFB,UCT,NA,100,58,0,0.166667,0.833333,7
+=======
+0,BFB,UCT,100,58,0,0.166667,0.833333,7
+>>>>>>> c1bae7c5df5427657abd34680e1c98761c958027
+** Total UCT nodes 270185609**
