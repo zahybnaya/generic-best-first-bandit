@@ -30,6 +30,7 @@
 //Type systems for BFB
 #define MM_ORACLE 1
 #define STS 2
+#define VTS 3
 
 //Type selection policies for BFB
 #define MAB 1

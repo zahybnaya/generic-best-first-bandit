@@ -25,6 +25,52 @@ static void freeTypeSystems(type_system **type_systems) {
   free(type_systems);
 }
 
+
+//TODO merge with select move of uct.c and sts.c
+//Select a child of a uct node based on ucb1
+static int selectMove(treeNode* node, double C) {
+  int i;
+  double qhat;
+  double score;
+  int numBestMoves = 0;
+  double bestScore;
+  int bestMoves[_DOM->getNumOfChildren()];
+
+  // The multiplier is used to set the sign of the exploration bonus term (should be negative
+  // for the min player and positive for the max player) i.e. so that we correctly compute
+  // an upper confidence bound for Max and a lower confidence bound for Min
+  double multiplier = (node->side == max) ? 1 : -1;
+
+  for (i = 1; i < _DOM->getNumOfChildren(); i++) { // iterate over all children
+    if (!_DOM->isValidChild(node->rep, node->side, i)) // if the i^th move is illegal, skip it
+      continue;
+
+    // If the i^th child has never been visited before, select it first, before any other children are revisited
+    if (node->children[i]->n == 0)
+      return i;
+
+    // Otherwise, compute this child's UCB1 index (will be used to pick best child if it transpires that all
+    // children have been visited at least once)
+    qhat = node->children[i]->scoreSum / (double)node->children[i]->n;  // exploitation component (this is the average utility)
+    score = qhat + (multiplier * C) * sqrt(log(node->n) / (double)node->children[i]->n); // add exploration component
+
+    // Negamax formulation -- since min(s1,s2,...) = -max(-s1,-s2,...), negating the indices when it
+    // is min's turn means we can always just take the maximum
+    score = (node->side == min) ? -score : score;
+   
+    // If this is either the first child, or the best scoring child, store it
+    if ((numBestMoves == 0) || (score > bestScore)) {
+      bestMoves[0] = i;
+      bestScore = score;
+      numBestMoves = 1;
+    }
+    else if (score == bestScore) // if this child ties with the best scoring child, store it
+      bestMoves[numBestMoves++] = i;
+  }
+
+  return bestMoves[0];
+}
+
 //Invoked by bfbIteration to select a type out of the type system based on UCB1
 static int selectType(void *void_ts, double C, int side, int policy) {
   type_system *ts = (type_system *)void_ts;
@@ -122,9 +168,12 @@ static void bfbIteration(type_system *ts, double C, heuristics_t heuristic, int 
   
   //update type ucb stats
   t->visits++;
-  if (backupOp == AVERAGE)
+  if (backupOp == AVERAGE) {
     t->scoreSum = t->scoreSum + ret;
-  else if (backupOp == MINMAX) {
+    
+    if (ts->name == VTS)
+      ((type_vts *)t)->deviationSum = ((type_vts *)t)->deviationSum + (ret - t->scoreSum) * (ret - t->scoreSum); //TODO fix formula
+  } else if (backupOp == MINMAX) {
     if (t->visits == 1)
       t->scoreSum = ret;
     else {
@@ -139,15 +188,17 @@ static void bfbIteration(type_system *ts, double C, heuristics_t heuristic, int 
   while (bp != NULL) {
     bp->n++;
     
-    if (backupOp == AVERAGE)
+    if (backupOp == AVERAGE) {
       bp->scoreSum = bp->scoreSum + ret;
-    else if (backupOp == MINMAX) {
+      bp->deviationSum = bp->deviationSum + (bp->scoreSum - ret) * (bp->scoreSum - ret); //TODO fix formula
+      
+    } else if (backupOp == MINMAX) {
       //If first visit to node than the value is set by default      
       if (bp->n == 1) 
 	bp->scoreSum = ret;
       else if (gameOver == 1 && bp == node)
 	bp->scoreSum = bp->scoreSum + ret;
-      else { //Else, compute minimax
+      else { //compute minimax
 	double bestScore = (bp->side == max) ? MIN_WINS : MAX_WINS;
 	
 	for (i = 1; i < _DOM->getNumOfChildren(); i++) {
@@ -181,10 +232,29 @@ static void bfbIteration(type_system *ts, double C, heuristics_t heuristic, int 
   }
   
   //Update the size of the sub tree of each ancestor of the chosen node
+  treeNode **path; //path from type root node to the chosen frontier node
+  if (ts->name == VTS) {
+    path = calloc(node->depth - ((type_vts *)t)->root->depth, sizeof(treeNode *));
+    ((type_vts *)t)->size = ((type_vts *)t)->size + numOfChildren; //in vts the size of the type isnt in the root node as in sts.
+  }
+  
+  i = 0;
   bp = node;
   while (bp != NULL) {
     bp->subtreeSize = bp->subtreeSize + numOfChildren;
     bp = bp->parent;
+    
+    if (ts->name == VTS) {
+      if (bp == ((type_vts *)t)->root) //no need to log path anymore
+	i = -1;
+      else if (i != -1)
+	path[i++] = bp; 
+    }
+  }
+  
+  if (ts->name == VTS) {
+    typeSignificance(ts, (type_vts *)t, path);
+    free(path);
   }
 }
 
