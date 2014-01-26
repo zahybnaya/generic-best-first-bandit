@@ -93,11 +93,11 @@ static void generateChild(treeNode *node, int i) {
 //extract a node from its open list
 //rollout and backpropagate from selected nodes
 //place children in thier respective type open lists
-static void bfbIteration(type_system *ts, double C, heuristics_t heuristic, int budget, int backupOp, int side, int threshold, int policy) { 
+static void bfbIteration(type_system *ts, double C, double CT, heuristics_t heuristic, int budget, int backupOp, int side, int threshold, int policy) { 
   int i;
   
   //Choose type and node from the chosen type
-  int typeId = selectType(ts, C, side, policy);
+  int typeId = selectType(ts, CT, side, policy);
   
   if (typeId == -1)  //Open lists are all empty
     return;
@@ -232,8 +232,7 @@ static void bfbIteration(type_system *ts, double C, heuristics_t heuristic, int 
   }
 }
 
-int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, heuristics_t heuristic, int budget,
-		int* bestMoves, int* numBestMoves, int backupOp, int threshold, int policy) {
+int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, double CT, heuristics_t heuristic, int budget, int* bestMoves, int* numBestMoves, int backupOp, int threshold, int policy) {
   int i;
   double val;
   int bestMove = NULL_MOVE;
@@ -269,7 +268,7 @@ int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, heu
   for (i = 1; i < numIterations + 1; i++) {
     type_system *ts = type_systems[selectMove(rootNode, C)];
     ts->visits++;
-    bfbIteration(ts, C, heuristic, budget, backupOp, *side, threshold, policy);
+    bfbIteration(ts, C, CT, heuristic, budget, backupOp, *side, threshold, policy);
   }
 
   //Now look at the children 1-ply deep and determing the best one (break ties randomly)

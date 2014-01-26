@@ -36,7 +36,8 @@ int main(int argc, char* argv[]) {
   double termPercentage;
   int randomTieBreaks = false; // determine whether the MM player will break ties randomly
   int numIterations[2] = {5000, 5000}; // number of iterations of UCT used by the max and min players
-  double C[2] = {2.5, 2.5}; // exploration bias setting for UCT used by max and min players
+  double C[2] = {2.5, 2.5}; // exploration bias setting for UCT and BFB used by max and min players
+  double CT[2] = {2.5, 2.5}; // exploration bias setting for BFB types used by max and min players
   int budget[2] = {1, 1}; // if using playouts to estimate leaf utilities, these determine how many playouts are averaged
   short usingRandomStartBoard = true; // are we using random start boards or boards from a file?
   char boardFileName[1024]; // if using boards from a file, this contains the file name
@@ -234,6 +235,21 @@ int main(int argc, char* argv[]) {
 	C[min] = atof(argv[i]);
       else
 	MISSING("c2")
+    }
+    
+    else if OPTION("-ct1") {
+      CHECK(max, BFB, "-ct1")
+      if (++i < argc)
+	CT[max] = atof(argv[i]);
+      else
+	MISSING("ct1")
+    }
+    else if OPTION("-ct2") {
+      CHECK(min, BFB, "-ct2")
+      if (++i < argc)
+	CT[min] = atof(argv[i]);
+      else
+	MISSING("ct2")
     }
     else if OPTION("-i1") {
       CHECK(max, (UCT | MINMAX_ON_UCT| MMUCT | BFB), "-i1")
@@ -442,7 +458,7 @@ int main(int argc, char* argv[]) {
 			moveMade = makeMinmaxMove(state, &side,depth[side],heuristic[side],budget[side],randomTieBreaks,noisyMM,bestMoves,&numBestMoves, &termPercentage);
 			break;
 		case BFB:
-			moveMade = makeBFBMove(state, &side, type_system[side], numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, backupOp[side], threshold[side], policy[side]);
+			moveMade = makeBFBMove(state, &side, type_system[side], numIterations[side], C[side], CT[side], heuristic[side], budget[side], bestMoves, &numBestMoves, backupOp[side], threshold[side], policy[side]);
 			break;
 		default:
 			puts("Unknown algorithm\n");
@@ -506,6 +522,7 @@ int main(int argc, char* argv[]) {
       swapInts(&backupOp[max], &backupOp[min]);
       swapInts(&mmTreeSize[max], &mmTreeSize[min]);
       swapDbls(&C[max], &C[min]);
+      swapDbls(&CT[max], &CT[min]);
       swapPtrs((void**)&heuristic[max], (void**)&heuristic[min]);
       swapInts(&type_system[max], &type_system[min]);
       swapInts(&threshold[max], &threshold[min]);
