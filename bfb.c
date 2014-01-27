@@ -1,7 +1,7 @@
 #include "common.h"
 #include "type.h"
 #include "type_reachability.h"
-#define USE_MINIMAX_REWARDS 1
+#define USE_MINIMAX_REWARDS 0
 
 //TODO extract and merge with uct.c
 /* Routine to free up UCT tree */
@@ -28,7 +28,7 @@ static void freeTypeSystems(type_system **type_systems) {
 }
 
 //Invoked by bfbIteration to select a type out of the type system based on UCB1
-static int selectType(void *void_ts, double C, int side, int policy) {
+static int selectType(void *void_ts, double C, int side, int policy, int backupOp) {
   type_system *ts = (type_system *)void_ts;
   int i;
   double qhat;
@@ -64,9 +64,13 @@ static int selectType(void *void_ts, double C, int side, int policy) {
 	    }
 	    score = 1 * qhat + C * sqrt(log(policyVisits) / (double)ts->types[i]->visits); // add exploration component (-1 for minimization)
     }
-    else{
-	    qhat = ts->types[i]->scoreSum / (double)ts->types[i]->visits;  // exploitation component (this is the average utility or minimax value)
-	    score = qhat + (multiplier * C) * sqrt(log(policyVisits) / (double)ts->types[i]->visits); // add exploration component
+    else {
+	    if (backupOp == AVERAGE)
+	      qhat = ts->types[i]->minmax;
+	    else
+	      qhat = ts->types[i]->scoreSum / (double)ts->types[i]->visits;  // exploitation component (this is the average utility or minimax value)
+
+	      score = qhat + (multiplier * C) * sqrt(log(policyVisits) / (double)ts->types[i]->visits); // add exploration component
 
 	    // Negamax formulation -- since min(s1,s2,...) = -max(-s1,-s2,...), negating the indices when it
 	    // is min's turn means we can always just take the maximum
@@ -106,11 +110,13 @@ static void generateChild(treeNode *node, int i) {
 //place children in thier respective type open lists
 static void bfbIteration(type_system *ts, double C, double CT, heuristics_t heuristic, int budget, int backupOp, int side, int threshold, int policy) { 
   int i;
-  int typeId = selectType(ts, CT, side, policy);
+  int typeId = selectType(ts, CT, side, policy, backupOp);
   if (typeId == -1)  //Open lists are all empty
     return;
+  
   type *t = ts->types[typeId];
   treeNode *node = ts->selectFromType(t, C);
+  
   double ret;
   int gameOver = 0;
   if ((ret = _DOM->getGameStatus(node->rep)) != INCOMPLETE) {
@@ -148,7 +154,7 @@ static void bfbIteration(type_system *ts, double C, double CT, heuristics_t heur
 		bestScore = bp->minmax;
 	    }
 	  }  
-	bp->minmax = bestScore;
+	  bp->minmax = bestScore;
 	}
 	
 	if (bp->typeDefiner == true)
@@ -209,8 +215,11 @@ static void bfbIteration(type_system *ts, double C, double CT, heuristics_t heur
       t->scoreSum = ret;
     else {
       double score = t->scoreSum / (double)(t->visits - 1);
+
       if ((side == max && ret > score) || (side == min && ret < score))
 	t->scoreSum = ret * t->visits;
+      else
+	t->scoreSum = score * t->visits;
     }
   }
   if (gameOver) //terminal node - no need to expand

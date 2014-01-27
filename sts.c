@@ -1,5 +1,5 @@
 #include "type.h"
-#define USE_MINIMAX_REWARDS 1
+#define USE_MINIMAX_REWARDS 0
 void assignToType_sts(void *void_ts, treeNode *node, int fatherType, int threshold, int policy) {
   type_system *ts = (type_system *)void_ts;
   int i;

@@ -54,7 +54,6 @@ treeNode *selectFromType_vts(void *void_t, double C) {
   return node;
 }
 
-//TODO
 void assignToType_vts(void *void_ts, treeNode *node, int fatherType, int threshold, int policy) {
   type_system *ts = (type_system *)void_ts;
   int i;
@@ -87,6 +86,7 @@ void assignToType_vts(void *void_ts, treeNode *node, int fatherType, int thresho
 	((type_vts *)ts->types[ts->numTypes - 1])->root = t->root->children[i];
 	((type_vts *)ts->types[ts->numTypes - 1])->birth = ts->visits;
 	((type_vts *)ts->types[ts->numTypes - 1])->scoreSum = t->root->children[i]->typedScoreSum;
+	((type_vts *)ts->types[ts->numTypes - 1])->minmax = t->root->children[i]->minmax;
 	
 	if (policy == DELETE_VMAB)
 	  ts->types[ts->numTypes - 1]->visits = 0;
@@ -94,14 +94,15 @@ void assignToType_vts(void *void_ts, treeNode *node, int fatherType, int thresho
 	  ts->types[ts->numTypes - 1]->visits = t->root->children[i]->typedN;
       }
       
-      t->root = node;
+      t->root = newFather;
       if (policy == DELETE_VMAB)
 	t->visits = 0;
       else
-	t->visits = node->typedN;
+	t->visits = newFather->typedN;
       
       t->birth = ts->visits;
-      t->scoreSum = t->root->children[i]->typedScoreSum;
+      t->scoreSum = newFather->typedScoreSum;
+      t->minmax = newFather->minmax;
     }
   } 
 }
@@ -160,6 +161,7 @@ void typeSignificance(type_system *ts, type_vts *type, treeNode **path) {
       double updatedN;
       double updatedScoreSum;
       double updatedMean;
+      double bestScore;
       while (bp != type->root->parent) {
 	//Sum of squares of the large set.
 	bpMean = bp->typedScoreSum / (double)(bp->typedN);
@@ -174,6 +176,14 @@ void typeSignificance(type_system *ts, type_vts *type, treeNode **path) {
 	bp->sd = (updatedSumOfSquares - updatedN * updatedMean * updatedMean) / (double)(updatedN - 1);
 	bp->typedN = updatedN;
 	bp->typedScoreSum = updatedScoreSum;
+	
+	for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+	    if (_DOM->isValidChild(bp->rep, bp->side, i) && bp->typeDefiner == false) { // if child exists, is it the best scoring child?
+	      if ((bp->side == max && bp->children[i]->minmax > bestScore) || (bp->side == min && bp->children[i]->minmax < bestScore))
+		bestScore = bp->minmax;
+	    }
+	}  
+	bp->minmax = bestScore;
 	
 	bp = bp->parent;
       }
