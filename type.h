@@ -1,3 +1,9 @@
+#ifndef TYPE_H
+#define TYPE_H
+
+
+
+
 #include "common.h"
 #include "domain.h"
 
@@ -14,6 +20,8 @@ extern DOM* _DOM;
 /* This is a node in the UCT tree. */
 typedef struct node {
   double scoreSum; // stores the sum of the rewards of the episodes that have gone through this node
+  double minimaxScoreSum; // stores the sum of minimax rewards that went have gone through this node
+  int minimax_n; //tracks how many times a minimax value had moves through this node
   double deviationSum; //stores the sum of the deviation of rollout gone through this node
   int n; // tracks the visit count
   int id; // used for graph visualization purposes
@@ -57,6 +65,7 @@ typedef struct {
   
   //Type stats: subtree size is updated within the node
   treeNode *root; //the root of the subtree that this type represents
+  int mm_visits;
 } type_sts;
 
 typedef struct {
@@ -108,3 +117,5 @@ double storeMinimax(int fd, rep_t rep, int searchDepth, int depth, int side, heu
 void assignToType_mmOracle(void *void_ts, treeNode *node, int fatherType, int threshold, int policy);
 treeNode *selectFromType_mmOracle(void *void_t, double C);
 void destroy_mmOracle(void *void_ts);
+
+#endif /* end of include guard: TYPE_H */

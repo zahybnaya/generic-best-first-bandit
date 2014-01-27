@@ -21,29 +21,32 @@ void assignToType_sts(void *void_ts, treeNode *node, int fatherType, int thresho
 	newFather = newFather->parent;
       
       for (i = 1; i < _DOM->getNumOfChildren(); i++) {
-	if (!_DOM->isValidChild(t->root->rep, t->root->side, i) || t->root->children[i] == newFather) //skip empty children or this is the new father (will be taken care of later)
+	//skip empty children or this is the new father (will be taken care of later)
+	if (!_DOM->isValidChild(t->root->rep, t->root->side, i) || t->root->children[i] == newFather){ 
 	  continue;
-	
+	}
 	ts->numTypes++;
-	ts->types = realloc(ts->types, ts->numTypes * sizeof(type_sts *)); //alocate a new type
-	
-	ts->types[ts->numTypes - 1] = calloc(1, sizeof(type_sts));
+	ts->types = (type**)realloc(ts->types, ts->numTypes * sizeof(type_sts *)); //alocate a new type
+	ts->types[ts->numTypes - 1] = (type*)calloc(1, sizeof(type_sts));
 	((type_sts *)ts->types[ts->numTypes - 1])->root = t->root->children[i];
 	((type_sts *)ts->types[ts->numTypes - 1])->birth = ts->visits;
-	
+	((type_sts *)ts->types[ts->numTypes - 1])->scoreSum = t->root->children[i]->minimaxScoreSum;
+	((type_sts *)ts->types[ts->numTypes - 1])->mm_visits = t->root->children[i]->minimax_n;
 	if (policy == DELETE_VMAB)
 	  ts->types[ts->numTypes - 1]->visits = 0;
 	else
 	  ts->types[ts->numTypes - 1]->visits = t->root->children[i]->n;
       }
       
-      t->root = node;
+      t->root = newFather;
       if (policy == DELETE_VMAB)
 	t->visits = 0;
       else
-	t->visits = node->n;
+	t->visits = newFather->n;
       
       t->birth = ts->visits;
+      t->scoreSum = newFather->minimaxScoreSum;
+      t->mm_visits = newFather->minimax_n;
     }
   } 
 }
@@ -51,6 +54,7 @@ void assignToType_sts(void *void_ts, treeNode *node, int fatherType, int thresho
 //TODO merge with select move of uct.c
 //Select a child of a uct node based on ucb1
 static int selectMove_sts(treeNode* node, double C) {
+	
   int i;
   double qhat;
   double score;
