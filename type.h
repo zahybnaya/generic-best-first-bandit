@@ -1,3 +1,5 @@
+#ifndef TYPE_H
+#define TYPE_H
 #include "common.h"
 #include "domain.h"
 
@@ -29,6 +31,8 @@ typedef struct node {
   struct node** children; /* pointers to the children of this node -- note that index 0 remains
 					unused (which is reserved for the store), so we have consistent move
 					indexing/numbering */
+  double minimaxScoreSum; // stores the sum of minimax rewards that went have gone through this node
+  int minimax_n; //tracks how many times a minimax value had moves through this node
 } treeNode;
 
 typedef struct {
@@ -36,6 +40,7 @@ typedef struct {
   double scoreSum; // stores the sum of the rewards of the episodes that have gone through this type
   int visits; // tracks the visit count
   int birth; //the iteration this type appeared
+  double minmax;
 } type;
 
 typedef struct {
@@ -43,6 +48,7 @@ typedef struct {
   double scoreSum; // stores the sum of the rewards of the episodes that have gone through this type
   int visits; // tracks the visit count
   int birth; //the iteration this type appeared
+  double minmax;
   
   //Type stats
   treeNode **openList; //tree nodes which havn't been fully expanded and are of the same type
@@ -57,9 +63,11 @@ typedef struct {
   double scoreSum; // stores the sum of the rewards of the episodes that have gone through this type
   int visits; // tracks the visit count
   int birth; //the iteration this type appeared
+  double minmax;
   
   //Type stats: subtree size is updated within the node
   treeNode *root; //the root of the subtree that this type represents
+  int mm_visits;
 } type_sts;
 
 typedef struct {
@@ -67,6 +75,7 @@ typedef struct {
   double scoreSum; // stores the sum of the rewards of the episodes that have gone through this type
   int visits; // tracks the visit count
   int birth; //the iteration this type appeared
+  double minmax;
   
   //Type stats:
   treeNode *root; //the root of the subtree that this type represents
@@ -109,3 +118,5 @@ double storeMinimax(int fd, rep_t rep, int searchDepth, int depth, int side, heu
 void assignToType_mmOracle(void *void_ts, treeNode *node, int fatherType, int threshold, int policy);
 treeNode *selectFromType_mmOracle(void *void_t, double C);
 void destroy_mmOracle(void *void_ts);
+
+#endif /* end of include guard: TYPE_H */

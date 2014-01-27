@@ -74,7 +74,6 @@ void *init_type_system(int t, rep_t rep, int side) {
       ts->assignToType = assignToType_sts;
       ts->selectFromType = selectFromType_sts;
       ts->destroy = destroy_sts;
-      
       ts->numTypes = 1;
       ts->types = calloc(ts->numTypes, sizeof(type_sts *));
       ts->types[0] = calloc(1, sizeof(type_sts));
