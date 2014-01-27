@@ -30,6 +30,7 @@ void assignToType_sts(void *void_ts, treeNode *node, int fatherType, int thresho
 	ts->types[ts->numTypes - 1] = calloc(1, sizeof(type_sts));
 	((type_sts *)ts->types[ts->numTypes - 1])->root = t->root->children[i];
 	((type_sts *)ts->types[ts->numTypes - 1])->birth = ts->visits;
+	((type_sts *)ts->types[ts->numTypes - 1])->scoreSum = t->root->children[i]->scoreSum;
 	
 	if (policy == DELETE_VMAB)
 	  ts->types[ts->numTypes - 1]->visits = 0;
@@ -37,13 +38,14 @@ void assignToType_sts(void *void_ts, treeNode *node, int fatherType, int thresho
 	  ts->types[ts->numTypes - 1]->visits = t->root->children[i]->n;
       }
       
-      t->root = node;
+      t->root = newFather;
       if (policy == DELETE_VMAB)
 	t->visits = 0;
       else
-	t->visits = node->n;
+	t->visits = newFather->n;
       
       t->birth = ts->visits;
+      t->scoreSum = newFather->scoreSum;
     }
   } 
 }
