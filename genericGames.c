@@ -36,7 +36,8 @@ int main(int argc, char* argv[]) {
   double termPercentage;
   int randomTieBreaks = false; // determine whether the MM player will break ties randomly
   int numIterations[2] = {5000, 5000}; // number of iterations of UCT used by the max and min players
-  double C[2] = {0.5, 0.5}; // exploration bias setting for UCT used by max and min players
+  double C[2] = {2.5, 2.5}; // exploration bias setting for UCT and BFB used by max and min players
+  double CT[2] = {2.5, 2.5}; // exploration bias setting for BFB types used by max and min players
   int budget[2] = {1, 1}; // if using playouts to estimate leaf utilities, these determine how many playouts are averaged
   short usingRandomStartBoard = true; // are we using random start boards or boards from a file?
   char boardFileName[1024]; // if using boards from a file, this contains the file name
@@ -50,6 +51,8 @@ int main(int argc, char* argv[]) {
   int type_system[2] = {STS, STS}; //the type system used by BFB.
   int threshold[2] = {100, 100}; //the maximal number of nodes in a type for the STS type system
   int policy[2] = {MAB, MAB}; //the policy used by BFB to choose types.
+  double time[2] = {0.0, 0.0}; //the total time each player took to play across all games.
+  int turns[2] = {0, 0}; //the total number of turns each player played across all games.
   
   // Variables used for pretty printing parameter settings
   const char* playerStrings[] = {"max", "min"};
@@ -232,6 +235,21 @@ int main(int argc, char* argv[]) {
 	C[min] = atof(argv[i]);
       else
 	MISSING("c2")
+    }
+    
+    else if OPTION("-ct1") {
+      CHECK(max, BFB, "-ct1")
+      if (++i < argc)
+	CT[max] = atof(argv[i]);
+      else
+	MISSING("ct1")
+    }
+    else if OPTION("-ct2") {
+      CHECK(min, BFB, "-ct2")
+      if (++i < argc)
+	CT[min] = atof(argv[i]);
+      else
+	MISSING("ct2")
     }
     else if OPTION("-i1") {
       CHECK(max, (UCT | MINMAX_ON_UCT| MMUCT | BFB), "-i1")
@@ -440,7 +458,7 @@ int main(int argc, char* argv[]) {
 			moveMade = makeMinmaxMove(state, &side,depth[side],heuristic[side],budget[side],randomTieBreaks,noisyMM,bestMoves,&numBestMoves, &termPercentage);
 			break;
 		case BFB:
-			moveMade = makeBFBMove(state, &side, type_system[side], numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, backupOp[side], threshold[side], policy[side]);
+			moveMade = makeBFBMove(state, &side, type_system[side], numIterations[side], C[side], CT[side], heuristic[side], budget[side], bestMoves, &numBestMoves, backupOp[side], threshold[side], policy[side]);
 			break;
 		default:
 			puts("Unknown algorithm\n");
@@ -448,6 +466,10 @@ int main(int argc, char* argv[]) {
 
         if (verbose)
           printf("Elapsed time: %f\n", getElapsed(start));
+	
+	turns[side]++;
+	time[side] = time[side] + getElapsed(start);
+	
         moveCount++;
         if (verbose) {
           printf("Move #%d -- player %d made move %d\n", moveCount, origSide, moveMade);
@@ -500,11 +522,14 @@ int main(int argc, char* argv[]) {
       swapInts(&backupOp[max], &backupOp[min]);
       swapInts(&mmTreeSize[max], &mmTreeSize[min]);
       swapDbls(&C[max], &C[min]);
+      swapDbls(&CT[max], &CT[min]);
       swapPtrs((void**)&heuristic[max], (void**)&heuristic[min]);
       swapInts(&type_system[max], &type_system[min]);
       swapInts(&threshold[max], &threshold[min]);
       swapInts(&policy[max], &policy[min]);
       swapInts(&depth[max], &depth[min]);
+      swapDbls(&time[max], &time[min]);
+      swapInts(&turns[max], &turns[min]);
     }
 
     printf("\n");
@@ -527,7 +552,7 @@ int main(int argc, char* argv[]) {
       printf("Min *superiority* rate: %f\n",(float)minSuper/(maxSuper+minSuper));
       printf("------------------------------\n");
   }else {
-      puts("domain, max_alg, min_alg ,num_of_games,num_of_draws,num_of_incomplete,max_win,min_win,total_win_games\n");
+      puts("domain, max_alg, min_alg ,num_of_games,num_of_draws,num_of_incomplete,max_win,min_win,total_win_games,max_time,min_time\n");
       printf("%d,",_DOM->dom_name);
       printf("%s,",algDescription[max]);
       printf("%s,",algDescription[min]);
@@ -536,7 +561,9 @@ int main(int argc, char* argv[]) {
       printf("%d,",incompletes);
       printf("%f,",(float)maxSuper/(maxSuper+minSuper));
       printf("%f,",(float)minSuper/(maxSuper+minSuper));
-      printf("%d\n",maxSuper);
+      printf("%d,",maxSuper);
+      printf("%f,",time[max]/(double)turns[max]);
+      printf("%f\n",time[min]/(double)turns[min]);
   }
   printUctStats();
   free(algDescription[0]);

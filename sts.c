@@ -1,5 +1,5 @@
 #include "type.h"
- 
+#define USE_MINIMAX_REWARDS 0
 void assignToType_sts(void *void_ts, treeNode *node, int fatherType, int threshold, int policy) {
   type_system *ts = (type_system *)void_ts;
   int i;
@@ -30,71 +30,33 @@ void assignToType_sts(void *void_ts, treeNode *node, int fatherType, int thresho
 	ts->types[ts->numTypes - 1] = (type*)calloc(1, sizeof(type_sts));
 	((type_sts *)ts->types[ts->numTypes - 1])->root = t->root->children[i];
 	((type_sts *)ts->types[ts->numTypes - 1])->birth = ts->visits;
-	((type_sts *)ts->types[ts->numTypes - 1])->scoreSum = t->root->children[i]->minimaxScoreSum;
-	((type_sts *)ts->types[ts->numTypes - 1])->mm_visits = t->root->children[i]->minimax_n;
+	if (USE_MINIMAX_REWARDS){
+		((type_sts *)ts->types[ts->numTypes - 1])->scoreSum = t->root->children[i]->minimaxScoreSum;
+		((type_sts *)ts->types[ts->numTypes - 1])->mm_visits = t->root->children[i]->minimax_n;
+	}else {
+		((type_sts *)ts->types[ts->numTypes - 1])->scoreSum = t->root->children[i]->scoreSum;
+	}
 	if (policy == DELETE_VMAB)
 	  ts->types[ts->numTypes - 1]->visits = 0;
 	else
 	  ts->types[ts->numTypes - 1]->visits = t->root->children[i]->n;
       }
-      
+
       t->root = newFather;
       if (policy == DELETE_VMAB)
-	t->visits = 0;
+	      t->visits = 0;
       else
-	t->visits = newFather->n;
-      
+	      t->visits = newFather->n;
+
       t->birth = ts->visits;
-      t->scoreSum = newFather->minimaxScoreSum;
-      t->mm_visits = newFather->minimax_n;
+      if (USE_MINIMAX_REWARDS){
+	      t->scoreSum = newFather->minimaxScoreSum;
+	      t->mm_visits = newFather->minimax_n;
+      }else{ 
+	      t->scoreSum = newFather->scoreSum;
+      }
     }
   } 
-}
-
-//TODO merge with select move of uct.c
-//Select a child of a uct node based on ucb1
-static int selectMove_sts(treeNode* node, double C) {
-	
-  int i;
-  double qhat;
-  double score;
-  int numBestMoves = 0;
-  double bestScore;
-  int bestMoves[_DOM->getNumOfChildren()];
-
-  // The multiplier is used to set the sign of the exploration bonus term (should be negative
-  // for the min player and positive for the max player) i.e. so that we correctly compute
-  // an upper confidence bound for Max and a lower confidence bound for Min
-  double multiplier = (node->side == max) ? 1 : -1;
-
-  for (i = 1; i < _DOM->getNumOfChildren(); i++) { // iterate over all children
-    if (!_DOM->isValidChild(node->rep, node->side, i)) // if the i^th move is illegal, skip it
-      continue;
-
-    // If the i^th child has never been visited before, select it first, before any other children are revisited
-    if (node->children[i]->n == 0)
-      return i;
-
-    // Otherwise, compute this child's UCB1 index (will be used to pick best child if it transpires that all
-    // children have been visited at least once)
-    qhat = node->children[i]->scoreSum / (double)node->children[i]->n;  // exploitation component (this is the average utility)
-    score = qhat + (multiplier * C) * sqrt(log(node->n) / (double)node->children[i]->n); // add exploration component
-
-    // Negamax formulation -- since min(s1,s2,...) = -max(-s1,-s2,...), negating the indices when it
-    // is min's turn means we can always just take the maximum
-    score = (node->side == min) ? -score : score;
-   
-    // If this is either the first child, or the best scoring child, store it
-    if ((numBestMoves == 0) || (score > bestScore)) {
-      bestMoves[0] = i;
-      bestScore = score;
-      numBestMoves = 1;
-    }
-    else if (score == bestScore) // if this child ties with the best scoring child, store it
-      bestMoves[numBestMoves++] = i;
-  }
-
-  return bestMoves[0];
 }
 
 treeNode *selectFromType_sts(void *void_t, double C) {
@@ -103,7 +65,7 @@ treeNode *selectFromType_sts(void *void_t, double C) {
   
   //travel down the tree using ucb
   while (_DOM->getGameStatus(node->rep) == INCOMPLETE && node->n > 0)
-    node = node->children[selectMove_sts(node, C)];
+    node = node->children[selectMove(node, C)];
  
   return node;
 }
