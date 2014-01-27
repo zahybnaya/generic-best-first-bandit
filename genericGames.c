@@ -15,6 +15,11 @@ static int isSuper(int firstOutcome, int secondOutcome);
 static int printMessage();
 static char* createAlgorithmDecription(int player[],int player_side);
 
+/*
+ * ./ggames 4 b u -a1 1 -a2 1 -ts1 2 -t1 500 -h1 3 -h2 3 -c1 2.5 -c2 2.5 -i1 5000 -i2 5000 -s 0 -g 30
+ */
+
+
 int main(int argc, char* argv[]) {
 
   int maxWins=0,draws=0,minWins=0,incompletes=0,maxSuper=0,minSuper=0,same=0;
@@ -82,6 +87,9 @@ int main(int argc, char* argv[]) {
 
 	  case 3:
 		  _DOM = init_domain(ZOP);
+		  break;
+	  case 4:
+		  _DOM = init_domain(C4);
 		  break;
 	  default:
 		  puts("Unrecognized domain description.");

@@ -5,7 +5,7 @@ ggames: common.h domain genericGames.c uct.c minmax.c heuristic.c move.c board.c
 
 domain: synth mancala zop domain.c domain.h
 	gcc -c domain.c -o tmpdomain.o $(CFLAGS) 
-	ld -r tmpdomain.o synth.o mancala.o zop.o -o domain.o 
+	ld -r tmpdomain.o synth.o mancala.o zop.o c4.o -o domain.o 
 	rm tmpdomain.o	
 
 synth: synth.c synth.h
@@ -13,6 +13,9 @@ synth: synth.c synth.h
 
 zop: zop.c zop.h
 	gcc -c zop.c -o zop.o ${CFLAGS}
+	
+c4: c4.c c4.h
+	gcc -c c4.c -o c4.o ${CFLAGS}
 
 
 mancala: mancala.c mancala.h move.c board.c heuristic.c 
