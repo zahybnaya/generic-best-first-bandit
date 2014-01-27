@@ -10,8 +10,7 @@
 
 extern DOM* _DOM;
 
-//TODO extract and merge with uct.c
-/* This is a node in the UCT tree. */
+/* This is a node in the BFB tree. */
 typedef struct node {
   double scoreSum; //sum of all rollouts gone through this node
   double typedScoreSum; // sum of rollouts gone through this node that are of the same type(For use in VTS)
@@ -25,6 +24,7 @@ typedef struct node {
   rep_t rep; // generic representation of the state
   int side; // side on move at this board position
   int typeDefiner; //is this node defining a type? (For use in VTS)
+  double minmax; //the minmax value of the node based on rollouts which have gone through it.
   struct node *parent; //the parent node
   struct node** children; /* pointers to the children of this node -- note that index 0 remains
 					unused (which is reserved for the store), so we have consistent move

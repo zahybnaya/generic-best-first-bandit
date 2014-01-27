@@ -136,6 +136,7 @@ static void bfbIteration(type_system *ts, double C, double CT, heuristics_t heur
   
   //backpropagate
   treeNode *bp = node;
+  int aboveTypeVTS = false;
   int aboveType = false;
   double bpMean;
   while (bp != NULL) {
@@ -144,15 +145,34 @@ static void bfbIteration(type_system *ts, double C, double CT, heuristics_t heur
     if (backupOp == AVERAGE) {
       bp->scoreSum = bp->scoreSum + ret;
       
+      if (!aboveType) {
+	if (bp->n == 1 || (gameOver == 1 && bp == node)) 
+	  bp->minmax = ret;
+	else { //compute minimax
+	  double bestScore = (bp->side == max) ? MIN_WINS : MAX_WINS;
+	  
+	  for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+	    if (_DOM->isValidChild(bp->rep, bp->side, i)) { // if child exists, is it the best scoring child?
+	      if ((bp->side == max && bp->children[i]->minmax > bestScore) || (bp->side == min && bp->children[i]->minmax < bestScore))
+		bestScore = bp->minmax;
+	    }
+	  }  
+	bp->minmax = bestScore;
+	}
+	
+	if (bp->typeDefiner == true)
+	    aboveType = true;
+      }
+      
       if (ts->name == VTS) {
-	if (!aboveType) {
+	if (!aboveTypeVTS) {
 	  bp->typedN++;
 	  bp->typedScoreSum = bp->typedScoreSum + ret;
 	  bpMean = bp->typedScoreSum / (double)(bp->typedScoreSum);
 	  bp->sd = ((double)(bp->typedN - 2) / (double)(bp->typedN - 1)) * bp->sd + (ret - bpMean) * (ret - bpMean) / ((double)bp->typedN);
 	  
 	  if (bp == ((type_vts *)t)->root)
-	    aboveType = true;
+	    aboveTypeVTS = true;
 	}
       }
     } else if (backupOp == MINMAX) {

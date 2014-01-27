@@ -25,12 +25,13 @@ void assignToType_sts(void *void_ts, treeNode *node, int fatherType, int thresho
 	  continue;
 	
 	ts->numTypes++;
-	ts->types = realloc(ts->types, ts->numTypes * sizeof(type_sts *)); //alocate a new type
+	ts->types = realloc(ts->types, ts->numTypes * sizeof(type_sts *)); //allocate a new type
 	
 	ts->types[ts->numTypes - 1] = calloc(1, sizeof(type_sts));
 	((type_sts *)ts->types[ts->numTypes - 1])->root = t->root->children[i];
 	((type_sts *)ts->types[ts->numTypes - 1])->birth = ts->visits;
 	((type_sts *)ts->types[ts->numTypes - 1])->scoreSum = t->root->children[i]->scoreSum;
+	((type_sts *)ts->types[ts->numTypes - 1])->minmax = t->root->children[i]->minmax;
 	
 	if (policy == DELETE_VMAB)
 	  ts->types[ts->numTypes - 1]->visits = 0;
@@ -46,6 +47,7 @@ void assignToType_sts(void *void_ts, treeNode *node, int fatherType, int thresho
       
       t->birth = ts->visits;
       t->scoreSum = newFather->scoreSum;
+      t->minmax = newFather->minmax;
     }
   } 
 }
