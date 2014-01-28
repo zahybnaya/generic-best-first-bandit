@@ -2,16 +2,11 @@
  *
  * UCT implementationa
  *
- * TODO: heuristics should be domain dependent.
- * TODO: Where to place the DOM
- *
- *
  * */
-
 #include "common.h"
 #include "domain.h"
+#define SIMPLE_REGRET_UCT 1 //set to 1 to enable a different algorithm (see minimizing simple regret in MCTS)
 
-//The domain description TODO: have this as a singleton somewhere
 extern DOM* _DOM; 
 extern int debuglog;
 extern int logIteration;
@@ -48,9 +43,21 @@ static void freeTree(treeNode* node) {
 	free(node->children);
 	free(node);
 }
+/**
+ * Exploitation term acording to the uct formula 
+ */ 
+static double uctExploration(double multiplier, double C, treeNode* node, int i){
+	return (multiplier * C) * sqrt(log(node->n) / (double)node->children[i]->n); // add exploration component
+}
+/**
+ * Exploitation term acording to the simple regret uct formula 
+ */ 
+static double uctExplorationSimpleRegret(double multiplier, double C, treeNode* node, int i){
+	return 	sqrt((multiplier * C) * sqrt(node->n)/(double)node->children[i]->n); // add exploration component
+}
 
 /* Invoked by uctRecurse to decide which child of the current node should be expanded */
-static int selectMove(treeNode* node, double C) {
+static int selectMove(treeNode* node, double C, int isSimpleRegret) {
 	int i;
 	double qhat;
 	double score;
@@ -73,8 +80,11 @@ static int selectMove(treeNode* node, double C) {
 		// Otherwise, compute this child's UCB1 index (will be used to pick best child if it transpires that all
 		// children have been visited at least once)
 		qhat = node->children[i]->scoreSum / (double)node->children[i]->n;  // exploitation component (this is the average utility)
-		score = qhat + (multiplier * C) * sqrt(log(node->n) / (double)node->children[i]->n); // add exploration component
-
+		if (isSimpleRegret){
+			score = qhat + uctExplorationSimpleRegret(multiplier,C,node,i);
+		} else {
+			score = qhat + uctExploration(multiplier,C,node,i);
+		}
 		// Negamax formulation -- since min(s1,s2,...) = -max(-s1,-s2,...), negating the indices when it
 		// is min's turn means we can always just take the maximum
 		score = (node->side == min) ? -score : score;
@@ -100,7 +110,7 @@ static int selectMove(treeNode* node, double C) {
 
 
 /* Recursively constructs the UCT search tree */
-static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int budget, int backupOp) {
+static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int budget, int backupOp , int isRoot) {
 	double ret;
 	int move;
 	int i;
@@ -136,8 +146,7 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 
 	// We are at an internal node that has been visited before; descend recursively
 	// Use selectMove to pick which branch to explore
-	move = selectMove(node, C);
-
+	move = selectMove(node, C, SIMPLE_REGRET_UCT?isRoot:false);
 	// If this board does not have a node already created for it, create one for it now
 	if (node->children[move] == NULL) {
 		mm_Counter++;
@@ -156,7 +165,7 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 	}
 
 	// Descend recursively
-	ret = uctRecurse(node->children[move], C, heuristic, budget, backupOp);
+	ret = uctRecurse(node->children[move], C, heuristic, budget, backupOp,false);
 
 	// Update score and node counts and return the outcome of this episode
 	if (backupOp == AVERAGE) { // use averaging back-up
@@ -208,16 +217,7 @@ int makeUCTMove(rep_t rep, int *side, int numIterations, double C,
 
 	// Run specified number of iterations of UCT
 	for (i = 0; i < numIterations; i++){
-		if(debuglog)printf("UCT:Iteration: %d\n",i);
-		if(i==log_this_iteration){ //3224
-			debuglog=true;
-			logIteration=true;
-		}
-		else {
-			debuglog=false;
-			logIteration=false;
-		}
-		uctRecurse(rootNode, C, heuristic, budget, backupOp);
+		uctRecurse(rootNode, C, heuristic, budget, backupOp, true);
 	}
 
 	// Now look at the children 1-ply deep and determing the best one (break ties
@@ -291,7 +291,7 @@ void genUCTTree(rep_t rep, int side, int numIterations, double C, heuristics_t h
 
 	// Run specified number of iterations of UCT (this outputs the search tree)
 	for (i = 0; i < numIterations; i++)
-		uctRecurse(rootNode, C, heuristic, budget, AVERAGE);
+		uctRecurse(rootNode, C, heuristic, budget, AVERAGE, true);
 
 	dotFormat = false;
 
@@ -362,7 +362,7 @@ int makeMinmaxOnUCTMove(rep_t rep, int *side, int numIterations, double C,
 
 	// Run specified number of iterations of UCT
 	for (i = 0; i < numIterations; i++)
-		uctRecurse(rootNode, C, heuristic, budget, AVERAGE);
+		uctRecurse(rootNode, C, heuristic, budget, AVERAGE,true);
 
 	// Now minimax the tree we just built (we minimax starting from each child)
 	for (i = 1; i < _DOM->getNumOfChildren(); i++) {
