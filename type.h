@@ -1,3 +1,5 @@
+#ifndef TYPE_H
+#define TYPE_H
 #include "common.h"
 #include "domain.h"
 
@@ -10,22 +12,27 @@
 
 extern DOM* _DOM;
 
-//TODO extract and merge with uct.c
-/* This is a node in the UCT tree. */
+/* This is a node in the BFB tree. */
 typedef struct node {
-  double scoreSum; // stores the sum of the rewards of the episodes that have gone through this node
-  double deviationSum; //stores the sum of the deviation of rollout gone through this node
+  double scoreSum; //sum of all rollouts gone through this node
+  double typedScoreSum; // sum of rollouts gone through this node that are of the same type(For use in VTS)
+  double sd; //stores the standard deviation of rollout gone through this node(For use in VTS)
   int n; // tracks the visit count
+  int typedN; //number of visits whitin this type;(For use in VTS)
   int id; // used for graph visualization purposes
   int depth;
   int subtreeSize; //size of subtree rooted at this node. equals one when this node has no children.
+  int typedSubtreeSize; //size of subtree rooted at this node. Only nodes of the same type.(For use in VTS)
   rep_t rep; // generic representation of the state
   int side; // side on move at this board position
-  int typeDefiner; //is this node difining a type? (For use in VTS)
+  int typeDefiner; //is this node defining a type? (For use in VTS)
+  double minmax; //the minmax value of the node based on rollouts which have gone through it.
   struct node *parent; //the parent node
   struct node** children; /* pointers to the children of this node -- note that index 0 remains
 					unused (which is reserved for the store), so we have consistent move
 					indexing/numbering */
+  double minimaxScoreSum; // stores the sum of minimax rewards that went have gone through this node
+  int minimax_n; //tracks how many times a minimax value had moves through this node
 } treeNode;
 
 typedef struct {
@@ -33,6 +40,7 @@ typedef struct {
   double scoreSum; // stores the sum of the rewards of the episodes that have gone through this type
   int visits; // tracks the visit count
   int birth; //the iteration this type appeared
+  double minmax;
 } type;
 
 typedef struct {
@@ -40,6 +48,7 @@ typedef struct {
   double scoreSum; // stores the sum of the rewards of the episodes that have gone through this type
   int visits; // tracks the visit count
   int birth; //the iteration this type appeared
+  double minmax;
   
   //Type stats
   treeNode **openList; //tree nodes which havn't been fully expanded and are of the same type
@@ -54,9 +63,11 @@ typedef struct {
   double scoreSum; // stores the sum of the rewards of the episodes that have gone through this type
   int visits; // tracks the visit count
   int birth; //the iteration this type appeared
+  double minmax;
   
   //Type stats: subtree size is updated within the node
   treeNode *root; //the root of the subtree that this type represents
+  int mm_visits;
 } type_sts;
 
 typedef struct {
@@ -64,12 +75,10 @@ typedef struct {
   double scoreSum; // stores the sum of the rewards of the episodes that have gone through this type
   int visits; // tracks the visit count
   int birth; //the iteration this type appeared
+  double minmax;
   
   //Type stats:
   treeNode *root; //the root of the subtree that this type represents
-  double deviationSum; //stores the sum of the deviation of rollouts gone through this node
-  int size; //the number of nodes within this type
-  int *childrenTypedNodes; //the number of nodes in each subtree of the children of the root node that are a part of a type already. 
 } type_vts;
 
 typedef void (*assignToType_func)(void *void_ts, treeNode *node, int fatherType, int threshold, int policy);
@@ -91,6 +100,7 @@ typedef struct {
 //Type system (type.c)
 void *init_type_system(int t, rep_t rep, int side);
 void destroyTypeSystem(void *void_ts);
+int selectMove(treeNode* node, double C);
 
 //VTS (vts.c)
 void typeSignificance(type_system *ts, type_vts *type, treeNode **path);
@@ -108,3 +118,5 @@ double storeMinimax(int fd, rep_t rep, int searchDepth, int depth, int side, heu
 void assignToType_mmOracle(void *void_ts, treeNode *node, int fatherType, int threshold, int policy);
 treeNode *selectFromType_mmOracle(void *void_t, double C);
 void destroy_mmOracle(void *void_ts);
+
+#endif /* end of include guard: TYPE_H */

@@ -139,7 +139,6 @@ int pickRandomMove(int board[2][NUM_PITS+1], int side);
 int makeRandomMove(int board[2][NUM_PITS+1], int *side);
 
 //BFB (bfb.c)
-int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, heuristics_t heuristic, int budget,
-		int* bestMoves, int* numBestMoves, int backupOp, int threshold, int policy);
+int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, double CT, heuristics_t heuristic, int budget, int* bestMoves, int* numBestMoves, int backupOp, int threshold, int policy);
 
 #endif //__COMMON__H__
