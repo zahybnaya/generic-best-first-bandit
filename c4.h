@@ -19,7 +19,6 @@ void destructRep_connect4(rep_t rep);
 void copy_connect4(rep_t src,rep_t dst);
 
 double h3_c4(rep_t rep, int side, int numPlayouts);
-static int playout_c4(int * board, int side);
 int pickRandomMove_connect4(int * dummyBoard, int side);
 
 int checkWin(int *board, int *side);

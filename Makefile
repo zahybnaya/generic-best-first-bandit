@@ -3,7 +3,7 @@ CFLAGS = -lm -Wall -g
 ggames: common.h domain genericGames.c uct.c type_reachability.c type_reachability.h  minmax.c heuristic.c move.c board.c util.c random.c bfb.c type.h type.c vts.c sts.c oracleTypeSystem.c
 	gcc genericGames.c uct.c bfb.c type.c type_reachability.c vts.c sts.c oracleTypeSystem.c util.c domain.o -o ggames $(CFLAGS) 
 
-domain: synth mancala zop domain.c domain.h
+domain: synth mancala zop c4 domain.c domain.h
 	gcc -c domain.c -o tmpdomain.o $(CFLAGS) 
 	ld -r tmpdomain.o synth.o mancala.o zop.o c4.o -o domain.o 
 	rm tmpdomain.o	

@@ -6,7 +6,7 @@
 int verbose = false;
 int isToPrintToDot = false;
 int isDotLabel = false;
-int debuglog = true;
+int debuglog = false;
 int log_this_iteration=-1;
 int logIteration=0;
 DOM* _DOM;

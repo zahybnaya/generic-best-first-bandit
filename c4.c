@@ -246,8 +246,8 @@ rep_t cloneRep_connect4(rep_t orig)
 {
 	int * board_orig = orig;
 	int * board = (int*) calloc(BOARD_ROWS * BOARD_COLS, sizeof(int));
-
-	for(int i = 0; i < BOARD_ROWS * BOARD_COLS; i++)
+	int i;
+	for(i = 0; i < BOARD_ROWS * BOARD_COLS; i++)
 	{
 		board[i] = board_orig[i];
 	}
@@ -324,8 +324,8 @@ void copy_connect4(rep_t src, rep_t dst)
 {
 	int* c_src = src;
 	int* c_dst = dst;
-
-	for(int i = 0; i < BOARD_ROWS * BOARD_COLS; i++)
+	int i;
+	for(i = 0; i < BOARD_ROWS * BOARD_COLS; i++)
 	{
 		c_dst[i] = c_src[i];
 	}

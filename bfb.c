@@ -2,7 +2,6 @@
 #include "type.h"
 #include "type_reachability.h"
 #define USE_MINIMAX_REWARDS 0
-
 //TODO extract and merge with uct.c
 /* Routine to free up UCT tree */
 static void freeTree(treeNode* node) {
