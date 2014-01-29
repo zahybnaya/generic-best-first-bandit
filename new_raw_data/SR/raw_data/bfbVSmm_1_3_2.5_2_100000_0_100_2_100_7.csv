@@ -1,0 +1,51 @@
+Parameters:
+Random seed: 0
+Domain used is: 0
+# Pits: 6, Stones per pit: 4
+Player 0 (max) --- BFB, C 2.500, Num iterations 100000, with average backups, using playouts (budget = 1)
+Player 1 (min) --- Minmax, Depth 7, using playouts (budget = 1)
+-1 1 
+-1 1 
+-1 1 
+-1 1 
+-1 -1 
+-1 1 
+-1 1 
+-1 1 
+-1 1 
+-1 1 
+-1 1 
+1 1 
+-1 1 
+-1 1 
+-1 1 
+1 1 
+-1 1 
+0 1 
+-1 1 
+-1 1 
+-1 1 
+-1 1 
+-1 1 
+1 1 
+1 1 
+-1 1 
+-1 0 
+1 1 
+-1 1 
+1 1 
+-1 1 
+-1 1 
+-1 1 
+-1 1 
+-1 1 
+-1 1 
+-1 1 
+-1 1 
+-1 1 
+1 1 
+1 1 
+-1 1 
+-1 1 
+-1 1 
+-1 
