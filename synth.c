@@ -1,7 +1,7 @@
 #include "synth.h"
 #include <math.h>
 
-#define b 3 /*Branching factor*/
+#define b 250 /*Branching factor*/
 #define EPS 0.03 /*Epsilon*/
 #define MIN_DEPTH 7 /*Min depth to choose random endgame*/
 #define DEPTH_INTERVAL 2 /*Interval to choose random endgame*/
@@ -318,12 +318,14 @@ int isValidChild_synth(rep_t rep, int side, int move){
 }
 
 
-
+double h1_synth(rep_t rep, int side, int dummy) {
+	return applyHeuristics_synth((heuristics_t)NULL, rep, side, 0);
+}
 
 /*
 * Apply the heuristics
 */
-double applyHeuristics_synth(heuristics_t h,rep_t rep,int side, int budget){
+double applyHeuristics_synth(heuristics_t h, rep_t rep, int side, int budget) {
     uid const crep = *(uid*)rep;
     double hVal=0.0;
     hVal = getH(crep);

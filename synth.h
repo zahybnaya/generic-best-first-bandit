@@ -37,6 +37,6 @@ rep_t allocate_synth();
 
 void copy_synth (rep_t src ,rep_t dest);
 
-
+double h1_synth(rep_t rep, int side, int dummy);
 
 #endif // SYNTH_H_INCLUDED

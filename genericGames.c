@@ -87,7 +87,6 @@ int main(int argc, char* argv[]) {
 	  case 2:
 		  _DOM = init_domain(CHESS);
 		  break;
-
 	  case 3:
 		  _DOM = init_domain(ZOP);
 		  break;
@@ -436,6 +435,7 @@ int main(int argc, char* argv[]) {
       _DOM->generateRandomStart(state,&side);/*Sending rootSide always generates from the same max side*/
       //resetTrapCounter();
     }
+    
     // Store start board, so that we can restore it when we switch player sides
     _DOM->copy(state,randState);
     rootSide = side;
@@ -446,6 +446,7 @@ int main(int argc, char* argv[]) {
       moveCount = 0; // reset move count
       side = rootSide; // Restore the starting board (which was either randomly generated or read from a file)
       _DOM->copy(randState,state);
+      
       // Play complete game
       while ((outcome = _DOM->getGameStatus(state)) == INCOMPLETE) {
         origSide = side; /* this is who is currently on move -- since this is not a strict turn taking game,
