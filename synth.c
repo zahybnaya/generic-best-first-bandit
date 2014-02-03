@@ -1,7 +1,7 @@
 #include "synth.h"
 #include <math.h>
 
-#define b 250 /*Branching factor*/
+#define b 3 /*Branching factor*/
 #define EPS 0.03 /*Epsilon*/
 #define MIN_DEPTH 7 /*Min depth to choose random endgame*/
 #define DEPTH_INTERVAL 2 /*Interval to choose random endgame*/
@@ -39,9 +39,9 @@ static Hvals hvals = NULL;
 static void depthIndexOf(const uid id, int* depth, uid* prefix, uid* suffix);
 static uid findId(const int depth, const double ratio);
 static uid succesorsIds(const uid id, const int k, uid* from, uid* to);
-//static int addTrap(const int depth, const double r, const int k, Hvals h);
-//static int addTrapById(const uid id, const int k, Hvals h);
-//static void addTraps(int howManyTraps,const int sizeofTrap,Hvals h, uid* traps,int trap_gap);
+static int addTrap(const int depth, const double r, const int k, Hvals h);
+static int addTrapById(const uid id, const int k, Hvals h);
+static void addTraps(int howManyTraps,const int sizeofTrap,Hvals h, uid* traps,int trap_gap);
 static void freeHvals();
 static uid succ(const uid id, const int move);
 static void printHvals(Hvals hvals);
@@ -169,20 +169,20 @@ static void freeHvals(){
 /*
 Add traps
 */
-//static void addTraps(int howManyTraps,const int sizeofTrap,Hvals h, uid* traps,int trap_gap){
-    //if(!traps){
-        //printf("traps array not initialized\n");
-        //exit(-1);
-    //}
-    //uid trapRoot;
-    //int i;
-    //for(i=0;i<howManyTraps;i++){
-        //trapRoot = 2 + (rand() % (h->endGameId+2));
-        //if(debuglog)printf("Adding trap AT %d\n", trapRoot);
-        //addTrapById(trapRoot,sizeofTrap,h);
-        //traps[i] = trapRoot;
-    //}
-//}
+static void addTraps(int howManyTraps,const int sizeofTrap,Hvals h, uid* traps,int trap_gap){
+    if(!traps){
+        printf("traps array not initialized\n");
+        exit(-1);
+    }
+    uid trapRoot;
+    int i;
+    for(i=0;i<howManyTraps;i++){
+        trapRoot = 2 + (rand() % (h->endGameId+2));
+        if(debuglog)printf("Adding trap AT %d\n", trapRoot);
+        addTrapById(trapRoot,sizeofTrap,h);
+        traps[i] = trapRoot;
+    }
+}
 
 /*
 
@@ -213,14 +213,14 @@ static int addTrapById(const uid id, const int k, Hvals h){
 /*
 * add a trap to h
 */
-//static int addTrap(const int depth, const double r, const int k, Hvals h){
-  //  if(h==NULL){
-    //   printf("H is null\n");
-    //   return 0;
-   // }
-   // int root_id = findId(depth,r);
-   // return addTrapById(root_id,k,h);
-//}
+static int addTrap(const int depth, const double r, const int k, Hvals h){
+    if(h==NULL){
+       printf("H is null\n");
+       return 0;
+    }
+    int root_id = findId(depth,r);
+    return addTrapById(root_id,k,h);
+}
 
 
 
@@ -259,7 +259,7 @@ void generateRandomStart_synth(rep_t rep,int side){
     *(uid*)rep=1;
 //    mmNode* n =  generateMmNode(rep,side,false);
 //    makeNormalNoise(rep,n,H_MINIMAX_DEPTH,NOISE_SD,NOISE_MU,hvals,getNumOfChildren_synth());
-    //addTrapById(3,3,hvals);
+    addTrapById(3,3,hvals);
     //traps[0]=3;
     if(debuglog)printHvals(hvals);
 //    addTraps(howManyTraps,sizeofTrap,hvals,traps,trap_gap);
