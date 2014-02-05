@@ -69,11 +69,9 @@ int main(int argc, char* argv[]) {
 				printMessage();
 				return (-1);
 		}
-
 		// The default seed for the random number generator comes from the OS -- this may be overridden
 		// if the user invokes the '-s' flag (enables repeatable runs)
 		seed = (unsigned int)devrand();
-
 		/*Domain name initializaiont*/
 		int dom_name = atoi(argv[1]);
 		switch(dom_name){
@@ -345,7 +343,6 @@ int main(int argc, char* argv[]) {
 						else
 								MISSING("-l")
 				}
-
 				else if OPTION("-s") {
 						if (++i < argc)
 								seed = (unsigned int)atoi(argv[i]);

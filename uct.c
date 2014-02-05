@@ -127,11 +127,9 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 			ret /= MAX_WINS; // rescale
 		if ((dotFormat) && (node->n == 0)) // on first visit to a terminal node, color it red
 			printf("n%d [color=\"red\"];", node->id);
-
 		// Update node score / count and return
 		(node->n)++;
 		node->scoreSum += ret;
-
 		return ret;
 	}
 	else if (node->n == 0) { // not a terminal node
