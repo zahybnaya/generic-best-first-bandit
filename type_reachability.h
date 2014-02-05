@@ -1,10 +1,15 @@
 #include "common.h"
 #include "type.h"
 
+typedef struct bolzman_args_s {
+	double difference;
+	double bestSd;
+	double mySd;
+} bolzman_args;
 
- double probValue(double difference);
- double minDiff(treeNode* n);
- double calculateTypeReachability(type* t);
+ double probValue(double difference, double, double,double);
+ bolzman_args minDiff(treeNode* n);
+ double calculateTypeReachability(type* t,double);
  int countLevelNode(treeNode* n);
  int countLevel(type* t);
  int calculateSideOfType(type* t);

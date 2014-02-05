@@ -139,7 +139,6 @@ static double getH(const uid id){
     int ind=-1;
     if((ind = searchIndexOf(id))>=0)
         return hvals->vals[ind];
-
     return hvals->defaultH;
 }
 
