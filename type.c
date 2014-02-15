@@ -63,7 +63,7 @@ void *init_type_system(int t, rep_t rep, int side) {
   type_system *ts = calloc(1, sizeof(type_system));
   
   switch (t) {
-    case MM_ORACLE:     
+    /*case MM_ORACLE:     
       ts->name = MM_ORACLE;
       ts->assignToType = assignToType_mmOracle;
       ts->selectFromType = selectFromType_mmOracle;
@@ -81,7 +81,7 @@ void *init_type_system(int t, rep_t rep, int side) {
       ts->extra = calloc(1, sizeof(int));
       *(int *)(ts->extra) = open(ORACLE_PATH, O_CREAT | O_TRUNC | O_RDWR, S_IRWXU);
       storeMinimax(*(int *)(ts->extra), rep, 0, ORACLE_DEPTH, side, ORACLE_H, 0);
-      break;
+      break;*/
       
     case STS:
       ts->name = STS;

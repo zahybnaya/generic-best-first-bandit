@@ -127,7 +127,7 @@ static void bfbIteration(type_system *ts, double C, double CT, heuristics_t heur
     // node values. If we are using engineered heuristics, then no rescaling is necessary.
     if ((heuristic == _DOM->hFunctions.h3) || (heuristic == _DOM->hFunctions.h4) || (heuristic == _DOM->hFunctions.h5))
       ret /= MAX_WINS; // rescale
-  } else{
+  } else {
     ret = heuristic(node->rep, node->side, budget); 
   }
   //backpropagate path
