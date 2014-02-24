@@ -93,6 +93,9 @@ int main(int argc, char* argv[]) {
 	  case 4:
 		  _DOM = init_domain(C4);
 		  break;
+	  case 5:
+		  _DOM = init_domain(SAILING);
+		  break;
 	  default:
 		  puts("Unrecognized domain description.");
 		  return (-1);

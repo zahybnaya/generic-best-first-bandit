@@ -4,11 +4,32 @@
 #include "chess.h"
 #include "zop.h"
 #include "c4.h"
+#include "sailing.h"
 
 
 DOM* init_domain(DOM_NAME name){
 	DOM* retVal = (DOM*)malloc(sizeof(DOM));
-	switch (name){
+	switch (name) {
+	case SAILING:
+		retVal->dom_name = SAILING;
+		retVal->getNumOfChildren = getNumOfChildren_sailing;
+		retVal->estimateTreeSize = estimateTreeSize_sailing;
+		retVal->isValidChild = isValidChild_sailing;
+		retVal->applyHeuristics = applyHeuristics_sailing;
+		retVal->cloneRep = cloneRep_sailing;
+		retVal->makeMove = makeMove_sailing;
+		retVal->getGameStatus = getGameStatus_sailing;
+		retVal->destructRep = destructRep_sailing;
+		retVal->allocate = allocate_sailing;
+		retVal->generateRandomStart = generateRandomStart_sailing;
+		retVal->copy = copy_sailing;
+		retVal->hFunctions.h1  = h1_sailing;
+		retVal->hFunctions.h2  = h2_sailing;
+		retVal->hFunctions.h3  = h3_sailing;
+		retVal->hFunctions.h4  = h4_sailing;
+		retVal->hFunctions.h5  = h5_sailing;
+		retVal->hFunctions.h6  = h6_sailing;
+		break;
 	case C4:
 		retVal->dom_name=C4;
 		retVal->getNumOfChildren = getNumOfChildren_connect4;
