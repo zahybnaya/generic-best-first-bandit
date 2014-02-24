@@ -18,7 +18,7 @@ static double uctExplorationSimpleRegret(double multiplier, double C, treeNode* 
 
 
 //Select a child of a uct node based on ucb1
-int selectMove(treeNode* node, double C) {
+int selectMove(treeNode* node, double C, int isBasedOnMinimax) {
   int i;
   double qhat;
   double score;
@@ -37,8 +37,12 @@ int selectMove(treeNode* node, double C) {
       return i;
     // Otherwise, compute this child's UCB1 index (will be used to pick best child if it transpires that all
     // children have been visited at least once)
-    qhat = node->children[i]->scoreSum / (double)node->children[i]->n;  // exploitation component (this is the average utility)
-    if (SIMPLE_REGRET_UCT){
+    if(isBasedOnMinimax){
+	    qhat = node->children[i]->minmax;
+    }else{
+	    qhat = node->children[i]->scoreSum / (double)node->children[i]->n;  // exploitation component (this is the average utility)
+    }
+    if (SIMPLE_REGRET_UCT && !node->parent){
 	    score = qhat + uctExplorationSimpleRegret(multiplier,C,node,i);
     } else {
 	    score = qhat + uctExploration(multiplier,C,node,i);
@@ -55,6 +59,7 @@ int selectMove(treeNode* node, double C) {
     else if (score == bestScore) // if this child ties with the best scoring child, store it
       bestMoves[numBestMoves++] = i;
   }
+  assert(numBestMoves);
   return bestMoves[0];
 }
 

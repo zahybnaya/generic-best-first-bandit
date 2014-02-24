@@ -64,10 +64,8 @@ typedef struct {
   int visits; // tracks the visit count
   int birth; //the iteration this type appeared
   double minmax;
-  
   //Type stats: subtree size is updated within the node
   treeNode *root; //the root of the subtree that this type represents
-  int mm_visits;
 } type_sts;
 
 typedef struct {
@@ -100,7 +98,7 @@ typedef struct {
 //Type system (type.c)
 void *init_type_system(int t, rep_t rep, int side);
 void destroyTypeSystem(void *void_ts);
-int selectMove(treeNode* node, double C);
+int selectMove(treeNode* node, double C, int isBasedOnMinimax);
 
 //VTS (vts.c)
 void typeSignificance(type_system *ts, type_vts *type, treeNode **path);

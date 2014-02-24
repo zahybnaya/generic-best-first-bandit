@@ -1,21 +1,20 @@
 #include "type_reachability.h"
 /***
  * Returns the pseudo-probablistic value of a given difference
+ * Boltzman distribution
  *
  * */ 
- double probValue(double difference){
-	double base = 1.01; 
-	double xp = 120;
-	double constanct=0.3;  
-	double c = pow(base,(xp*difference))-constanct;
-	if (c > 1){
-		return 1.0;
-	}
-	if (c < 0){
-		return 0.0;
-	}
+ double probValue(double difference, double bestSd, double mySd,double bolzmanConstant){
+	 if(difference > 0 || fabs(difference) <0.0001){
+		//printf(" =>%f\n",1.0);
+	 	return 1;
+	 }
+	//double bolzmanConstant = -20.4; 
+	double base = 2.71828;
+	double deltaT = sqrt(2*(pow(mySd,2)+pow(bestSd,2)));
+	double c = pow(base,bolzmanConstant *(-difference/deltaT));
+	//printf(" =>%f\n",c);
 	return c;
-
 }
 
 
@@ -25,10 +24,11 @@
  *
  * Value(n)-Value(n*)
  */
- double minDiff(treeNode* n){
+bolzman_args minDiff(treeNode* n){
 	treeNode* parent = n->parent; 
 	int side = n->side;
 	double best = (side == max)? -INF : INF;
+	double bestSd;
 	int i;
 	for (i = 1; i < _DOM->getNumOfChildren(); i++) {
 		treeNode* child = parent->children[i];
@@ -38,12 +38,14 @@
 		if ((side==max &&  childValue > best) || 
 				(side==min && childValue < best)) {
 			best = childValue;
+			bestSd = child->sd;
 		}
 	}
-
 	double nvalue = n->scoreSum/n->n; 
 	double delta  =  (nvalue - best) * ((side == max)?1:-1);
-	return delta;
+	bolzman_args args = {delta, bestSd, n->sd};
+	//printf("%f,",delta);
+	return args;
 }
 
 
@@ -51,13 +53,12 @@
  * Calculate a pseudo-probability coefficient for type t 
  * assumes that t is type_sts 
  */
- double calculateTypeReachability(type* t){
+ double calculateTypeReachability(type* t,double bolzmanConstant  ){
 	double c =1.0;
 	treeNode* n = ((type_sts*)t)->root;
 	while(n->parent != NULL){
-		if(minDiff(n)>0){
-			c*= probValue(minDiff(n));
-		}
+		bolzman_args args =minDiff(n);
+		c*= probValue(args.difference, args.bestSd, args.mySd,bolzmanConstant);
 		n = n->parent;
 	}
 	return c;
@@ -99,7 +100,7 @@
  */
  double minmaxLevel(treeNode* n){
 	while(n->parent != NULL){
-		if(minDiff(n)<0){
+		if(minDiff(n).difference<0){
 			break;
 		}
 		n = n->parent;
@@ -113,11 +114,14 @@
 {
 	int i;
 	double r = 0;
+	int n=0;
 	for (i = 0; i < ts->numTypes; i++) {
-		r+=(ts->types[i]->scoreSum/((type_sts*)ts->types[i])->mm_visits);
+		if(((type_sts*)ts->types[i])->visits>0){
+			r+=(ts->types[i]->scoreSum/((type_sts*)ts->types[i])->visits);
+			n++;
+		}
 	}
-	return r/ts->numTypes;
-
+	return n>0?(r/n):1.0;
 }
 
 /**
@@ -125,7 +129,7 @@
  * */ 
  double calcQhatBasedOnMinimax(type_system *ts, int i)
 {
-	return ts->types[i]->scoreSum / (double)((type_sts*)ts->types[i])->mm_visits;  // exploitation component (this is the average utility or minimax value)
+	return ts->types[i]->scoreSum / (double)((type_sts*)ts->types[i])->visits;  // exploitation component (this is the average utility or minimax value)
 }
 
 

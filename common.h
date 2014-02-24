@@ -26,6 +26,7 @@
 #define FINE_HEURISTIC 128
 #define MMUCT 256
 #define BFB 512
+#define BRUE 1024
 
 //Type systems for BFB
 #define MM_ORACLE 1
@@ -139,6 +140,9 @@ int pickRandomMove(int board[2][NUM_PITS+1], int side);
 int makeRandomMove(int board[2][NUM_PITS+1], int *side);
 
 //BFB (bfb.c)
-int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, double CT, heuristics_t heuristic, int budget, int* bestMoves, int* numBestMoves, int backupOp, int threshold, int policy);
+int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, double CT, heuristics_t heuristic, int budget, int* bestMoves, int* numBestMoves, int backupOp, int threshold, int policy, double bolzmanConstant, double probWeight, int isSelectTypeFromNode,int multiplyWithAverageValue, int useMinimaxRewards);
+
+//BRUE (brue.c)
+int makeBrueMove(rep_t rep, int *side, int numIterations, heuristics_t  heuristic, int* bestMoves, int* numBestMoves, int budget);
 
 #endif //__COMMON__H__
