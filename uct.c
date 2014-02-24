@@ -74,6 +74,7 @@ static int selectMove(treeNode* node, double C, int isSimpleRegret) {
 	for (i = 1; i < _DOM->getNumOfChildren(); i++) { // iterate over all children
 		if(!_DOM->isValidChild(node->rep, node->side, i)) // if the i^th move is illegal, skip it
 			continue;
+
 		// If the i^th child has never been visited before, select it first, before any other children are revisited
 		if (node->children[i] == NULL)
 			return i;
@@ -118,7 +119,6 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 	double score;
 	assert(node != NULL); // should never be calling uctRecurse on a non-existent node
 	if ((ret = _DOM->getGameStatus(node->rep))!= INCOMPLETE) {
-	  printf("\n");
 	  fflush(stdout);
 		// This is a terminal node (i.e. can't generate any more children)
 		// If we are estimating the leaf nodes using coarse random playout(s), coarsened h1 or random values, then all
@@ -147,6 +147,7 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 	// We are at an internal node that has been visited before; descend recursively
 	// Use selectMove to pick which branch to explore
 	move = selectMove(node, C, SIMPLE_REGRET_UCT?isRoot:false);
+
 	// If this board does not have a node already created for it, create one for it now
 	if (node->children[move] == NULL) {
 		mm_Counter++;

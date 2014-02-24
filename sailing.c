@@ -9,7 +9,7 @@ void printBoard_sailing(rep_t rep, int dummy) {
 }
 
 int getNumOfChildren_sailing() {
-    return SAILING_BOARD_SIZE + 1;
+    return SAILING_DIRECTIONS + 1;
 }
 
 int isValidChild_sailing(rep_t rep, int side, int move) {
@@ -19,7 +19,7 @@ int isValidChild_sailing(rep_t rep, int side, int move) {
     int wind = game[WIND];
     
     //can't go against the wind
-    if ((move + 4) % 8 == wind)
+    if ((move + 4) % SAILING_DIRECTIONS == wind)
       return false;
     
     //check left x boundery
@@ -37,7 +37,7 @@ int isValidChild_sailing(rep_t rep, int side, int move) {
     //check lower y boundery
     if ((move == 4 || move == 3 || move == 5) && y == 0)
       return false;
-    
+
     return true;
 }
 
@@ -45,28 +45,28 @@ int getGameStatus_sailing(rep_t rep) {
   int *game = rep;
   
   if (game[BOAT_X] == game[GOAL_X] && game[BOAT_Y] == game[GOAL_Y])
-    return SAILING_REWARD;
+    return MAX_WINS;
   
-  return SAILING_INCOMPLETE;
+  return INCOMPLETE;
 }
 
 void makeMove_sailing(rep_t rep, int *side, int move) {
   int *game = rep;
   
   //x+1
-  if ((move == 1 || move == 2 || move == 3) && game[BOAT_X] == SAILING_BOARD_SIZE - 1)
+  if ((move == 1 || move == 2 || move == 3) && game[BOAT_X] < SAILING_BOARD_SIZE - 1)
     game[BOAT_X]++;
     
   //x-1
-  if ((move == 5 || move == 6 || move == 7) && game[BOAT_X] == 0)
+  if ((move == 5 || move == 6 || move == 7) && game[BOAT_X] > 0)
     game[BOAT_X]--;
     
   //y+1
-  if ((move == 0 || move == 1 || move == 7) && game[BOAT_Y] == SAILING_BOARD_SIZE - 1)
+  if ((move == 0 || move == 1 || move == 7) && game[BOAT_Y] < SAILING_BOARD_SIZE - 1)
     game[BOAT_Y]++;
     
   //y-1
-  if ((move == 4 || move == 3 || move == 5) && game[BOAT_Y] == 0)
+  if ((move == 4 || move == 3 || move == 5) && game[BOAT_Y] > 0)
     game[BOAT_Y]--;
 }
 
