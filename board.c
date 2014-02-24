@@ -72,7 +72,6 @@ void genRandomBoard(int board[2][NUM_PITS+1], int* side, int depth) {
   } while (getGameStatus(board) != INCOMPLETE); // if the game has already ended, the board is useless so start over
 }
 
-
 /* Copies srcBoard --> dstBoard */
 void cloneBoard(int srcBoard[2][NUM_PITS+1], int dstBoard[2][NUM_PITS+1]) {
   int i;
@@ -243,7 +242,8 @@ int isEqual(int board1[2][NUM_PITS+1], int board2[2][NUM_PITS+1]) {
 
 
 /* Utility to pretty print the given board. Side on move is indicated with a '*' */
-void printBoard(int **board, int side) {
+void printBoard_mancala(rep_t rep, int side) {
+  int **board = rep;
   TO_REGULAR_ARR(board);
 
   int i;

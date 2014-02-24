@@ -26,6 +26,6 @@ int checkFour(int *board, int a, int b, int c, int d);
 int horizontalCheck(int *board, int *side);
 int verticalCheck(int *board, int *side);
 int diagonalCheck(int *board, int *side);
-void printBoard_c4(int *board);
+void printBoard_c4(rep_t rep, int dummy);
 
 #endif

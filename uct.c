@@ -119,7 +119,6 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 	assert(node != NULL); // should never be calling uctRecurse on a non-existent node
 	if ((ret = _DOM->getGameStatus(node->rep))!= INCOMPLETE) {
 	  printf("\n");
-	  printBoard(node->rep, node->side);
 	  fflush(stdout);
 		// This is a terminal node (i.e. can't generate any more children)
 		// If we are estimating the leaf nodes using coarse random playout(s), coarsened h1 or random values, then all

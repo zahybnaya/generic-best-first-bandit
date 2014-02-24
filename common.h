@@ -93,7 +93,7 @@ void cloneBoard(int srcBoard[2][NUM_PITS+1] , int dstBoard[2][NUM_PITS+1]);
 int readBoard(char* fileName, int board[2][NUM_PITS+1], int* side, short mode);
 void writeBoard(char* fileName, int board[2][NUM_PITS+1], int side, short mode);
 int isEqual(int board1[2][NUM_PITS+1], int board2[2][NUM_PITS+1]);
-void printBoard(int **board, int side);
+void printBoard_mancala(rep_t rep, int side);
 
 // Game-rules related routines (move.c)
 int getGameStatus(int board[2][NUM_PITS+1]);

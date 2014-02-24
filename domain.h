@@ -20,6 +20,7 @@ typedef void (*destructRep_func) (rep_t rep);
 typedef rep_t (*allocate_func)();
 typedef void (*generateRandomStart_func)(rep_t state, int *side);
 typedef void (*copy_func) (rep_t src ,rep_t dest);
+typedef void (*printBoard_func)(rep_t rep, int extra);
 typedef enum {MANCALA = 0 ,SYNTH = 1 ,CHESS = 2, ZOP = 3, C4 = 4, SAILING = 5} DOM_NAME;
 
 /* Holds only the functions*/
@@ -36,6 +37,7 @@ typedef struct {
     allocate_func allocate;
     generateRandomStart_func generateRandomStart;
     copy_func copy;
+    printBoard_func printBoard;
     struct {heuristics_t h1;
 	    heuristics_t h2;
 	    heuristics_t h3;

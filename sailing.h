@@ -25,6 +25,7 @@ void destructRep_sailing(rep_t rep);
 void copy_sailing(rep_t src,rep_t dst);
 double applyHeuristics_sailing(heuristics_t h,rep_t rep,int side, int budget);
 int estimateTreeSize_sailing(int treeSize);
+void printBoard_sailing(rep_t rep, int dummy);
 
 // Heuristic routines
 double h1_sailing(rep_t rep, int side, int horizion);

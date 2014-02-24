@@ -1,5 +1,13 @@
 #include "sailing.h"
 
+void printBoard_sailing(rep_t rep, int dummy) {
+  int *game = rep;
+  
+  printf("Boat loc: (%d, %d)\n", game[BOAT_X], game[BOAT_Y]);
+  printf("Wind dir: %d\n", game[WIND]);
+  printf("Goal loc: (%d, %d)\n", game[GOAL_X], game[GOAL_Y]);
+}
+
 int getNumOfChildren_sailing() {
     return SAILING_BOARD_SIZE + 1;
 }

@@ -158,8 +158,9 @@ int isValidChild_connect4(rep_t rep, int side, int move)
 	return 0;
 }
 
-void printBoard_c4(int *board)
+void printBoard_c4(rep_t rep, int dummy)
 {
+	int *board = rep;
 	int row, col;
 
 	for(row = 0; row < BOARD_ROWS; row++)

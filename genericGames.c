@@ -90,6 +90,9 @@ int main(int argc, char* argv[]) {
 				case 4:
 						_DOM = init_domain(C4);
 						break;
+				case 5:
+						_DOM = init_domain(SAILING);
+						break;
 				default:
 						puts("Unrecognized domain description.");
 						return (-1);
@@ -464,7 +467,7 @@ int main(int argc, char* argv[]) {
 													we need to keep track of this for later bookkeeping/diagnostic messages */
 								if (verbose) {
 										printf("\n");
-										printBoard(state, side);
+										_DOM->printBoard(state, side);
 										fflush(stdout);
 								}
 
@@ -498,7 +501,7 @@ int main(int argc, char* argv[]) {
 						} // end of game
 
 						if (verbose) {
-								printBoard(state, side);
+								_DOM->printBoard(state, side);
 								printf("\n");
 								printf("Result: %d\n", outcome/MAX_WINS);
 						} else
@@ -571,7 +574,7 @@ int main(int argc, char* argv[]) {
 				printf("Max *superiority* rate: %f\n",(float)maxSuper/(maxSuper+minSuper));
 				printf("Min *superiority* rate: %f\n",(float)minSuper/(maxSuper+minSuper));
 				printf("------------------------------\n");
-		}else {
+		} else {
 				puts("domain, max_alg, min_alg ,num_of_games,num_of_draws,num_of_incomplete,max_win,min_win,total_win_games,max_time,min_time\n");
 				printf("%d,",_DOM->dom_name);
 				printf("%s,",algDescription[max]);
@@ -605,7 +608,7 @@ static int printMessage(){
 		puts("Note! not all options are supported");
 		puts("Available DOMAIN names:");
 		puts("------------------");
-		puts("(0) MANCALA (1) SYNTH (2) CHESS (3) ZOP (4) connect-4"); 
+		puts("(0) MANCALA (1) SYNTH (2) CHESS (3) ZOP (4) connect-4 (5) Sailing"); 
 		puts("Algorithm Options:");
 		puts("------------------");
 		puts("-T <trap_gap> <trap_size> <how_many_traps>");

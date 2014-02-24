@@ -23,6 +23,7 @@ DOM* init_domain(DOM_NAME name){
 		retVal->allocate = allocate_sailing;
 		retVal->generateRandomStart = generateRandomStart_sailing;
 		retVal->copy = copy_sailing;
+		retVal->printBoard = printBoard_sailing;
 		retVal->hFunctions.h1  = h1_sailing;
 		retVal->hFunctions.h2  = h2_sailing;
 		retVal->hFunctions.h3  = h3_sailing;
@@ -43,6 +44,7 @@ DOM* init_domain(DOM_NAME name){
 		retVal->allocate = allocate_connect4;
 		retVal->generateRandomStart = generateRandomStart_connect4;
 		retVal->copy = copy_connect4;
+		retVal->printBoard = printBoard_c4;
 		retVal->hFunctions.h1  = h3_c4;
 		retVal->hFunctions.h2  = h3_c4;
 		retVal->hFunctions.h3  = h3_c4;
@@ -63,6 +65,7 @@ DOM* init_domain(DOM_NAME name){
 		retVal->allocate = allocate_mancala;
 		retVal->generateRandomStart = generateRandomStart_mancala;
 		retVal->copy = copy_mancala;
+		retVal->printBoard = printBoard_mancala;
 		retVal->hFunctions.h1  = h1;
 		retVal->hFunctions.h2  = h2;
 		retVal->hFunctions.h3  = h3;
@@ -83,6 +86,7 @@ DOM* init_domain(DOM_NAME name){
 		retVal->allocate = allocate_synth;
 		retVal->generateRandomStart = generateRandomStart_synth;
 		retVal->copy = copy_synth;
+		//retVal->printBoard = printBoard_synth;
 		retVal->hFunctions.h1  = h1_synth;
 		retVal->hFunctions.h2  = h2;
 		retVal->hFunctions.h3  = h3;
