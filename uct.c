@@ -223,17 +223,12 @@ int makeUCTMove(rep_t rep, int *side, int numIterations, double C,
 	for (i = 1; i < _DOM->getNumOfChildren(); i++) { // for each move
 		if (!_DOM->isValidChild(rep,*side, i))
 			continue;
-
 		if (!rootNode->children[i]) // this node was not created since # iterations was too small
 			continue;
-
-		// Compute average utility of this child
 		val = rootNode->children[i]->scoreSum / (double)rootNode->children[i]->n;
-
 		// If this was min's move, negate the utility value (this makes things a little cleaner
 		// as we can then always take the max of the children, since min(s1,s2,...) = -max(-s1,-s2,...))
 		val = (*side == min) ? -val : val;
-
 		// If this is the first child, or the best scoring child, then store it
 		if ((*numBestMoves == 0) || (val > bestScore)) {
 			bestMoves[0] = i;
@@ -242,7 +237,6 @@ int makeUCTMove(rep_t rep, int *side, int numIterations, double C,
 		}
 		else if (val == bestScore) // child ties with currently best scoring one; store it
 			bestMoves[(*numBestMoves)++] = i;
-
 		if (verbose)
 			printf("Move # %d -- Value %f, Count %d\n", i, ((*side == min) ? -val : val), rootNode->children[i]->n);
 	}
