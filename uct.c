@@ -5,7 +5,7 @@
  * */
 #include "common.h"
 #include "domain.h"
-#define SIMPLE_REGRET_UCT 1 //set to 1 to enable a different algorithm (see minimizing simple regret in MCTS)
+#define SIMPLE_REGRET_UCT 0 //set to 1 to enable a different algorithm (see minimizing simple regret in MCTS)
 
 extern DOM* _DOM; 
 extern int debuglog;
@@ -29,7 +29,6 @@ typedef struct node {
 				   indexing/numbering */
 } treeNode;
 
-
 /* Routine to free up UCT tree */
 static void freeTree(treeNode* node) {
 	int i;
@@ -43,12 +42,14 @@ static void freeTree(treeNode* node) {
 	free(node->children);
 	free(node);
 }
+
 /**
  * Exploitation term acording to the uct formula 
  */ 
 static double uctExploration(double multiplier, double C, treeNode* node, int i){
 	return (multiplier * C) * sqrt(log(node->n) / (double)node->children[i]->n); // add exploration component
 }
+
 /**
  * Exploitation term acording to the simple regret uct formula 
  */ 
@@ -108,7 +109,6 @@ static int selectMove(treeNode* node, double C, int isSimpleRegret) {
 	return chosenBestMove;
 }
 
-
 /* Recursively constructs the UCT search tree */
 static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int budget, int backupOp , int isRoot) {
 	double ret;
@@ -118,6 +118,9 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 	double score;
 	assert(node != NULL); // should never be calling uctRecurse on a non-existent node
 	if ((ret = _DOM->getGameStatus(node->rep))!= INCOMPLETE) {
+	  printf("\n");
+	  printBoard(node->rep, node->side);
+	  fflush(stdout);
 		// This is a terminal node (i.e. can't generate any more children)
 		// If we are estimating the leaf nodes using coarse random playout(s), coarsened h1 or random values, then all
 		// those estimates are from the set {-1, 0, +1}. The terminal nodes are given values from the set {MIN_WINS, DRAW, MAX_WINS}
