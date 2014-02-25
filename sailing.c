@@ -9,7 +9,7 @@ void printBoard_sailing(rep_t rep, int dummy) {
 }
 
 int getNumOfChildren_sailing() {
-    return SAILING_DIRECTIONS + 1;
+    return SAILING_DIRECTIONS;
 }
 
 int isValidChild_sailing(rep_t rep, int side, int move) {
@@ -17,6 +17,14 @@ int isValidChild_sailing(rep_t rep, int side, int move) {
     int x = game[BOAT_X];
     int y = game[BOAT_Y];
     int wind = game[WIND];
+    
+    //If this is a chance node then the only legal children are in the possible directions of the new wind (45 degrees left or right)
+    if (game[SAILING_STATE_TYPE] == SAILING_STATE_CHANCE) {
+//printf("wind %d move %d\n", wind, move);
+      if (move == (wind - 1) % SAILING_DIRECTIONS || move == wind || move == (wind + 1) % SAILING_DIRECTIONS)
+	return true;
+      return false;
+    }
     
     //can't go against the wind
     if ((move + 4) % SAILING_DIRECTIONS == wind)
@@ -53,35 +61,53 @@ int getGameStatus_sailing(rep_t rep) {
 void makeMove_sailing(rep_t rep, int *side, int move) {
   int *game = rep;
   
-  //x+1
-  if ((move == 1 || move == 2 || move == 3) && game[BOAT_X] < SAILING_BOARD_SIZE - 1)
-    game[BOAT_X]++;
+  if (game[SAILING_STATE_TYPE] == SAILING_STATE_CHANCE) {
+    int windChange = random() % 100;
     
-  //x-1
-  if ((move == 5 || move == 6 || move == 7) && game[BOAT_X] > 0)
-    game[BOAT_X]--;
+    if (0 <= windChange && windChange < SAILING_WIND_CHANGE_PROB * 100) {
+      game[WIND]--;
+      if (game[WIND] < 0)
+	game[WIND] = 7;
+    } else if (SAILING_WIND_CHANGE_PROB * 100 <= windChange && windChange < SAILING_WIND_CHANGE_PROB * 100 * 2) {
+      game[WIND] = (game[WIND] + 1) % SAILING_DIRECTIONS;
+    }
     
-  //y+1
-  if ((move == 0 || move == 1 || move == 7) && game[BOAT_Y] < SAILING_BOARD_SIZE - 1)
-    game[BOAT_Y]++;
+    game[SAILING_STATE_TYPE] = SAILING_STATE_DET;
+  } else {
+    //x+1
+    if (move == 1 || move == 2 || move == 3)
+      game[BOAT_X]++;
     
-  //y-1
-  if ((move == 4 || move == 3 || move == 5) && game[BOAT_Y] > 0)
-    game[BOAT_Y]--;
+    //x-1
+    if (move == 5 || move == 6 || move == 7)
+      game[BOAT_X]--;
+    
+    //y+1
+    if (move == 0 || move == 1 || move == 7)
+      game[BOAT_Y]++;
+    
+    //y-1
+    if (move == 4 || move == 3 || move == 5)
+      game[BOAT_Y]--;
+    
+    game[SAILING_STATE_TYPE] = SAILING_STATE_CHANCE;
+  }
 }
 
 rep_t cloneRep_sailing(rep_t orig) {
    int i;
    int *game = orig;
-   int *new_game = calloc(5, sizeof(int));
-   for (i = 0; i < 5; i++)
-     new_game[i] = game [i];
+   int *new_game = calloc(SAILING_REP_SIZE, sizeof(int));
+   for (i = 0; i < SAILING_REP_SIZE; i++)
+     new_game[i] = game[i];
    
    return new_game;
 }
 
 void generateRandomStart_sailing(rep_t rep, int *side) {
   int *game = rep;
+  
+  game[SAILING_STATE_TYPE] = SAILING_STATE_DET;
   
   game[BOAT_X] = random() % SAILING_BOARD_SIZE;
   game[BOAT_Y] = random() % SAILING_BOARD_SIZE;
@@ -93,7 +119,7 @@ void generateRandomStart_sailing(rep_t rep, int *side) {
 }
 
 rep_t allocate_sailing() {
-  return calloc(5, sizeof(int));
+  return calloc(SAILING_REP_SIZE, sizeof(int));
 }
 
 void destructRep_sailing(rep_t rep) {
@@ -102,7 +128,7 @@ void destructRep_sailing(rep_t rep) {
 
 void copy_sailing(rep_t src, rep_t dst) {
   int i;
-  for (i = 0; i < 5; i++)
+  for (i = 0; i < SAILING_REP_SIZE; i++)
      ((int *)dst)[i] = ((int *)src)[i];
 }
 

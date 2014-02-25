@@ -74,7 +74,7 @@ int main(int argc, char* argv[]) {
 		seed = (unsigned int)devrand();
 		/*Domain name initializaiont*/
 		int dom_name = atoi(argv[1]);
-		switch(dom_name){
+		switch (dom_name) {
 				case 0:
 						_DOM = init_domain(MANCALA);
 						break;
@@ -486,6 +486,9 @@ int main(int argc, char* argv[]) {
 										default:
 												puts("Unknown algorithm\n");
 								}
+								
+								if (_DOM->dom_name == SAILING)
+								  _DOM->makeMove(state, 0, 0);
 
 								if (verbose)
 										printf("Elapsed time: %f\n", getElapsed(start));
@@ -507,6 +510,10 @@ int main(int argc, char* argv[]) {
 						} else
 								printf("%d ", outcome/MAX_WINS);
 						fflush(stdout);
+						
+						if (_DOM->dom_name == SAILING)
+						  break;
+						
 						switch(outcome){
 								case MAX_WINS:
 										maxWins++;
