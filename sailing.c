@@ -9,7 +9,7 @@ void printBoard_sailing(rep_t rep, int dummy) {
 }
 
 int getNumOfChildren_sailing() {
-    return SAILING_DIRECTIONS;
+    return SAILING_DIRECTIONS + 1;
 }
 
 int isValidChild_sailing(rep_t rep, int side, int move) {
@@ -27,7 +27,7 @@ int isValidChild_sailing(rep_t rep, int side, int move) {
     }
     
     //can't go against the wind
-    if ((move + 4) % SAILING_DIRECTIONS == wind)
+    if ((move + 4) % SAILING_DIRECTIONS == (wind + 1) % SAILING_DIRECTIONS)
       return false;
     
     //check left x boundery
@@ -58,10 +58,17 @@ int getGameStatus_sailing(rep_t rep) {
   return INCOMPLETE;
 }
 
+//if move is -1, and it is a chance node, than make a stochastic random move, else make the given move.
 void makeMove_sailing(rep_t rep, int *side, int move) {
   int *game = rep;
   
   if (game[SAILING_STATE_TYPE] == SAILING_STATE_CHANCE) {
+    if (move > 0) {
+      game[WIND] = move;
+      game[SAILING_STATE_TYPE] = SAILING_STATE_DET;
+      return;
+    }
+    
     int windChange = random() % 100;
     
     if (0 <= windChange && windChange < SAILING_WIND_CHANGE_PROB * 100) {

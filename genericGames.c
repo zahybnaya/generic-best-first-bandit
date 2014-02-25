@@ -488,7 +488,7 @@ int main(int argc, char* argv[]) {
 								}
 								
 								if (_DOM->dom_name == SAILING)
-								  _DOM->makeMove(state, 0, 0);
+								  _DOM->makeMove(state, 0, -1);
 
 								if (verbose)
 										printf("Elapsed time: %f\n", getElapsed(start));

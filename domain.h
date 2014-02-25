@@ -1,6 +1,7 @@
 #ifndef DOMAIN_H_INCLUDED
 #define DOMAIN_H_INCLUDED
 #include "common.h"
+#include "sailing.h"
 
 
 /***

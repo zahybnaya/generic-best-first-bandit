@@ -72,9 +72,11 @@ static int selectMove(treeNode* node, double C, int isSimpleRegret) {
 	double multiplier = (node->side == max) ? 1 : -1;
 
 	for (i = 1; i < _DOM->getNumOfChildren(); i++) { // iterate over all children
-		if(!_DOM->isValidChild(node->rep, node->side, i)) // if the i^th move is illegal, skip it
+		if(!_DOM->isValidChild(node->rep, node->side, i)) { // if the i^th move is illegal, skip it
+//printf("move %d invalid\n", i);
 			continue;
-
+		}
+//printf("move %d valid\n", i);
 		// If the i^th child has never been visited before, select it first, before any other children are revisited
 		if (node->children[i] == NULL)
 			return i;
@@ -108,6 +110,24 @@ static int selectMove(treeNode* node, double C, int isSimpleRegret) {
 	}
 
 	return chosenBestMove;
+}
+
+//Select a "move" at a chance node in an MDP
+//TODO currently it is domain dependant (sailing)
+static int selectMoveStochastic(treeNode* node) {
+	int *game = node->rep;
+	int move = game[WIND];
+	int windChange = random() % 100;
+
+	if (0 <= windChange && windChange < SAILING_WIND_CHANGE_PROB * 100) {
+	  move = game[WIND] - 1;
+	  if (move < 0)
+	    move = 7;
+	} else if (SAILING_WIND_CHANGE_PROB * 100 <= windChange && windChange < SAILING_WIND_CHANGE_PROB * 100 * 2) {
+	  move = (game[WIND] + 1) % SAILING_DIRECTIONS;
+	}
+	
+	return move;
 }
 
 /* Recursively constructs the UCT search tree */
@@ -145,13 +165,18 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 	}
 
 	// We are at an internal node that has been visited before; descend recursively
-	// Use selectMove to pick which branch to explore
-	move = selectMove(node, C, SIMPLE_REGRET_UCT?isRoot:false);
+	// Use selectMove to pick which branch to explore.
+	//TODO handle chance node diffrently (domain independant)
+	if (_DOM->dom_name == SAILING && ((int *)(node->rep))[SAILING_STATE_TYPE] == SAILING_STATE_CHANCE) {
+	  move = selectMoveStochastic(node);
+	} else {
+	  move = selectMove(node, C, SIMPLE_REGRET_UCT ? isRoot : false);
+	}
 
 	// If this board does not have a node already created for it, create one for it now
 	if (node->children[move] == NULL) {
 		mm_Counter++;
-		node->children[move] =(treeNode*) calloc(1, sizeof(treeNode));
+		node->children[move] = (treeNode*) calloc(1, sizeof(treeNode));
 		node->children[move]->children =(treeNode**)  calloc(_DOM->getNumOfChildren(), sizeof(treeNode*));
 		node->children[move]->rep = _DOM->cloneRep(node->rep);// copy over the current board to child
 		node->children[move]->side = node->side; // copy over the current side on move to child
