@@ -20,8 +20,7 @@ int isValidChild_sailing(rep_t rep, int side, int move) {
     
     //If this is a chance node then the only legal children are in the possible directions of the new wind (45 degrees left or right)
     if (game[SAILING_STATE_TYPE] == SAILING_STATE_CHANCE) {
-//printf("wind %d move %d\n", wind, move);
-      if (move == (wind - 1) % SAILING_DIRECTIONS || move == wind || move == (wind + 1) % SAILING_DIRECTIONS)
+      if ((move == SAILING_DIRECTIONS && wind == 1) || move == wind || (move == 1 && wind == SAILING_DIRECTIONS))
 	return true;
       return false;
     }
@@ -73,10 +72,12 @@ void makeMove_sailing(rep_t rep, int *side, int move) {
     
     if (0 <= windChange && windChange < SAILING_WIND_CHANGE_PROB * 100) {
       game[WIND]--;
-      if (game[WIND] < 0)
-	game[WIND] = 7;
+      if (game[WIND] < 1)
+	game[WIND] = SAILING_DIRECTIONS;
     } else if (SAILING_WIND_CHANGE_PROB * 100 <= windChange && windChange < SAILING_WIND_CHANGE_PROB * 100 * 2) {
-      game[WIND] = (game[WIND] + 1) % SAILING_DIRECTIONS;
+      game[WIND]++;
+      if (game[WIND] > SAILING_DIRECTIONS)
+	game[WIND] = 1;
     }
     
     game[SAILING_STATE_TYPE] = SAILING_STATE_DET;
@@ -119,7 +120,7 @@ void generateRandomStart_sailing(rep_t rep, int *side) {
   game[BOAT_X] = random() % SAILING_BOARD_SIZE;
   game[BOAT_Y] = random() % SAILING_BOARD_SIZE;
   
-  game[WIND] = random() % SAILING_DIRECTIONS;
+  game[WIND] = random() % SAILING_DIRECTIONS + 1;
   
   game[GOAL_X] = random() % SAILING_BOARD_SIZE;
   game[GOAL_Y] = random() % SAILING_BOARD_SIZE;

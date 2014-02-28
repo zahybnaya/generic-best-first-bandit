@@ -121,10 +121,12 @@ static int selectMoveStochastic(treeNode* node) {
 
 	if (0 <= windChange && windChange < SAILING_WIND_CHANGE_PROB * 100) {
 	  move = game[WIND] - 1;
-	  if (move < 0)
-	    move = 7;
+	  if (move < 1)
+	    move = SAILING_DIRECTIONS;
 	} else if (SAILING_WIND_CHANGE_PROB * 100 <= windChange && windChange < SAILING_WIND_CHANGE_PROB * 100 * 2) {
-	  move = (game[WIND] + 1) % SAILING_DIRECTIONS;
+	  move = game[WIND] + 1;
+	  if (move > SAILING_DIRECTIONS)
+	    move = 1;
 	}
 	
 	return move;
@@ -193,6 +195,13 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 	// Descend recursively
 	ret = uctRecurse(node->children[move], C, heuristic, budget, backupOp,false);
 
+	//In a stochastic domain
+	//Update ret to include the cost of getting to the child node from this parent.
+	//TODO make this domain independant
+	if (_DOM->dom_name == SAILING && ((int *)(node->rep))[SAILING_STATE_TYPE] == SAILING_STATE_DET) {
+	  
+	}
+	
 	// Update score and node counts and return the outcome of this episode
 	if (backupOp == AVERAGE) { // use averaging back-up
 		(node->n)++;
@@ -216,11 +225,10 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 	else { // shouldn't happen
 		puts("Invalid back-up operator!");
 		exit(1);
-	}
-
+	}	
+	
 	return ret;
 }
-
 
 /* Takes current board and side on move and runs numIterations of UCT with exploration
    bias of C. The outcome of the search is then used to make the best move (which is
