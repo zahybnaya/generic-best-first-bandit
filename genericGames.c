@@ -457,10 +457,13 @@ int main(int argc, char* argv[]) {
 
 				int _outcome;
 				for (j = 0; j <= 1 ; j++) {
-
 						moveCount = 0; // reset move count
 						side = rootSide; // Restore the starting board (which was either randomly generated or read from a file)
 						_DOM->copy(randState,state);
+						
+						//if (_DOM->dom_name == SAILING)
+						  //side = min;
+						
 						// Play complete game
 						while ((outcome = _DOM->getGameStatus(state)) == INCOMPLETE) {
 								origSide = side; /* this is who is currently on move -- since this is not a strict turn taking game,
@@ -472,7 +475,6 @@ int main(int argc, char* argv[]) {
 								}
 
 								start = startTiming();
-								//Only UCT for now
 								switch(player[side]){
 										case UCT:
 												moveMade = makeUCTMove(state, &side, numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, backupOp[side]);

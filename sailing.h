@@ -6,7 +6,7 @@
 #define SAILING_BOARD_SIZE 5 //Board grid of size nXn
 #define SAILING_DIRECTIONS 8 //Can sail to al 45 degree directions
 #define SAILING_WIND_CHANGE_PROB 1 //Probability of wind changing by 45 degrees
-#define SAILING_REWARD 1000 //Reward at goal
+#define SAILING_REWARD (SAILING_BOARD_SIZE * 2) //Reward at goal
 #define SAILING_INCOMPLETE (SAILING_REWARD + 1) //A flag to indicate wheter the game ended
 #define SAILING_REP_SIZE 6 //The size of a sailing domain state representation
 

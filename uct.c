@@ -73,10 +73,8 @@ static int selectMove(treeNode* node, double C, int isSimpleRegret) {
 
 	for (i = 1; i < _DOM->getNumOfChildren(); i++) { // iterate over all children
 		if(!_DOM->isValidChild(node->rep, node->side, i)) { // if the i^th move is illegal, skip it
-//printf("move %d invalid\n", i);
 			continue;
 		}
-//printf("move %d valid\n", i);
 		// If the i^th child has never been visited before, select it first, before any other children are revisited
 		if (node->children[i] == NULL)
 			return i;
@@ -147,9 +145,10 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 		// those estimates are from the set {-1, 0, +1}. The terminal nodes are given values from the set {MIN_WINS, DRAW, MAX_WINS}
 		// which are substantially larger. To make these values comparable in magnitude, we need to rescale the terminal
 		// node values. If we are using engineered heuristics, then no rescaling is necessary.
-		if ((heuristic == _DOM->hFunctions.h3) || (heuristic == _DOM->hFunctions.h4) || (heuristic == _DOM->hFunctions.h5))
-			ret /= MAX_WINS; // rescale
-		if ((dotFormat) && (node->n == 0)) // on first visit to a terminal node, color it red
+		if ((heuristic == _DOM->hFunctions.h3) || (heuristic == _DOM->hFunctions.h4) || (heuristic == _DOM->hFunctions.h5)) {
+			if (_DOM->dom_name == MANCALA)
+				ret /= MAX_WINS; // rescale
+		} if ((dotFormat) && (node->n == 0)) // on first visit to a terminal node, color it red
 			printf("n%d [color=\"red\"];", node->id);
 		// Update node score / count and return
 		(node->n)++;
@@ -199,7 +198,24 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 	//Update ret to include the cost of getting to the child node from this parent.
 	//TODO make this domain independant
 	if (_DOM->dom_name == SAILING && ((int *)(node->rep))[SAILING_STATE_TYPE] == SAILING_STATE_DET) {
+	  int stray = abs(((int *)(node->rep))[WIND] - move) % 4;
+	  int cost = INF;
+	  switch (stray) {
+	    case 0:
+	      cost = -1;
+	      break;
+	    case 1:
+	      cost = -2;
+	      break;
+	    case 2:
+	      cost = -3;
+	      break;
+	    case 3:
+	      cost = -4;
+	      break;
+	  }
 	  
+	  ret += cost;
 	}
 	
 	// Update score and node counts and return the outcome of this episode

@@ -20,13 +20,20 @@ int isValidChild_sailing(rep_t rep, int side, int move) {
     
     //If this is a chance node then the only legal children are in the possible directions of the new wind (45 degrees left or right)
     if (game[SAILING_STATE_TYPE] == SAILING_STATE_CHANCE) {
-      if ((move == SAILING_DIRECTIONS && wind == 1) || move == wind || (move == 1 && wind == SAILING_DIRECTIONS))
+      if ((wind == SAILING_DIRECTIONS && move == 1) || (wind < SAILING_DIRECTIONS && move == wind + 1))
 	return true;
+      
+      if (wind == move)
+	return true;
+      
+      if ((wind == 1 && move == SAILING_DIRECTIONS) || (wind > 1 && move == wind - 1))
+	return true;
+
       return false;
     }
     
     //can't go against the wind
-    if ((move + 4) % SAILING_DIRECTIONS == (wind + 1) % SAILING_DIRECTIONS)
+    if (abs(move - wind) == 4)
       return false;
     
     //check left x boundery
@@ -52,7 +59,7 @@ int getGameStatus_sailing(rep_t rep) {
   int *game = rep;
   
   if (game[BOAT_X] == game[GOAL_X] && game[BOAT_Y] == game[GOAL_Y])
-    return MAX_WINS;
+    return SAILING_REWARD;
   
   return INCOMPLETE;
 }
