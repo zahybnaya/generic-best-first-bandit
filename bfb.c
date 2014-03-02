@@ -405,8 +405,6 @@ int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, dou
 	assert(*numBestMoves != 0);
 
 	bestMove = bestMoves[random() % *numBestMoves]; // pick the best move (break ties randomly)
-	//bestMove = bestMoves[0];
-	_DOM->makeMove(rep, side, bestMove); // make it (updates game state)
 
 	if (verbose) {
 		printf("Value of root node: %f\n", rootNode->scoreSum / (double)rootNode->n);

@@ -14,15 +14,24 @@ double actionCost_sailing(rep_t rep, int move) {
   if (stray > 4)
     stray =  8 - stray;
   else if (stray == 4)
-    stray = INF; //shouldn't happen because a move aginst the wind is impossible
+    stray = INF; //shouldn't happen - a move aginst the wind is impossible
   
-  return -1 * (stray + 1);
+  int delay = 0;
+  //Tack change causes a delay;
+  if (computeTack(game, move) != game[TACK])
+    delay = SAILING_DELAY;
+  
+  return -1 * (stray + 1 + delay);
 }
 
 void printBoard_sailing(rep_t rep, int dummy) {
   int *game = rep;
   
   printf("Boat loc: (%d, %d)\n", game[BOAT_X], game[BOAT_Y]);
+  if (game[TACK] == 1)
+    printf("Tack: right\n");
+  else
+    printf("Tack: left\n");
   printf("Wind dir: %d\n", game[WIND]);
   printf("Goal loc: (%d, %d)\n", game[GOAL_X], game[GOAL_Y]);
 }
@@ -124,8 +133,22 @@ void makeMove_sailing(rep_t rep, int *side, int move) {
     if (move == 4 || move == 5 || move == 6)
       game[BOAT_Y]--;
     
+    game[TACK] = computeTack(game, move);
     game[SAILING_STATE_TYPE] = SAILING_STATE_CHANCE;
   }
+}
+
+//if move is with the direction of the wind then there is no change of tack
+//else, tack is based on the current wind and the chosen move.
+int computeTack(int *game, int move) {
+  int wind = game[WIND];
+    if (wind != move) {
+      if ((wind + 4 <= 8 && wind < move && move < wind) || (wind + 4 > 8 && (wind < move || move < (wind + 4) % 8)))
+	return 1;
+      else
+	return 0;
+    } else
+      return game[TACK];
 }
 
 rep_t cloneRep_sailing(rep_t orig) {
@@ -146,6 +169,7 @@ void generateRandomStart_sailing(rep_t rep, int *side) {
   game[BOAT_X] = random() % SAILING_BOARD_SIZE;
   game[BOAT_Y] = random() % SAILING_BOARD_SIZE;
   
+  game[TACK] = random() % 2;
   game[WIND] = random() % SAILING_DIRECTIONS + 1;
   
   game[GOAL_X] = random() % SAILING_BOARD_SIZE;

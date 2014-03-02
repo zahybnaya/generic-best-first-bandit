@@ -151,6 +151,8 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 		} if ((dotFormat) && (node->n == 0)) // on first visit to a terminal node, color it red
 			printf("n%d [color=\"red\"];", node->id);
 		// Update node score / count and return
+		if (_DOM->dom_name == SAILING)
+		  ret = 0;
 		(node->n)++;
 		node->scoreSum += ret;
 		return ret;
@@ -278,7 +280,6 @@ int makeUCTMove(rep_t rep, int *side, int numIterations, double C,
 	// We should have at least looked at one child
 	assert(*numBestMoves != 0);
 	bestMove = bestMoves[random() % *numBestMoves]; // pick the best move (break ties randomly)
-	_DOM->makeMove(rep, side, bestMove); // make it (updates game state)
 
 	if (verbose) {
 		printf("Value of root node: %f\n", rootNode->scoreSum / (double)rootNode->n);

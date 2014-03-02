@@ -487,13 +487,17 @@ int main(int argc, char* argv[]) {
 										default:
 												puts("Unknown algorithm\n");
 								}
+
+								//Must be before the move is made because the calculation uses data from the old state
+								if (_DOM->dom_name == SAILING)
+								  score[side] += actionCost_sailing(state, moveMade);
+
+								_DOM->makeMove(state, &side, moveMade); // make the chosen move (updates game state)
 								
 								//In the sailing domain, after a move is made, a chance node is produced and a move from there most be made.
-								if (_DOM->dom_name == SAILING) {
-								  score[side] += actionCost_sailing(state, moveMade);
+								if (_DOM->dom_name == SAILING)
 								  _DOM->makeMove(state, 0, -1);
-								}
-
+								
 								if (verbose)
 										printf("Elapsed time: %f\n", getElapsed(start));
 

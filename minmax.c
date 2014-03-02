@@ -158,8 +158,6 @@ int makeMinmaxMove(rep_t rep, int* side, int depth, heuristics_t heuristic, int 
       bestMove = secondBestMove;
   }
 
-  _DOM->makeMove(rep , side, bestMove); // make the chosen move (updates game state)
-
   if (verbose)
     printf("Examined %d nodes\n", numNodes);
 
