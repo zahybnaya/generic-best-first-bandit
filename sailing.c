@@ -1,5 +1,24 @@
 #include "sailing.h"
 
+int isChanceNode_sailing(rep_t rep) {
+  int *game = rep;
+  if (game[SAILING_STATE_TYPE] == SAILING_STATE_CHANCE)
+    return true;
+  return false;
+}
+
+double actionCost_sailing(rep_t rep, int move) {
+  int *game = rep;
+  
+  int stray = abs(game[WIND] - move);
+  if (stray > 4)
+    stray =  8 - stray;
+  else if (stray == 4)
+    stray = INF; //shouldn't happen because a move aginst the wind is impossible
+  
+  return -1 * (stray + 1);
+}
+
 void printBoard_sailing(rep_t rep, int dummy) {
   int *game = rep;
   
@@ -157,7 +176,12 @@ double applyHeuristics_sailing(heuristics_t h, rep_t rep, int side, int budget) 
 }
 
 double h1_sailing(rep_t rep, int side, int horizion) {
-  return 0;
+  int *game = rep;
+  
+  int dx = abs(game[BOAT_X] - game[GOAL_X]);
+  int dy = abs(game[BOAT_Y] - game[GOAL_Y]);
+  
+  return MAX(dx, dy);
 }
 
 double h2_sailing(rep_t rep, int side, int horizion) {

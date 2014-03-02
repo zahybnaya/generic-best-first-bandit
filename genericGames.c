@@ -64,6 +64,7 @@ int main(int argc, char* argv[]) {
 		char heurString[][30] = {"heuristic 1", "heuristic 1"};
 		const char* backupOpStrings[] = {"average", "minimax"};
 		double bolzmanConstant = -2.44, probWeight = 0.5;
+		double score[2]; //The socre of each player. Currently used for sailing only.
 		// If we see too few arguments, print help message and bail
 		if (argc < 3) {
 				printMessage();
@@ -457,12 +458,10 @@ int main(int argc, char* argv[]) {
 
 				int _outcome;
 				for (j = 0; j <= 1 ; j++) {
+						score[side] = 0;
 						moveCount = 0; // reset move count
 						side = rootSide; // Restore the starting board (which was either randomly generated or read from a file)
 						_DOM->copy(randState,state);
-						
-						//if (_DOM->dom_name == SAILING)
-						  //side = min;
 						
 						// Play complete game
 						while ((outcome = _DOM->getGameStatus(state)) == INCOMPLETE) {
@@ -489,15 +488,18 @@ int main(int argc, char* argv[]) {
 												puts("Unknown algorithm\n");
 								}
 								
-								if (_DOM->dom_name == SAILING)
+								//In the sailing domain, after a move is made, a chance node is produced and a move from there most be made.
+								if (_DOM->dom_name == SAILING) {
+								  score[side] += actionCost_sailing(state, moveMade);
 								  _DOM->makeMove(state, 0, -1);
+								}
 
 								if (verbose)
 										printf("Elapsed time: %f\n", getElapsed(start));
 
 								turns[side]++;
 								time[side] = time[side] + getElapsed(start);
-
+								
 								moveCount++;
 								if (verbose) {
 										printf("Move #%d -- player %d made move %d\n", moveCount, origSide, moveMade);
@@ -508,9 +510,16 @@ int main(int argc, char* argv[]) {
 						if (verbose) {
 								_DOM->printBoard(state, side);
 								printf("\n");
-								printf("Result: %d\n", outcome/MAX_WINS);
-						} else
-								printf("%d ", outcome/MAX_WINS);
+								if (_DOM->dom_name == SAILING)
+								  printf("Result: %f\n", score[side]);
+								else
+								  printf("Result: %d\n", outcome/MAX_WINS);
+						} else {
+								if (_DOM->dom_name == SAILING)
+								  printf("%f\n", score[side]);
+								else
+								  printf("%d\n", outcome/MAX_WINS);
+						}
 						fflush(stdout);
 						
 						if (_DOM->dom_name == SAILING)

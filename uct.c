@@ -197,26 +197,8 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 	//In a stochastic domain
 	//Update ret to include the cost of getting to the child node from this parent.
 	//TODO make this domain independant
-	if (_DOM->dom_name == SAILING && ((int *)(node->rep))[SAILING_STATE_TYPE] == SAILING_STATE_DET) {
-	  int stray = abs(((int *)(node->rep))[WIND] - move) % 4;
-	  int cost = INF;
-	  switch (stray) {
-	    case 0:
-	      cost = -1;
-	      break;
-	    case 1:
-	      cost = -2;
-	      break;
-	    case 2:
-	      cost = -3;
-	      break;
-	    case 3:
-	      cost = -4;
-	      break;
-	  }
-	  
-	  ret += cost;
-	}
+	if (_DOM->dom_name == SAILING && isChanceNode_sailing(node->rep) != true)
+	  ret += actionCost_sailing(node->rep, move);
 	
 	// Update score and node counts and return the outcome of this episode
 	if (backupOp == AVERAGE) { // use averaging back-up

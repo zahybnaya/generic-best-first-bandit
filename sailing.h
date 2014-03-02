@@ -3,7 +3,7 @@
 
 #include "domain.h"
 
-#define SAILING_BOARD_SIZE 5 //Board grid of size nXn
+#define SAILING_BOARD_SIZE 2 //Board grid of size nXn
 #define SAILING_DIRECTIONS 8 //Can sail to al 45 degree directions
 #define SAILING_WIND_CHANGE_PROB 1 //Probability of wind changing by 45 degrees
 #define SAILING_REWARD (SAILING_BOARD_SIZE * 2) //Reward at goal
@@ -20,6 +20,8 @@
 #define SAILING_STATE_DET 0    //A deterministic state
 #define SAILING_STATE_CHANCE 1 //A stochastic state
 
+int isChanceNode_sailing(rep_t rep);
+double actionCost_sailing(rep_t rep, int move);
 int getNumOfChildren_sailing();
 int isValidChild_sailing(rep_t rep, int side, int move);
 int getGameStatus_sailing(rep_t rep);
