@@ -87,9 +87,28 @@ int getGameStatus_sailing(rep_t rep) {
   int *game = rep;
   
   if (game[BOAT_X] == game[GOAL_X] && game[BOAT_Y] == game[GOAL_Y])
-    return SAILING_REWARD;
+    return MAX_WINS;
   
   return INCOMPLETE;
+}
+
+//Select a "move" at a chance node in an MDP
+int selectMoveStochastic_sailing(rep_t rep) {
+	int *game = rep;
+	int move = game[WIND];
+	int windChange = random() % 100;
+
+	if (0 <= windChange && windChange < SAILING_WIND_CHANGE_PROB * 100) {
+	  move = game[WIND] - 1;
+	  if (move < 1)
+	    move = SAILING_DIRECTIONS;
+	} else if (SAILING_WIND_CHANGE_PROB * 100 <= windChange && windChange < SAILING_WIND_CHANGE_PROB * 100 * 2) {
+	  move = game[WIND] + 1;
+	  if (move > SAILING_DIRECTIONS)
+	    move = 1;
+	}
+	
+	return move;
 }
 
 //if move is -1, and it is a chance node, than make a stochastic random move, else make the given move.
@@ -166,14 +185,18 @@ void generateRandomStart_sailing(rep_t rep, int *side) {
   
   game[SAILING_STATE_TYPE] = SAILING_STATE_DET;
   
-  game[BOAT_X] = random() % SAILING_BOARD_SIZE;
-  game[BOAT_Y] = random() % SAILING_BOARD_SIZE;
+  //game[BOAT_X] = random() % SAILING_BOARD_SIZE;
+  //game[BOAT_Y] = random() % SAILING_BOARD_SIZE;
+  game[BOAT_X] = 0;
+  game[BOAT_Y] = 0;
   
   game[TACK] = random() % 2;
-  game[WIND] = random() % SAILING_DIRECTIONS + 1;
+  game[WIND] = (random() % SAILING_DIRECTIONS) + 1;
   
-  game[GOAL_X] = random() % SAILING_BOARD_SIZE;
-  game[GOAL_Y] = random() % SAILING_BOARD_SIZE;
+  //game[GOAL_X] = random() % SAILING_BOARD_SIZE;
+  //game[GOAL_Y] = random() % SAILING_BOARD_SIZE;
+  game[GOAL_X] = SAILING_BOARD_SIZE - 1;
+  game[GOAL_Y] = SAILING_BOARD_SIZE - 1;
 }
 
 rep_t allocate_sailing() {
@@ -205,7 +228,7 @@ double h1_sailing(rep_t rep, int side, int horizion) {
   int dx = abs(game[BOAT_X] - game[GOAL_X]);
   int dy = abs(game[BOAT_Y] - game[GOAL_Y]);
   
-  return MAX(dx, dy);
+  return -1 * MAX(dx, dy);
 }
 
 double h2_sailing(rep_t rep, int side, int horizion) {

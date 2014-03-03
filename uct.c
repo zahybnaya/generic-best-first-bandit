@@ -110,26 +110,6 @@ static int selectMove(treeNode* node, double C, int isSimpleRegret) {
 	return chosenBestMove;
 }
 
-//Select a "move" at a chance node in an MDP
-//TODO currently it is domain dependant (sailing)
-static int selectMoveStochastic(treeNode* node) {
-	int *game = node->rep;
-	int move = game[WIND];
-	int windChange = random() % 100;
-
-	if (0 <= windChange && windChange < SAILING_WIND_CHANGE_PROB * 100) {
-	  move = game[WIND] - 1;
-	  if (move < 1)
-	    move = SAILING_DIRECTIONS;
-	} else if (SAILING_WIND_CHANGE_PROB * 100 <= windChange && windChange < SAILING_WIND_CHANGE_PROB * 100 * 2) {
-	  move = game[WIND] + 1;
-	  if (move > SAILING_DIRECTIONS)
-	    move = 1;
-	}
-	
-	return move;
-}
-
 /* Recursively constructs the UCT search tree */
 static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int budget, int backupOp , int isRoot) {
 	double ret;
@@ -170,8 +150,8 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 	// We are at an internal node that has been visited before; descend recursively
 	// Use selectMove to pick which branch to explore.
 	//TODO handle chance node diffrently (domain independant)
-	if (_DOM->dom_name == SAILING && ((int *)(node->rep))[SAILING_STATE_TYPE] == SAILING_STATE_CHANCE) {
-	  move = selectMoveStochastic(node);
+	if (_DOM->dom_name == SAILING && isChanceNode_sailing(node->rep) == true) {
+	  move = selectMoveStochastic_sailing(node->rep);
 	} else {
 	  move = selectMove(node, C, SIMPLE_REGRET_UCT ? isRoot : false);
 	}
