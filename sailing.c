@@ -7,8 +7,27 @@ int isChanceNode_sailing(rep_t rep) {
   return false;
 }
 
+//if move is with the direction of the wind then there is no change of tack
+//else, tack is based on the current wind and the chosen move.
+int computeTack(int *game, int move) {
+  int wind = game[WIND];
+    if (wind != move) {
+      if ((wind + 4 <= 8 && wind < move && move < wind) || (wind + 4 > 8 && (wind < move || move < (wind + 4) % 8)))
+	return 1;
+      else
+	return 0;
+    } else
+      return game[TACK];
+}
+
 double actionCost_sailing(rep_t rep, int move) {
   int *game = rep;
+  
+  double cost = 1;
+  
+  //diagonal move
+  if (move % 2 == 0)
+    cost = sqrt(2);
   
   int stray = abs(game[WIND] - move);
   if (stray > 4)
@@ -21,7 +40,7 @@ double actionCost_sailing(rep_t rep, int move) {
   if (computeTack(game, move) != game[TACK])
     delay = SAILING_DELAY;
   
-  return -1 * (stray + 1 + delay);
+  return -1 * (stray * cost + delay);
 }
 
 void printBoard_sailing(rep_t rep, int dummy) {
@@ -157,19 +176,6 @@ void makeMove_sailing(rep_t rep, int *side, int move) {
   }
 }
 
-//if move is with the direction of the wind then there is no change of tack
-//else, tack is based on the current wind and the chosen move.
-int computeTack(int *game, int move) {
-  int wind = game[WIND];
-    if (wind != move) {
-      if ((wind + 4 <= 8 && wind < move && move < wind) || (wind + 4 > 8 && (wind < move || move < (wind + 4) % 8)))
-	return 1;
-      else
-	return 0;
-    } else
-      return game[TACK];
-}
-
 rep_t cloneRep_sailing(rep_t orig) {
    int i;
    int *game = orig;
@@ -185,16 +191,12 @@ void generateRandomStart_sailing(rep_t rep, int *side) {
   
   game[SAILING_STATE_TYPE] = SAILING_STATE_DET;
   
-  //game[BOAT_X] = random() % SAILING_BOARD_SIZE;
-  //game[BOAT_Y] = random() % SAILING_BOARD_SIZE;
   game[BOAT_X] = 0;
   game[BOAT_Y] = 0;
   
   game[TACK] = random() % 2;
   game[WIND] = (random() % SAILING_DIRECTIONS) + 1;
   
-  //game[GOAL_X] = random() % SAILING_BOARD_SIZE;
-  //game[GOAL_Y] = random() % SAILING_BOARD_SIZE;
   game[GOAL_X] = SAILING_BOARD_SIZE - 1;
   game[GOAL_Y] = SAILING_BOARD_SIZE - 1;
 }
@@ -228,7 +230,10 @@ double h1_sailing(rep_t rep, int side, int horizion) {
   int dx = abs(game[BOAT_X] - game[GOAL_X]);
   int dy = abs(game[BOAT_Y] - game[GOAL_Y]);
   
-  return -1 * MAX(dx, dy);
+  int diagonal = MIN(dx, dy);
+  int straight = MAX(dx, dy) - diagonal;
+  
+  return -1 * (straight + sqrt(2) * diagonal);
 }
 
 double h2_sailing(rep_t rep, int side, int horizion) {
