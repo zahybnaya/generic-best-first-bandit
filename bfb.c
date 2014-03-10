@@ -61,8 +61,14 @@ static int selectTypeFromRoot(void *void_ts, double C, int side, int policy, int
 	treeNode* current = root;
 	type_system* ts = (type_system*)void_ts;
 	int type = -1;
+	int nextMove;
 	while(current){
-		int nextMove = selectMove(current,C,false);
+		//TODO handle chance node diffrently (domain independant)
+		if (_DOM->dom_name == SAILING && isChanceNode_sailing(current->rep) == true) {
+		    nextMove = selectMoveStochastic_sailing(current->rep);
+		} else {
+		    nextMove = selectMove(current,C,false);
+		}
 		current = current->children[nextMove];
 		type = isTypeDefiner(current,ts);
 		if (type){
@@ -91,9 +97,9 @@ static int selectType(void *void_ts, double C, int side, int policy,
 	// an upper confidence bound for Max and a lower confidence bound for Min
 	double multiplier = (side == max) ? 1 : -1;
 	int policyVisits;
-	if (verbose){
+	/*if (verbose){
 		reportTypeStat(ts);
-	}
+	}*/
 	double trs[ts->numTypes];
 	double sum_trs=0;
 	for (i = 0; i < ts->numTypes; i++) {
@@ -120,9 +126,9 @@ static int selectType(void *void_ts, double C, int side, int policy,
 		}
 		else {
 			qhat = ts->types[i]->scoreSum / (double)ts->types[i]->visits;  // exploitation component (average utility or minimax value)
-			if (verbose){
+			/*if (verbose){
 			   printf("C: %f qhat: %f level:%d \n ",C, qhat, countLevel(ts->types[i]));
-			}
+			}*/
 			score = qhat + (multiplier * C) * sqrt(log(policyVisits) / (double)ts->types[i]->visits); // add exploration component
 			score = (1-probWeight) * score + 
 				probWeight * trs[i] + 
@@ -163,6 +169,17 @@ double static mmfunction(int mmLevel,int level){
 	return (1- (mmLevel/level)); 
 
 }
+
+static int findWhichMoveIsChild(treeNode *node) {
+  int i;
+  treeNode *p = node->parent;
+  for (i = 1; i < _DOM->getNumOfChildren(); i++) 
+    if (p->children[i] == node)
+      return i;
+    
+  return -1;
+}
+
 //TODO: change the way you handle empty open lists - should stop the main iteration loop and also maybe should not be returned from here or from select type
 //An iteration of BFB:
 //select the best type
@@ -192,11 +209,17 @@ static void bfbIteration(type_system *ts, double C, double CT, heuristics_t heur
 		// those estimates are from the set {-1, 0, +1}. The terminal nodes are given values from the set {MIN_WINS, DRAW, MAX_WINS}
 		// which are substantially larger. To make these values comparable in magnitude, we need to rescale the terminal
 		// node values. If we are using engineered heuristics, then no rescaling is necessary.
-		if ((heuristic == _DOM->hFunctions.h3) || (heuristic == _DOM->hFunctions.h4) || (heuristic == _DOM->hFunctions.h5))
-			ret /= MAX_WINS; // rescale
-	} else{
+		if ((heuristic == _DOM->hFunctions.h3) || (heuristic == _DOM->hFunctions.h4) || (heuristic == _DOM->hFunctions.h5)) {
+			if (_DOM->dom_name != SAILING)
+				ret /= MAX_WINS; // rescale
+		}
+		
+		if (_DOM->dom_name == SAILING)
+		  ret = 0;
+	} else {
 		ret = heuristic(node->rep, node->side, budget); 
 	}
+	
 	//backpropagate path
 	int mmlevelOfNode = minmaxLevel(node);
 	treeNode *bp = node;
@@ -204,6 +227,12 @@ static void bfbIteration(type_system *ts, double C, double CT, heuristics_t heur
 	int aboveType = false;
 	double bpMean;
 	while (bp != NULL) {
+		//In a stochastic domain
+		//Update ret to include the cost of getting to the child node from this parent.
+		//TODO make this domain independant
+		if (_DOM->dom_name == SAILING && isChanceNode_sailing(bp->rep) != true && bp->parent != 0)
+		    ret += actionCost_sailing(bp->parent->rep, findWhichMoveIsChild(bp));
+	
 		if (bp == ((type_sts*)t)->root){
 			backupOp = MINMAX; // switch to minmax from type
 		}
