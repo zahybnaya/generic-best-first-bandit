@@ -51,7 +51,7 @@ int main(int argc, char* argv[]) {
 		short noisyHeuristic = false; // whether we will add noise to heuristic estimate
 		int noiseMag = 0; // maximum magnitude of the noise that will be added
 		double noiseProb = 0.0; // probability with which heuristic estimate will be corrupted
-		int backupOp[2] = {MINMAX, MINMAX}; // back-up operator to be used by UCT
+		int backupOp[2] = {AVERAGE, AVERAGE}; // back-up operator to be used by UCT
 		int mmTreeSize[2] = {3, 3}; // back-up operator to be used by UCT TODO:enum this too
 		int type_system[2] = {STS, STS}; //the type system used by BFB.
 		int threshold[2] = {100, 100}; //the maximal number of nodes in a type for the STS type system
@@ -64,7 +64,8 @@ int main(int argc, char* argv[]) {
 		char heurString[][30] = {"heuristic 1", "heuristic 1"};
 		const char* backupOpStrings[] = {"average", "minimax"};
 		double bolzmanConstant = -2.44, probWeight = 0.5;
-		double score[2]; //The socre of each player. Currently used for sailing only.
+		double gameScore[2]; //The socre of each player for a specific game. Currently used for sailing only.
+		double totalScore[2]; //The socre of each player for all games. Currently used for sailing only.
 		// If we see too few arguments, print help message and bail
 		if (argc < 3) {
 				printMessage();
@@ -446,6 +447,16 @@ int main(int argc, char* argv[]) {
 		state = _DOM->allocate();
 		randState = _DOM->allocate();
 
+		//generate #games weathers
+		int **weathers;
+		if (_DOM->dom_name == SAILING) {
+		  weathers = calloc(numGames, sizeof(int *));
+		  int wi = 0;
+		  
+		  for (wi = 0; wi < numGames; wi++)
+		    weathers[wi] = generateWeather(1);
+		}
+		
 		/* Loops until end of games*/
 		while (1) {
 				if (usingRandomStartBoard) {
@@ -458,7 +469,7 @@ int main(int argc, char* argv[]) {
 
 				int _outcome;
 				for (j = 0; j <= 1 ; j++) {
-						score[side] = 0;
+						gameScore[side] = 0;
 						moveCount = 0; // reset move count
 						side = rootSide; // Restore the starting board (which was either randomly generated or read from a file)
 						_DOM->copy(randState,state);
@@ -490,13 +501,16 @@ int main(int argc, char* argv[]) {
 
 								//Must be before the move is made because the calculation uses data from the old state
 								if (_DOM->dom_name == SAILING)
-								  score[side] += actionCost_sailing(state, moveMade);
+								  gameScore[side] += actionCost_sailing(state, moveMade);
+								
+								if (verbose)
+									printf("current score %f\n", gameScore[side]);
 
 								_DOM->makeMove(state, &side, moveMade); // make the chosen move (updates game state)
 								
 								//In the sailing domain, after a move is made, a chance node is produced and a move from there most be made.
 								if (_DOM->dom_name == SAILING)
-								  _DOM->makeMove(state, 0, -1);
+								  _DOM->makeMove(state, 0, weathers[playedGames][moveCount + 1]);
 								
 								if (verbose)
 										printf("Elapsed time: %f\n", getElapsed(start));
@@ -509,25 +523,29 @@ int main(int argc, char* argv[]) {
 										printf("Move #%d -- player %d made move %d\n", moveCount, origSide, moveMade);
 										fflush(stdout);
 								}
+								//break;
 						} // end of game
 
 						if (verbose) {
 								_DOM->printBoard(state, side);
 								printf("\n");
 								if (_DOM->dom_name == SAILING)
-								  printf("Result: %f\n", score[side]);
+								  printf("Result: %f\n", gameScore[side]);
 								else
 								  printf("Result: %d\n", outcome/MAX_WINS);
 						} else {
 								if (_DOM->dom_name == SAILING)
-								  printf("%f\n", score[side]);
+								  printf("%f", gameScore[side]);
 								else
 								  printf("%d\n", outcome/MAX_WINS);
 						}
 						fflush(stdout);
 						
-						if (_DOM->dom_name == SAILING)
+						if (_DOM->dom_name == SAILING) {
+						  totalScore[side] += gameScore[side];
+						  free(weathers[playedGames]);
 						  break;
+						}
 						
 						switch(outcome){
 								case MAX_WINS:
@@ -608,11 +626,13 @@ int main(int argc, char* argv[]) {
 				printf("%f,",(float)minSuper/(maxSuper+minSuper));
 				printf("%d,",maxSuper);
 				printf("%f,",time[max]/(double)turns[max]);
-				printf("%f\n",time[min]/(double)turns[min]);
+				printf("%f,",time[min]/(double)turns[min]);
+				printf("%f\n",-1 * totalScore[max]/(double)numGames);
 		}
 		printUctStats();
 		free(algDescription[0]);
 		free(algDescription[1]);
+		free(weathers);
 		
 		return 0;
 }

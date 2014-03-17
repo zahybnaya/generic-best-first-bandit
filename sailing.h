@@ -3,12 +3,13 @@
 
 #include "domain.h"
 
-#define SAILING_BOARD_SIZE 5 //Board grid of size nXn
+#define SAILING_BOARD_SIZE 10 //Board grid of size nXn
 #define SAILING_DIRECTIONS 8 //Can sail to al 45 degree directions
-#define SAILING_WIND_CHANGE_PROB 0.6 //Probability of wind changing by 45 degrees
-#define SAILING_REWARD (SAILING_BOARD_SIZE * 2) //Reward at goal
+#define SAILING_TACK_RANGE 3 //Tack direction. 0 - left tack, 1 - in tack, 2 - right tack. //currently in use only for value iteration
+#define SAILING_WIND_CHANGE_PROB 0.3 //Probability of wind changing by 45 degrees in one direction (total prob of wind changing is 0.6)
 #define SAILING_REP_SIZE 7 //The size of a sailing domain state representation
 #define SAILING_DELAY 3 //the cost of a tack change
+#define SAILING_HORIZION SAILING_BOARD_SIZE * SAILING_BOARD_SIZE
 
 #define SAILING_STATE_TYPE 0 //Wheter this state is a chance node or not
 #define BOAT_X 1 //The x coordination of the boat
@@ -36,6 +37,7 @@ void copy_sailing(rep_t src,rep_t dst);
 double applyHeuristics_sailing(heuristics_t h,rep_t rep,int side, int budget);
 int estimateTreeSize_sailing(int treeSize);
 void printBoard_sailing(rep_t rep, int dummy);
+int *generateWeather(int wind);
 
 // Heuristic routines
 double h1_sailing(rep_t rep, int side, int horizion);
@@ -44,5 +46,8 @@ double h3_sailing(rep_t rep, int side, int horizion);
 double h4_sailing(rep_t rep, int side, int horizion);
 double h5_sailing(rep_t rep, int side, int horizion);
 double h6_sailing(rep_t rep, int side, int horizion);
+
+//value_iteration.c
+double ****value_iteration();
 
 #endif //SAILING_H_INCLUDED
