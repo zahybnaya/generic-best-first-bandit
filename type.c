@@ -1,5 +1,5 @@
 #include "type.h"
-#define SIMPLE_REGRET_UCT 1
+#define SIMPLE_REGRET_UCT 0
 
 //TODO merge with select move of uct.c  Note the duplication of 3(!) identical methods. 
 
@@ -16,9 +16,18 @@ static double uctExplorationSimpleRegret(double multiplier, double C, treeNode* 
 	return 	sqrt((multiplier * C) * sqrt(node->n)/(double)node->children[i]->n); // add exploration component
 }
 
+void destroy_ts(void *void_ts) {
+  int i;
+  type_system *ts = (type_system *)void_ts;
+  
+  for (i = 0; i < ts->numTypes; i++)    
+    free(ts->types[i]);
+  
+  free(ts->types);
+}
 
 //Select a child of a uct node based on ucb1
-int selectMove(treeNode* node, double C, int isBasedOnMinimax) {
+int selectMove(treeNode* node, double C) {
   int i;
   double qhat;
   double score;
@@ -32,17 +41,14 @@ int selectMove(treeNode* node, double C, int isBasedOnMinimax) {
   for (i = 1; i < _DOM->getNumOfChildren(); i++) { // iterate over all children
     if (!_DOM->isValidChild(node->rep, node->side, i)) // if the i^th move is illegal, skip it
       continue;
+    
     // If the i^th child has never been visited before, select it first, before any other children are revisited
-    if (node->children[i]->n == 0)
+    if (node->children[i] == NULL || node->children[i]->n == 0)
       return i;
     // Otherwise, compute this child's UCB1 index (will be used to pick best child if it transpires that all
     // children have been visited at least once)
-    if(isBasedOnMinimax){
-	    qhat = node->children[i]->minmax;
-    }else{
-	    qhat = node->children[i]->scoreSum / (double)node->children[i]->n;  // exploitation component (this is the average utility)
-    }
-    if (SIMPLE_REGRET_UCT && !node->parent){
+    qhat = node->children[i]->scoreSum / (double)node->children[i]->n;  // exploitation component (this is the average utility)
+    if (SIMPLE_REGRET_UCT){
 	    score = qhat + uctExplorationSimpleRegret(multiplier,C,node,i);
     } else {
 	    score = qhat + uctExploration(multiplier,C,node,i);
@@ -50,6 +56,7 @@ int selectMove(treeNode* node, double C, int isBasedOnMinimax) {
     // Negamax formulation -- since min(s1,s2,...) = -max(-s1,-s2,...), negating the indices when it
     // is min's turn means we can always just take the maximum
     score = (node->side == min) ? -score : score;
+    
     // If this is either the first child, or the best scoring child, store it
     if ((numBestMoves == 0) || (score > bestScore)) {
       bestMoves[0] = i;
@@ -59,54 +66,22 @@ int selectMove(treeNode* node, double C, int isBasedOnMinimax) {
     else if (score == bestScore) // if this child ties with the best scoring child, store it
       bestMoves[numBestMoves++] = i;
   }
-  assert(numBestMoves);
+  //printf("scoresum %f n %d qhat %f\n",node->children[i]->scoreSum,node->children[i]->n, qhat);
+  //printf("depth %d best socre %f\n",node->depth, bestScore);
   return bestMoves[0];
 }
 
 
-void *init_type_system(int t, rep_t rep, int side) {
+void *init_type_system(int t) {
   type_system *ts = calloc(1, sizeof(type_system));
   
-  switch (t) {
-    /*case MM_ORACLE:     
-      ts->name = MM_ORACLE;
-      ts->assignToType = assignToType_mmOracle;
-      ts->selectFromType = selectFromType_mmOracle;
-      ts->destroy = destroy_mmOracle;
-      
-      ts->numTypes = MAX_WINS * 2 + 1; //Number of possible minmax values
-      ts->types = calloc(ts->numTypes, sizeof(type_mmOracle *));
-      
-      int i;
-      for (i = 0; i < ts->numTypes; i++) {
-	ts->types[i] = calloc(1, sizeof(type_mmOracle));
-	((type_mmOracle *)ts->types[i])->empty = -1;
-      }
-      
-      ts->extra = calloc(1, sizeof(int));
-      *(int *)(ts->extra) = open(ORACLE_PATH, O_CREAT | O_TRUNC | O_RDWR, S_IRWXU);
-      storeMinimax(*(int *)(ts->extra), rep, 0, ORACLE_DEPTH, side, ORACLE_H, 0);
-      break;*/
-      
+  switch (t) {   
     case STS:
       ts->name = STS;
       ts->assignToType = assignToType_sts;
-      ts->selectFromType = selectFromType_sts;
-      ts->destroy = destroy_sts;
       ts->numTypes = 1;
-      ts->types = calloc(ts->numTypes, sizeof(type_sts *));
-      ts->types[0] = calloc(1, sizeof(type_sts));
-      break;
-      
-    case VTS:
-      ts->name = VTS;
-      ts->assignToType = assignToType_vts;
-      ts->selectFromType = selectFromType_vts;
-      ts->destroy = destroy_vts;
-      
-      ts->numTypes = 1;
-      ts->types = calloc(ts->numTypes, sizeof(type_vts *));
-      ts->types[0] = calloc(1, sizeof(type_vts));
+      ts->types = calloc(ts->numTypes, sizeof(type *));
+      ts->types[0] = calloc(1, sizeof(type));
       break;
   }
   return ts;

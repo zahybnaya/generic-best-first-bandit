@@ -31,7 +31,7 @@ int main(int argc, char* argv[]) {
 		int moveCount = 0;
 		Timer start;
 		int numBestMoves;
-	  int multiplyWithAverage = 0; //Multiply the constant with the average value for all types
+		int multiplyWithAverage = 0; //Multiply the constant with the average value for all types
 		int isUseMinmaxRewards = 0; // Use a function of minimax values as an exploitation term
 		int isSelectTypeFromNode = 0; //Select the type by going from the root down (until a type is found)
 		// Variables to store command-line parameters
@@ -493,7 +493,7 @@ int main(int argc, char* argv[]) {
 												moveMade = makeMinmaxMove(state, &side,depth[side],heuristic[side],budget[side],randomTieBreaks,noisyMM,bestMoves,&numBestMoves, &termPercentage);
 												break;
 										case BFB:
-												moveMade = makeBFBMove(state, &side, type_system[side], numIterations[side], C[side], CT[side], heuristic[side], budget[side], bestMoves, &numBestMoves, backupOp[side], threshold[side], policy[side], bolzmanConstant, probWeight, isSelectTypeFromNode, multiplyWithAverage, isUseMinmaxRewards);
+												moveMade = makeBFBMove(state, &side, type_system[side], numIterations[side], C[side], CT[side], heuristic[side], budget[side], bestMoves, &numBestMoves, backupOp[side], threshold[side], policy[side]);			
 												break;
 										default:
 												puts("Unknown algorithm\n");
