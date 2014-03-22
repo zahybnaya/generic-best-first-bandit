@@ -79,9 +79,17 @@ treeNode *selectFromType_sts(void *void_t, double C) {
   treeNode *node = t->root;
   
   //travel down the tree using ucb
-  while (_DOM->getGameStatus(node->rep) == INCOMPLETE && node->n > 0)
-    node = node->children[selectMove(node, C,false)];
- 
+  int move;
+  while (_DOM->getGameStatus(node->rep) == INCOMPLETE && node->n > 0) {
+    //TODO handle chance node diffrently (domain independant)
+	if (_DOM->dom_name == SAILING && isChanceNode_sailing(node->rep) == true) {
+	  move = selectMoveStochastic_sailing(node->rep);
+	} else {
+	  move = selectMove(node, C,false);
+	}
+    node = node->children[move];
+  }
+  
   return node;
 }
 

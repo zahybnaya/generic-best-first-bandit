@@ -126,7 +126,7 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 		// which are substantially larger. To make these values comparable in magnitude, we need to rescale the terminal
 		// node values. If we are using engineered heuristics, then no rescaling is necessary.
 		if ((heuristic == _DOM->hFunctions.h3) || (heuristic == _DOM->hFunctions.h4) || (heuristic == _DOM->hFunctions.h5)) {
-			if (_DOM->dom_name == MANCALA)
+			if (_DOM->dom_name != SAILING)
 				ret /= MAX_WINS; // rescale
 		} if ((dotFormat) && (node->n == 0)) // on first visit to a terminal node, color it red
 			printf("n%d [color=\"red\"];", node->id);

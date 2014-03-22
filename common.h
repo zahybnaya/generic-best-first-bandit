@@ -65,7 +65,7 @@
 
 // Other constants
 #define NULL_MOVE -1 // constant to indicate invalid moves; used for initialization purposes
-#define EPSILON 0.35 /* if the MM-k player is noisy, then with probability given by EPSILON, the player picks the second-best move,
+#define EPSILON 0.1 /* if the MM-k player is noisy, then with probability given by EPSILON, the player picks the second-best move,
 			provided that it is also within a score of 3 of the best move */
 
 // Types
