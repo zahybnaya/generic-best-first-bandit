@@ -263,6 +263,7 @@ double h1_sailing(rep_t rep, int side, int horizion) {
   
   int *game = rep;
   double epsi = (random() % 10000000) / (double)50000000 - 0.1; //randomly choose from [-0.1,0.1]
+  //printf("%d %d %d %d\n", game[BOAT_X],game[BOAT_Y],game[WIND] - 1,game[TACK] + 1);
   return (1 + epsi) * V[game[BOAT_X]][game[BOAT_Y]][game[WIND] - 1][game[TACK] + 1];
 }
 

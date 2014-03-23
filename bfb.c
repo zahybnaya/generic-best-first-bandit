@@ -106,19 +106,37 @@ static void generateChild(treeNode *node, int i) {
   node->children[i]->subtreeSize = 1;
 }
 
+double actionCostFindMove(treeNode *node) {
+  if (node->parent == NULL || isChanceNode_sailing(node->rep) == true)
+    return 0;
+  
+  int i;
+  for (i = 1; i < _DOM->getNumOfChildren(); i++)
+    if (node->parent->children[i] == node)
+      return actionCost_sailing(node->rep, i);
+    
+  return 0;
+}
+
 //An iteration of BFB:
 //select the best type
 //extract a node from its open list
 //rollout and backpropagate from selected nodes
 //place children in thier respective type open lists
 static void bfbIteration(treeNode *root, double C, double CT, heuristics_t heuristic, int budget, int backupOp, int side, int threshold, int policy) { 
-  
-  //travel down the tree using ucb
   treeNode *node = root;
   int generated = false;
+  int move;
+  double ret;
+  
+  //travel down the tree using ucb
+  while ((ret = _DOM->getGameStatus(node->rep)) == INCOMPLETE && node->n > 0) {    
+    //TODO handle chance node diffrently (domain independant)
+    if (_DOM->dom_name == SAILING && isChanceNode_sailing(node->rep) == true)
+      move = selectMoveStochastic_sailing(node->rep);
+    else
+      move = selectMove(node, C);
 
-  while (_DOM->getGameStatus(node->rep) == INCOMPLETE && node->n > 0) {    
-    int move = selectMove(node, C);
     //printf("depth %d scoresum %f n %d qhat %f\n",node->depth, node->scoreSum, node->n, node->scoreSum / (double)node->n);
     if (node->children[move] == NULL) {
       generateChild(node, move);
@@ -128,15 +146,17 @@ static void bfbIteration(treeNode *root, double C, double CT, heuristics_t heuri
     node = node->children[move];
   }
 
-  double ret;
-  if ((ret = _DOM->getGameStatus(node->rep)) != INCOMPLETE) {
+  if (ret != INCOMPLETE) {
+    if (_DOM->dom_name == SAILING)
+	ret = 0;
+    
     // This is a terminal node (i.e. can't generate any more children)
     // If we are estimating the leaf nodes using coarse random playout(s), coarsened h1 or random values, then all
     // those estimates are from the set {-1, 0, +1}. The terminal nodes are given values from the set {MIN_WINS, DRAW, MAX_WINS}
     // which are substantially larger. To make these values comparable in magnitude, we need to rescale the terminal
     // node values. If we are using engineered heuristics, then no rescaling is necessary.
     if ((heuristic == _DOM->hFunctions.h3) || (heuristic == _DOM->hFunctions.h4) || (heuristic == _DOM->hFunctions.h5))
-      ret /= MAX_WINS; // rescale
+	ret /= MAX_WINS; // rescale
       
   } else {
     ret = heuristic(node->rep, node->side, budget); 
@@ -165,6 +185,10 @@ static void bfbIteration(treeNode *root, double C, double CT, heuristics_t heuri
 	
 	//the node above the type is treated as a leaf in a minmax tree, thus we want to update the one above him.
 	if (node->parent != NULL && node->subtreeSize <= threshold) {
+	  //Add action cost for mdps
+	  if (_DOM->dom_name == SAILING)
+	    ret += actionCostFindMove(node);
+    
 	  node = node->parent;
 	  node->n++;
 	  node->scoreSum += ret;
@@ -189,6 +213,10 @@ static void bfbIteration(treeNode *root, double C, double CT, heuristics_t heuri
 
       node->scoreSum = (node->n) * bestScore; // reset score to that of min/max of children
     }
+    
+    //Add action cost for mdps
+    if (_DOM->dom_name == SAILING)
+      ret += actionCostFindMove(node);
     
     node = node->parent;
   }
@@ -252,7 +280,6 @@ int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, dou
 
   bestMove = bestMoves[random() % *numBestMoves]; // pick the best move (break ties randomly)
   //bestMove = bestMoves[0];
-  _DOM->makeMove(rep, side, bestMove); // make it (updates game state)
 
   if (verbose) {
     printf("Value of root node: %f\n", rootNode->scoreSum / (double)rootNode->n);
