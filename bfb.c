@@ -3,6 +3,8 @@
 #include "type_reachability.h"
 #define USE_MINIMAX_REWARDS 0
 
+static int mm_Counter; // for counting nodes
+
 //TODO extract and merge with uct.c
 /* Routine to free up UCT tree */
 static void freeTree(treeNode* node) {
@@ -96,6 +98,7 @@ static int selectType(void *void_ts, double C, int side, int policy, int backupO
 
 //Generate the i'th child of a uct node
 static void generateChild(treeNode *node, int i) {
+  mm_Counter++;
   node->children[i] = calloc(1, sizeof(treeNode));
   node->children[i]->children = calloc(_DOM->getNumOfChildren(), sizeof(treeNode*));
   node->children[i]->rep = _DOM->cloneRep(node->rep); // copy over the current board to child
@@ -107,7 +110,7 @@ static void generateChild(treeNode *node, int i) {
 }
 
 double actionCostFindMove(treeNode *node) {
-  if (node->parent == NULL || isChanceNode_sailing(node->rep) == true)
+  if (node->parent == NULL || isChanceNode_sailing(node->rep) == false)
     return 0;
   
   int i;
@@ -161,7 +164,7 @@ static void bfbIteration(treeNode *root, double C, double CT, heuristics_t heuri
   } else {
     ret = heuristic(node->rep, node->side, budget); 
   }
-  
+ 
   //backpropagate
   int aboveType = false;
   int i;
@@ -217,7 +220,7 @@ static void bfbIteration(treeNode *root, double C, double CT, heuristics_t heuri
     //Add action cost for mdps
     if (_DOM->dom_name == SAILING)
       ret += actionCostFindMove(node);
-    
+
     node = node->parent;
   }
 }
@@ -257,7 +260,8 @@ int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, dou
 
     //Compute average utility of this child
     val = rootNode->children[i]->scoreSum / (double)rootNode->children[i]->n;
-
+    if (_DOM->dom_name == SAILING)
+      val += actionCost_sailing(rootNode->rep, i);
     //If this was min's move, negate the utility value (this makes things a little cleaner
     // as we can then always take the max of the children, since min(s1,s2,...) = -max(-s1,-s2,...))
     val = (*side == min) ? -val : val;
@@ -278,8 +282,8 @@ int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, dou
   //We should have at least looked at one child
   assert(*numBestMoves != 0);
 
-  bestMove = bestMoves[random() % *numBestMoves]; // pick the best move (break ties randomly)
-  //bestMove = bestMoves[0];
+  //bestMove = bestMoves[random() % *numBestMoves]; // pick the best move (break ties randomly)
+  bestMove = bestMoves[0];
 
   if (verbose) {
     printf("Value of root node: %f\n", rootNode->scoreSum / (double)rootNode->n);
@@ -290,4 +294,8 @@ int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, dou
   freeTree(rootNode);
   
   return bestMove;
+}
+
+void printBfbStats(){
+	printf("** Total BFB nodes %d**\n",mm_Counter);
 }
