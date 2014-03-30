@@ -211,7 +211,6 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 		puts("Invalid back-up operator!");
 		exit(1);
 	}	
-	
 	return ret;
 }
 
@@ -236,6 +235,7 @@ int makeUCTMove(rep_t rep, int *side, int numIterations, double C,
 
 	// Run specified number of iterations of UCT
 	for (i = 0; i < numIterations; i++){
+		//printf("ITERATION %d\n", i);
 		uctRecurse(rootNode, C, heuristic, budget, backupOp, true);
 	}
 

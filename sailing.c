@@ -258,13 +258,30 @@ int *generateWeather(int wind) {
 double ****V = 0;
 
 double h1_sailing(rep_t rep, int side, int horizion) {
+  int *dummy = allocate_sailing();
+  copy_sailing(rep, dummy);
+  
+  int steps;
+  for (steps = 0; ((random() % 10000000) / (double)10000000) < (1 / (double)(steps + 1)); steps++) {
+    if (dummy[SAILING_STATE_TYPE] == SAILING_STATE_CHANCE) {
+      makeMove_sailing(dummy, 0, -1);
+    } else {
+      int move;
+      do {
+	move = (random() % 8) + 1;
+      } while (!isValidChild_sailing(dummy, 0, move));
+      makeMove_sailing(dummy, 0, move);
+    }
+  }
+
   if (V == 0)
     V = value_iteration();
   
-  int *game = rep;
+  int *game = dummy;
   double epsi = (random() % 10000000) / (double)50000000 - 0.1; //randomly choose from [-0.1,0.1]
-  //printf("%d %d %d %d\n", game[BOAT_X],game[BOAT_Y],game[WIND] - 1,game[TACK] + 1);
-  return (1 + epsi) * V[game[BOAT_X]][game[BOAT_Y]][game[WIND] - 1][game[TACK] + 1];
+  double val = V[game[BOAT_X]][game[BOAT_Y]][game[WIND] - 1][game[TACK] + 1];
+  destructRep_sailing(game);
+  return (1 + epsi) * val;
 }
 
 double h2_sailing(rep_t rep, int side, int horizion) {

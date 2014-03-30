@@ -4,8 +4,6 @@
 #define USE_MINIMAX_REWARDS 0
 
 static int mm_Counter; // for counting nodes
-static int rc;
-
 
 //TODO extract and merge with uct.c
 /* Routine to free up UCT tree */
@@ -139,7 +137,6 @@ static void bfbIteration(treeNode *root, double C, double CT, heuristics_t heuri
     //TODO handle chance node diffrently (domain independant)
     if (_DOM->dom_name == SAILING && isChanceNode_sailing(node->rep) == true) {
       move = selectMoveStochastic_sailing(node->rep);
-      rc++;
     } else
       move = selectMove(node, C);
 
@@ -166,14 +163,12 @@ static void bfbIteration(treeNode *root, double C, double CT, heuristics_t heuri
       
   } else {
     ret = heuristic(node->rep, node->side, budget); 
-    rc++;
   }
  
   //backpropagate
   int aboveType = false;
   int i;
   while (node != NULL) {
-    printf("ret %f\n", ret);
     node->n++;
     if (generated)
       node->subtreeSize++;
@@ -250,7 +245,7 @@ int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, dou
 
   //Run specified number of BFB iterations
   for (i = 0; i < numIterations; i++) {
-    printf("ITERATION %d\n", i);
+    //printf("ITERATION %d\n", i);
     bfbIteration(rootNode, C, CT, heuristic, budget, backupOp, *side, threshold, policy);
   }
 
@@ -292,7 +287,6 @@ int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, dou
   if (verbose) {
     printf("Value of root node: %f\n", rootNode->scoreSum / (double)rootNode->n);
     printf("Best move: %d\n", bestMove);
-    printf("Calls to random: %d\n", rc);
   }
 
   // Clean up before returning
