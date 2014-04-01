@@ -17,13 +17,10 @@ static double uctExplorationSimpleRegret(double multiplier, double C, treeNode* 
 }
 
 void destroy_ts(void *void_ts) {
-  int i;
-  type_system *ts = (type_system *)void_ts;
-  
-  for (i = 0; i < ts->numTypes; i++)    
-    free(ts->types[i]);
-  
+  type_system *ts = (type_system *)void_ts;  
   free(ts->types);
+  free(ts->birthdays);
+  //The types themselves are tree nodes and thus are freed with the entire tree
 }
 
 //Select a child of a uct node based on ucb1
@@ -48,6 +45,9 @@ int selectMove(treeNode* node, double C) {
     // Otherwise, compute this child's UCB1 index (will be used to pick best child if it transpires that all
     // children have been visited at least once)
     qhat = node->children[i]->scoreSum / (double)node->children[i]->n;  // exploitation component (this is the average utility)
+    if (_DOM->dom_name == SAILING)
+		  qhat += actionCost_sailing(node->rep, i);
+    
     if (SIMPLE_REGRET_UCT){
 	    score = qhat + uctExplorationSimpleRegret(multiplier,C,node,i);
     } else {
@@ -78,10 +78,9 @@ void *init_type_system(int t) {
   switch (t) {   
     case STS:
       ts->name = STS;
-      ts->assignToType = assignToType_sts;
       ts->numTypes = 1;
-      ts->types = calloc(ts->numTypes, sizeof(type *));
-      ts->types[0] = calloc(1, sizeof(type));
+      ts->types = calloc(ts->numTypes, sizeof(treeNode *));
+      ts->birthdays = calloc(ts->numTypes, sizeof(int));
       break;
   }
   return ts;

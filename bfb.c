@@ -1,7 +1,7 @@
 #include "common.h"
 #include "type.h"
-#include "type_reachability.h"
-#define USE_MINIMAX_REWARDS 0
+
+#define TYPE_FROM_ROOT 0
 
 static int mm_Counter; // for counting nodes
 
@@ -30,8 +30,7 @@ static void freeTypeSystems(type_system **type_systems) {
 }
 
 //Invoked by bfbIteration to select a type out of the type system based on UCB1
-static int selectType(void *void_ts, double C, int side, int policy, int backupOp) {
-  type_system *ts = (type_system *)void_ts;
+static int selectType(type_system *ts, double C, int side, int policy, int backupOp) {
   int i;
   double qhat;
   double score;
@@ -39,9 +38,6 @@ static int selectType(void *void_ts, double C, int side, int policy, int backupO
   double bestScore = -INF;
   int bestTypes[ts->numTypes];
   int policyVisits;
-
-  //if (USE_MINIMAX_REWARDS)
-  //  C = averageValueOfAllTypes(ts);
   
   // The multiplier is used to set the sign of the exploration bonus term (should be negative
   // for the min player and positive for the max player) i.e. so that we correctly compute
@@ -49,37 +45,24 @@ static int selectType(void *void_ts, double C, int side, int policy, int backupO
   double multiplier = (side == max) ? 1 : -1;
   for (i = 0; i < ts->numTypes; i++) { // iterate over all types
     //If the type has never been visited before, select it first
-    if (ts->types[i]->root->n == 0)
+    if (ts->types[i]->n == 0)
       return i;
     
     if (policy == MAB)
       policyVisits = ts->visits;
     else if (policy == KEEP_VMAB)
-      policyVisits = ts->visits - ts->types[i]->birth + ts->types[i]->root->n;
+      policyVisits = ts->visits - ts->birthdays[i] + ts->types[i]->n;
     else if (policy == DELETE_VMAB)
-      policyVisits = ts->visits - ts->types[i]->birth;
+      policyVisits = ts->visits - ts->birthdays[i];
     
     // Otherwise, compute this type's UCB1 index (will be used to pick best type if it transpires that all
     // types have been visited at least once)
-    if (USE_MINIMAX_REWARDS) {
-      double avg = ts->types[i]->root->scoreSum / (double)ts->types[i]->root->n;
+    qhat = ts->types[i]->scoreSum / (double)ts->types[i]->n;  // exploitation component (this is the average utility or minimax value)
+    score = qhat + (multiplier * C) * sqrt(log(policyVisits) / (double)ts->types[i]->n); // add exploration component
 
-      //qhat = 1.0 - calcQhatBasedOnMinimax(ts,i) / (double)ts->types[i]->root->depth;
-      qhat = 1.0 - (double)minmaxLevel(ts->types[i]->root) / (double)ts->types[i]->root->depth;
-      
-      //if (ts->visits == logiter)
-	//printf("avg %f minmaxLevel(ts->types[i]->root) %f ts->types[i]->root->depth %d\n", avg, minmaxLevel(ts->types[i]->root), ts->types[i]->root->depth);
-      C = 0;
-      score = qhat + C * sqrt(log(policyVisits) / (double)ts->types[i]->root->n); // add exploration component (-1 for minimization)
-      
-    } else {
-      qhat = ts->types[i]->root->scoreSum / (double)ts->types[i]->root->n;  // exploitation component (this is the average utility or minimax value)
-      score = qhat + (multiplier * C) * sqrt(log(policyVisits) / (double)ts->types[i]->root->n); // add exploration component
-
-      // Negamax formulation -- since min(s1,s2,...) = -max(-s1,-s2,...), negating the indices when it
-      // is min's turn means we can always just take the maximum
-      score = (side == min) ? -score : score;
-    }
+    // Negamax formulation -- since min(s1,s2,...) = -max(-s1,-s2,...), negating the indices when it
+    // is min's turn means we can always just take the maximum
+    score = (side == min) ? -score : score;
     
     // If this is either the first child, or the best scoring child, store it
     if ((numBestTypes == 0) || (score > bestScore)) {
@@ -89,11 +72,8 @@ static int selectType(void *void_ts, double C, int side, int policy, int backupO
     } else if (score == bestScore) // if this child ties with the best scoring child, store it
       bestTypes[numBestTypes++] = i;
   }
-  //if (ts->visits == logiter) {
-   // printf("visits %d best %f\n",ts->visits,bestScore);
-  //}
-  // Return the next type to explore (break ties randomly)
-  return bestTypes[random() % numBestTypes];
+
+  return bestTypes[0];
 }
 
 //Generate the i'th child of a uct node
@@ -126,14 +106,21 @@ double actionCostFindMove(treeNode *node) {
 //extract a node from its open list
 //rollout and backpropagate from selected nodes
 //place children in thier respective type open lists
-static void bfbIteration(treeNode *root, double C, double CT, heuristics_t heuristic, int budget, int backupOp, int side, int threshold, int policy) { 
-  treeNode *node = root;
-  int generated = false;
-  int move;
-  double ret;
+static void bfbIteration(type_system *ts, treeNode *root, double C, double CT, heuristics_t heuristic, int budget, int backupOp, int side, int threshold, int policy) {   
   
+  treeNode *node;
+  int typeId = -1;
+  if (TYPE_FROM_ROOT) {
+     node = root;
+  } else {
+    typeId = selectType(ts, C, side, policy, backupOp);
+    node = ts->types[typeId];
+  }
+  
+  int move;
+  int generated = false;
   //travel down the tree using ucb
-  while ((ret = _DOM->getGameStatus(node->rep)) == INCOMPLETE && node->n > 0) {    
+  while (_DOM->getGameStatus(node->rep) == INCOMPLETE && node->n > 0) {    
     //TODO handle chance node diffrently (domain independant)
     if (_DOM->dom_name == SAILING && isChanceNode_sailing(node->rep) == true) {
       move = selectMoveStochastic_sailing(node->rep);
@@ -145,11 +132,11 @@ static void bfbIteration(treeNode *root, double C, double CT, heuristics_t heuri
       generateChild(node, move);
       generated = true;
     }
-    
     node = node->children[move];
-  }
-
-  if (ret != INCOMPLETE) {
+  } 
+  
+  double ret;
+  if ((ret = _DOM->getGameStatus(node->rep)) != INCOMPLETE) {
     if (_DOM->dom_name == SAILING)
 	ret = 0;
     
@@ -160,7 +147,7 @@ static void bfbIteration(treeNode *root, double C, double CT, heuristics_t heuri
     // node values. If we are using engineered heuristics, then no rescaling is necessary.
     if ((heuristic == _DOM->hFunctions.h3) || (heuristic == _DOM->hFunctions.h4) || (heuristic == _DOM->hFunctions.h5))
 	ret /= MAX_WINS; // rescale
-      
+	
   } else {
     ret = heuristic(node->rep, node->side, budget); 
   }
@@ -178,12 +165,31 @@ static void bfbIteration(treeNode *root, double C, double CT, heuristics_t heuri
     
       if (node->type == true) {
 	//Split
-	if (node->subtreeSize > threshold) {
+	if (node->subtreeSize > threshold) {	  
 	  node->type = false;
-      
-	  for (i = 1; i < _DOM->getNumOfChildren(); i++)
-	    if (node->children[i])
+	  
+	  for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+	    if (node->children[i]) {
 	      node->children[i]->type = true;
+	      
+	      if (!TYPE_FROM_ROOT) {
+		if (typeId != -1) {
+		  //reuse the index of the old type
+		  ts->types[typeId] = node->children[i];
+		  ts->birthdays[typeId] = ts->visits;
+		  typeId = -1;
+		} else {
+		  //need to increase the size of the type system
+		  ts->numTypes++;
+		  ts->types = realloc(ts->types, ts->numTypes * sizeof(treeNode *));
+		  ts->birthdays = realloc(ts->birthdays, ts->numTypes * sizeof(int));
+		  
+		  ts->types[ts->numTypes - 1] = node->children[i];
+		  ts->birthdays[ts->numTypes - 1] = ts->visits;
+		}
+	      }
+	    }
+	  }
 	}
 	
 	//the node above the type is treated as a leaf in a minmax tree, thus we want to update the one above him.
@@ -231,7 +237,7 @@ int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, dou
   int bestMove = NULL_MOVE;
   double bestScore;
   treeNode* rootNode;
-  
+  type_system **type_systems = calloc(_DOM->getNumOfChildren(), sizeof(type_system *)); //Alocate a type system for every possible child of the root
   *numBestMoves = 0; // reset size of set of best moves
   
   // Create the root node of the UCT tree; populate the board and side on move fields
@@ -241,12 +247,34 @@ int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, dou
   rootNode->side = *side;
   rootNode->depth = 0;
   rootNode->subtreeSize = 1;
-  rootNode->type = true;
+  rootNode->type = false;
 
+  if (!TYPE_FROM_ROOT) {
+    //Generate the children of the root node
+    for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+      if (!_DOM->isValidChild(rootNode->rep, rootNode->side, i)) // if the i^th move is illegal, skip it
+	continue;
+    
+      generateChild(rootNode, i);
+      rootNode->subtreeSize++;
+    
+      //Allocate a type system for the i'th child and assign him to it
+      type_systems[i] = init_type_system(tsId);
+      type_systems[i]->types[0] = rootNode->children[i];
+      rootNode->children[i]->type = true;
+    }
+  }
+  
   //Run specified number of BFB iterations
   for (i = 0; i < numIterations; i++) {
     //printf("ITERATION %d\n", i);
-    bfbIteration(rootNode, C, CT, heuristic, budget, backupOp, *side, threshold, policy);
+    type_system *ts = 0;
+    if (!TYPE_FROM_ROOT) {  
+      int move = selectMove(rootNode, C);
+      ts = type_systems[move];
+      ts->visits++;
+    }
+    bfbIteration(ts, rootNode, C, CT, heuristic, budget, backupOp, *side, threshold, policy);
   }
 
   //Now look at the children 1-ply deep and determing the best one (break ties randomly)
@@ -291,6 +319,7 @@ int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, dou
 
   // Clean up before returning
   freeTree(rootNode);
+  freeTypeSystems(type_systems);
   
   return bestMove;
 }
