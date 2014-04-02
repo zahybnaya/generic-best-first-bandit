@@ -2,6 +2,10 @@
 #include "type.h"
 
 #define TYPE_FROM_ROOT 0
+#define CHOOSE_TYPE 1
+#define UCB 0
+#define E_GREEDY 1
+#define GREEDY_EPSILON 0.25
 
 static int mm_Counter; // for counting nodes
 
@@ -58,7 +62,12 @@ static int selectType(type_system *ts, double C, int side, int policy, int backu
     // Otherwise, compute this type's UCB1 index (will be used to pick best type if it transpires that all
     // types have been visited at least once)
     qhat = ts->types[i]->scoreSum / (double)ts->types[i]->n;  // exploitation component (this is the average utility or minimax value)
-    score = qhat + (multiplier * C) * sqrt(log(policyVisits) / (double)ts->types[i]->n); // add exploration component
+    
+    if (CHOOSE_TYPE == UCB) {
+      score = qhat + (multiplier * C) * sqrt(log(policyVisits) / (double)ts->types[i]->n); // add exploration component
+    } else if (CHOOSE_TYPE == E_GREEDY) {
+      score = qhat;
+    }
 
     // Negamax formulation -- since min(s1,s2,...) = -max(-s1,-s2,...), negating the indices when it
     // is min's turn means we can always just take the maximum
@@ -73,6 +82,14 @@ static int selectType(type_system *ts, double C, int side, int policy, int backu
       bestTypes[numBestTypes++] = i;
   }
 
+  if (CHOOSE_TYPE == E_GREEDY) {
+    if ((random() % 10000000) / (double)10000000 < 1 - GREEDY_EPSILON)
+      return bestTypes[0];
+    else {
+      return random() % ts->numTypes;
+    }
+  }
+  
   return bestTypes[0];
 }
 
@@ -160,7 +177,7 @@ static void bfbIteration(type_system *ts, treeNode *root, double C, double CT, h
     if (generated)
       node->subtreeSize++;
     
-    if (!aboveType) {
+    if (!aboveType || !TYPE_FROM_ROOT) {
       node->scoreSum += ret;
     
       if (node->type == true) {
