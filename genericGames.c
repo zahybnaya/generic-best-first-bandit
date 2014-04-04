@@ -630,6 +630,7 @@ int main(int argc, char* argv[]) {
 				printf("%f\n",-1 * totalScore[max]/(double)numGames);
 		}
 		printUctStats();
+		printBfbStats();
 		free(algDescription[0]);
 		free(algDescription[1]);
 		free(weathers);

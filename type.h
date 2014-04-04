@@ -19,6 +19,7 @@ typedef struct node {
   struct node** children; /* pointers to the children of this node -- note that index 0 remains
 					unused (which is reserved for the store), so we have consistent move
 					indexing/numbering */
+  double pathProb; //In MDP, the probability of getting to this state from the root.
 } treeNode;
 
 typedef struct {

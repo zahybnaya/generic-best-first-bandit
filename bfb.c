@@ -2,9 +2,10 @@
 #include "type.h"
 
 #define TYPE_FROM_ROOT 0
-#define CHOOSE_TYPE 1
+#define CHOOSE_TYPE 2
 #define UCB 0
 #define E_GREEDY 1
+#define PROB_AND_AVG 2
 #define GREEDY_EPSILON 0.25
 
 static int mm_Counter; // for counting nodes
@@ -42,6 +43,8 @@ static int selectType(type_system *ts, double C, int side, int policy, int backu
   double bestScore = -INF;
   int bestTypes[ts->numTypes];
   int policyVisits;
+  double scaledAvgSum = 0;
+  double scaledAvgs[ts->numTypes];
   
   // The multiplier is used to set the sign of the exploration bonus term (should be negative
   // for the min player and positive for the max player) i.e. so that we correctly compute
@@ -67,6 +70,10 @@ static int selectType(type_system *ts, double C, int side, int policy, int backu
       score = qhat + (multiplier * C) * sqrt(log(policyVisits) / (double)ts->types[i]->n); // add exploration component
     } else if (CHOOSE_TYPE == E_GREEDY) {
       score = qhat;
+    } else if (CHOOSE_TYPE == PROB_AND_AVG) {
+      scaledAvgs[i] = qhat * ts->types[i]->pathProb;
+      scaledAvgSum += scaledAvgs[i];
+      continue;
     }
 
     // Negamax formulation -- since min(s1,s2,...) = -max(-s1,-s2,...), negating the indices when it
@@ -88,6 +95,17 @@ static int selectType(type_system *ts, double C, int side, int policy, int backu
     else {
       return random() % ts->numTypes;
     }
+  } else if (CHOOSE_TYPE == PROB_AND_AVG) {
+    if (scaledAvgSum == 0)
+      return 0;
+    
+    double rand = random() % 10000000 / (double)10000000;
+    double accumulateProb = 0;
+    for (i = 0; i < ts->numTypes; i++) {
+      accumulateProb += (scaledAvgs[i] / scaledAvgSum);
+      if (rand < accumulateProb)
+	return i;
+    }
   }
   
   return bestTypes[0];
@@ -104,6 +122,14 @@ static void generateChild(treeNode *node, int i) {
   node->children[i]->parent = node; //save parent
   node->children[i]->depth = node->depth + 1;
   node->children[i]->subtreeSize = 1;
+  node->children[i]->pathProb = node->pathProb;
+  
+  if (_DOM->dom_name == SAILING && isChanceNode_sailing(node->rep) == true) {
+    if (((int *)(node->rep))[WIND] == ((int *)(node->children[i]->rep))[WIND]) //No wind change
+      node->children[i]->pathProb *= 1 - 2 * SAILING_WIND_CHANGE_PROB;
+    else 
+      node->children[i]->pathProb *= SAILING_WIND_CHANGE_PROB;
+  }  
 }
 
 double actionCostFindMove(treeNode *node) {
@@ -210,7 +236,7 @@ static void bfbIteration(type_system *ts, treeNode *root, double C, double CT, h
 	}
 	
 	//the node above the type is treated as a leaf in a minmax tree, thus we want to update the one above him.
-	if (node->parent != NULL && node->subtreeSize <= threshold) {
+	if (TYPE_FROM_ROOT && node->parent != NULL && node->subtreeSize <= threshold) {
 	  //Add action cost for mdps
 	  if (_DOM->dom_name == SAILING)
 	    ret += actionCostFindMove(node);
@@ -265,7 +291,10 @@ int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, dou
   rootNode->depth = 0;
   rootNode->subtreeSize = 1;
   rootNode->type = false;
-
+  rootNode->pathProb = 1;
+  rootNode->scoreSum = heuristic(rootNode->rep, rootNode->side, budget);
+  rootNode->n++;
+  
   if (!TYPE_FROM_ROOT) {
     //Generate the children of the root node
     for (i = 1; i < _DOM->getNumOfChildren(); i++) {
@@ -282,8 +311,8 @@ int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, dou
     }
   }
   
-  //Run specified number of BFB iterations
-  for (i = 0; i < numIterations; i++) {
+  //Run specified number of BFB iterations (gets one iteration less because of the root is expanded before hand)
+  for (i = 0; i < numIterations - 1; i++) {
     //printf("ITERATION %d\n", i);
     type_system *ts = 0;
     if (!TYPE_FROM_ROOT) {  
