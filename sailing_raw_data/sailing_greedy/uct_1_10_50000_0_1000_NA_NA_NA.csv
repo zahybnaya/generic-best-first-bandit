@@ -1007,6 +1007,6 @@ yoyoyoyo -31.436871
 -49.455844
 domain, max_alg, min_alg ,num_of_games,num_of_draws,num_of_incomplete,max_win,min_win,total_win_games,max_time,min_time
 
-5,UCT,UCT,1000,0,0,-nan,-nan,0,0.143479,-nan,32.080327
+5,UCT,UCT,1000,0,0,-nan,-nan,0,0.146621,-nan,32.080327
 ** Total UCT nodes 232853717**
 ** Total BFB nodes 0**
