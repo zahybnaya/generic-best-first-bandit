@@ -2,10 +2,12 @@
 #include "type.h"
 
 #define TYPE_FROM_ROOT 0
-#define CHOOSE_TYPE 2
+#define CHOOSE_TYPE 4
 #define UCB 0
 #define E_GREEDY 1
 #define PROB_AND_AVG 2
+#define PROB_AND_AVG_AND_EXPLORE 3
+#define E_GREEDY_PATH_PROB 4
 #define GREEDY_EPSILON 0.25
 
 static int mm_Counter; // for counting nodes
@@ -32,6 +34,11 @@ static void freeTypeSystems(type_system **type_systems) {
       destroy_ts(type_systems[i]);
     
   free(type_systems);
+}
+
+//return a random number in [0, 1]
+static double unitRand() {
+  return (random() % 10000000) / (double)10000000;
 }
 
 //Invoked by bfbIteration to select a type out of the type system based on UCB1
@@ -70,7 +77,7 @@ static int selectType(type_system *ts, double C, int side, int policy, int backu
       score = qhat + (multiplier * C) * sqrt(log(policyVisits) / (double)ts->types[i]->n); // add exploration component
     } else if (CHOOSE_TYPE == E_GREEDY) {
       score = qhat;
-    } else if (CHOOSE_TYPE == PROB_AND_AVG) {
+    } else if (CHOOSE_TYPE == PROB_AND_AVG || CHOOSE_TYPE == PROB_AND_AVG_AND_EXPLORE || CHOOSE_TYPE == E_GREEDY_PATH_PROB) {
       scaledAvgs[i] = qhat * ts->types[i]->pathProb;
       scaledAvgSum += scaledAvgs[i];
       continue;
@@ -90,21 +97,61 @@ static int selectType(type_system *ts, double C, int side, int policy, int backu
   }
 
   if (CHOOSE_TYPE == E_GREEDY) {
-    if ((random() % 10000000) / (double)10000000 < 1 - GREEDY_EPSILON)
-      return bestTypes[0];
-    else {
+    if (!(unitRand() < 1 - GREEDY_EPSILON))
       return random() % ts->numTypes;
+  } else if (CHOOSE_TYPE == E_GREEDY_PATH_PROB) {
+    if (scaledAvgSum == 0)
+      return 0;
+    
+    double bestPathProb = -INF;
+    for (i = 0; i < ts->numTypes; i++) { 
+      double currentPathProb = scaledAvgs[i] / scaledAvgSum;
+      if (currentPathProb > bestPathProb) {
+	bestPathProb = currentPathProb;
+	bestTypes[0] = i;
+      }
     }
+    
+    if (!(unitRand() < 1 - GREEDY_EPSILON))
+      return random() % ts->numTypes;
+    
   } else if (CHOOSE_TYPE == PROB_AND_AVG) {
     if (scaledAvgSum == 0)
       return 0;
     
-    double rand = random() % 10000000 / (double)10000000;
+    double rand = unitRand();
     double accumulateProb = 0;
     for (i = 0; i < ts->numTypes; i++) {
       accumulateProb += (scaledAvgs[i] / scaledAvgSum);
-      if (rand < accumulateProb)
+      //printf("ts->types[i]->pathProb %f ts->numTypes %d scaledAvgs[i] %f scaledAvgSum %f accumulateProb %f rand %f\n", ts->types[i]->pathProb, ts->numTypes, scaledAvgs[i], scaledAvgSum, accumulateProb, rand);
+      if (rand <= accumulateProb)
 	return i;
+    }
+  } else if (CHOOSE_TYPE == PROB_AND_AVG_AND_EXPLORE) { 
+    if (scaledAvgSum == 0)
+      return 0;
+    
+    for (i = 0; i < ts->numTypes; i++) { 
+      if (policy == MAB)
+	policyVisits = ts->visits;
+      else if (policy == KEEP_VMAB)
+	policyVisits = ts->visits - ts->birthdays[i] + ts->types[i]->n;
+      else if (policy == DELETE_VMAB)
+	policyVisits = ts->visits - ts->birthdays[i];
+    
+      C = 1 / sqrt(2);
+      qhat = scaledAvgs[i] / scaledAvgSum;
+      score = qhat + (multiplier * C) * sqrt(log(policyVisits) / (double)ts->types[i]->n);
+
+      score = (side == min) ? -score : score;
+    
+      // If this is either the first child, or the best scoring child, store it
+      if ((numBestTypes == 0) || (score > bestScore)) {
+	bestTypes[0] = i;
+	bestScore = score;
+	numBestTypes = 1;
+      } else if (score == bestScore) // if this child ties with the best scoring child, store it
+	bestTypes[numBestTypes++] = i;
     }
   }
   
@@ -236,7 +283,7 @@ static void bfbIteration(type_system *ts, treeNode *root, double C, double CT, h
 	}
 	
 	//the node above the type is treated as a leaf in a minmax tree, thus we want to update the one above him.
-	if (TYPE_FROM_ROOT && node->parent != NULL && node->subtreeSize <= threshold) {
+	if (node->parent != NULL && node->subtreeSize <= threshold) {
 	  //Add action cost for mdps
 	  if (_DOM->dom_name == SAILING)
 	    ret += actionCostFindMove(node);

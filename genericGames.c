@@ -436,6 +436,14 @@ int main(int argc, char* argv[]) {
 						else
 								printf("\n");
 				}
+				else if (player[i] == MINMAX_ON_UCT) {
+						printf("Player %d (%s) --- MMUCT, C %.3f, Num iterations %d, with %s backups, using %s", i, playerStrings[i],
+										C[i], numIterations[i], backupOpStrings[backupOp[i]], heurString[i]);
+						if ((heuristic[i] == _DOM->hFunctions.h3) || (heuristic[i] == _DOM->hFunctions.h6))
+								printf(" (budget = %d)\n", budget[i]);
+						else
+								printf("\n");
+				}
 
 				fflush(stdout);
 		}
@@ -494,6 +502,9 @@ int main(int argc, char* argv[]) {
 												break;
 										case BFB:
 												moveMade = makeBFBMove(state, &side, type_system[side], numIterations[side], C[side], CT[side], heuristic[side], budget[side], bestMoves, &numBestMoves, backupOp[side], threshold[side], policy[side]);			
+												break;
+										case MINMAX_ON_UCT:
+												  moveMade = makeMinmaxOnUCTMove(state, &side, numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves);	
 												break;
 										default:
 												puts("Unknown algorithm\n");

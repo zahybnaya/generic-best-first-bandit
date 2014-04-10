@@ -21,6 +21,7 @@ static int mm_Counter; // for counting nodes
 typedef struct node {
 	double scoreSum; // stores the sum of the rewards of the episodes that have gone through this node
 	int n; // tracks the visit count
+	double M2; // variance of rewards == M2 / (n -1)
 	int id; // used for graph visualization purposes
 	rep_t rep; // generic representation of the state
 	int side; // side on move at this board position
@@ -113,6 +114,30 @@ static int selectMove(treeNode* node, double C, int isSimpleRegret) {
 	return chosenBestMove;
 }
 
+/**
+ * Update visits, score sum, and variance of rewards of a node.
+ */
+void updateStatistics(treeNode *node, double sample) {
+  if (node->n == 0) {
+    node->n++;
+    node->scoreSum = sample;
+    return;
+  }
+  
+  int n = node->n;  
+  double M2 = node->M2;
+  double mean = node->scoreSum / (double)n;
+  double delta = sample - mean;
+  
+  n++;
+  mean = mean + delta / (double)n;
+  M2 = M2 + delta * (sample - mean);
+  
+  node->n = n;
+  node->scoreSum += sample;
+  node->M2 = M2;
+}
+
 /* Recursively constructs the UCT search tree */
 static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int budget, int backupOp , int isRoot) {
 	double ret;
@@ -137,9 +162,9 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 		}
 		if ((dotFormat) && (node->n == 0)) // on first visit to a terminal node, color it red
 			printf("n%d [color=\"red\"];", node->id);
+		
 		// Update node score / count and return
-		(node->n)++;
-		node->scoreSum += ret;
+		updateStatistics(node, ret);
 		return ret;
 	}
 	else if (node->n == 0) { // not a terminal node
@@ -147,8 +172,7 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 		// heuristic (playouts or other heuristics)
 		ret = heuristic(node->rep , node->side, budget);
 		// Update node score / count and return
-		(node->n)++;
-		node->scoreSum += ret;
+		updateStatistics(node, ret);
 		return ret;
 	}
 
@@ -189,8 +213,7 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 	
 	// Update score and node counts and return the outcome of this episode
 	if (backupOp == AVERAGE) { // use averaging back-up
-		(node->n)++;
-		node->scoreSum += ret;
+		updateStatistics(node, ret);
 	}
 	else if (backupOp == MINMAX) { // use minimaxing back-up
 		(node->n)++;
@@ -319,6 +342,20 @@ void genUCTTree(rep_t rep, int side, int numIterations, double C, heuristics_t h
 	return;
 }
 
+/*Return true if the value of the given node can be statistically trusted*/
+int trustNode(treeNode *node, double threshold) {
+  double z975 = 1.96;
+  
+  if (node->n <= 1)
+    return false;
+  
+  double variance = node->M2 / (double)(node->n - 1);
+  
+  double ci = 2 * z975 * sqrt(variance / (double)node->n);
+  printf("M2 %f N %d Variance %f Confidence Interval %f\n", node->M2, node->n, variance, ci);
+  
+  return true;
+}
 
 /* Recursively computes the minimax value of the UCT-constructed tree rooted at 'node' */
 static double minmaxUCT(treeNode* node) {
@@ -328,7 +365,7 @@ static double minmaxUCT(treeNode* node) {
 
 	// Should never be reaching a non-existent node
 	assert(node != NULL);
-
+trustNode(node, 0);
 	// Initialize bestScore to a very unfavorable value based on who is on move
 	bestScore = (node->side == max) ? MIN_WINS : MAX_WINS;
 
@@ -336,24 +373,24 @@ static double minmaxUCT(treeNode* node) {
 	if ((val = _DOM->getGameStatus(node->rep)) != INCOMPLETE)
 		return val; // return something from the set {MIN_WINS, DRAW, MAX_WINS}
 
-// Is this a leaf node? (can determine this by looking at the UCT visit count to this node)
-if (node->n == 1) {
-	assert((node->scoreSum > MIN_WINS) && (node->scoreSum < MAX_WINS)); // make sure heuristic is bounded by terminal node values
-	return node->scoreSum; // the node was already evaluated when doing UCT, so just use that value
-}
-
-// Otherwise, we are at an internal node, so descend recursively
-for (i = 1; i < _DOM->getNumOfChildren(); i++) {
-	if (node->children[i]) { // only descend if child exists
-		val = minmaxUCT(node->children[i]); // compute minimax value of i^th child
-		if ((node->side == max) && (val > bestScore)) // maximizing level -- is this child score higher than the best so far?
-			bestScore = val;
-		else if ((node->side == min) && (val < bestScore)) // minimizing level -- is this child score lower than the best so far?
-			bestScore = val;
+	// Is this a leaf node? (can determine this by looking at the UCT visit count to this node)
+	if (node->n == 1) {
+	  assert((node->scoreSum > MIN_WINS) && (node->scoreSum < MAX_WINS)); // make sure heuristic is bounded by terminal node values
+	  return node->scoreSum; // the node was already evaluated when doing UCT, so just use that value
 	}
-}
 
-return bestScore;
+	// Otherwise, we are at an internal node, so descend recursively
+	for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+	  if (node->children[i]) { // only descend if child exists
+	    val = minmaxUCT(node->children[i]); // compute minimax value of i^th child
+	    if ((node->side == max) && (val > bestScore)) // maximizing level -- is this child score higher than the best so far?
+	      bestScore = val;
+	    else if ((node->side == min) && (val < bestScore)) // minimizing level -- is this child score lower than the best so far?
+	      bestScore = val;
+	  }
+	}
+
+	return bestScore;
 }
 
 
