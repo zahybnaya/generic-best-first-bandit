@@ -55,6 +55,7 @@ int main(int argc, char* argv[]) {
 		int mmTreeSize[2] = {3, 3}; // back-up operator to be used by UCT TODO:enum this too
 		int type_system[2] = {STS, STS}; //the type system used by BFB.
 		int threshold[2] = {100, 100}; //the maximal number of nodes in a type for the STS type system
+		int ci_threshold[2] = {30, 30}; //the minimum number of visitis in mmuct that are needed to calculate the confidence interval of a node.
 		int policy[2] = {KEEP_VMAB, KEEP_VMAB}; //the policy used by BFB to choose types.
 		double time[2] = {0.0, 0.0}; //the total time each player took to play across all games.
 		int turns[2] = {0, 0}; //the total number of turns each player played across all games.
@@ -218,6 +219,21 @@ int main(int argc, char* argv[]) {
 								else
 										MISSING("ts2")
 				}
+				else if OPTION("-ci1") {
+						CHECK(max, MINMAX_ON_UCT, "-ci1")
+								if (++i < argc)
+										ci_threshold[max] = atoi(argv[i]);
+								else
+										MISSING("ci1")
+				}
+				else if OPTION("-ci2") {
+						CHECK(min, MINMAX_ON_UCT, "-ci2")
+								if (++i < argc)
+										ci_threshold[min] = atoi(argv[i]);
+								else
+										MISSING("ci2")
+				}
+				
 				else if OPTION("-t1") {
 						CHECK(max, BFB, "-t1")
 								if (++i < argc)
@@ -504,7 +520,7 @@ int main(int argc, char* argv[]) {
 												moveMade = makeBFBMove(state, &side, type_system[side], numIterations[side], C[side], CT[side], heuristic[side], budget[side], bestMoves, &numBestMoves, backupOp[side], threshold[side], policy[side]);			
 												break;
 										case MINMAX_ON_UCT:
-												  moveMade = makeMinmaxOnUCTMove(state, &side, numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves);	
+												  moveMade = makeMinmaxOnUCTMove(state, &side, numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, ci_threshold[side]);	
 												break;
 										default:
 												puts("Unknown algorithm\n");
@@ -534,7 +550,7 @@ int main(int argc, char* argv[]) {
 										printf("Move #%d -- player %d made move %d\n", moveCount, origSide, moveMade);
 										fflush(stdout);
 								}
-								//break;
+								//break; //this break will stop the game after one move.
 						} // end of game
 
 						if (verbose) {
@@ -604,6 +620,7 @@ int main(int argc, char* argv[]) {
 						swapInts(&depth[max], &depth[min]);
 						swapDbls(&time[max], &time[min]);
 						swapInts(&turns[max], &turns[min]);
+						swapInts(&ci_threshold[max], &ci_threshold[min]);
 				}
 
 				printf("\n");

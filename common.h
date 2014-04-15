@@ -112,7 +112,7 @@ void swapInts(int* val1, int* val2);
 int makeUCTMove(rep_t rep, int *side, int numIterations, double C, heuristics_t heuristic, int budget, int* bestMoves, int* numBestMoves, int backupOp);
 void genUCTTree(rep_t rep, int side, int numIterations, double C, heuristics_t heuristic, int budget);
 void printUctStats();
-int makeMinmaxOnUCTMove(rep_t rep, int *side, int numIterations, double C, heuristics_t heuristic, int budget, int* bestMoves, int* numBestMoves);
+int makeMinmaxOnUCTMove(rep_t rep, int *side, int numIterations, double C, heuristics_t heuristic, int budget, int* bestMoves, int* numBestMoves, int ci_threshold);
 
 //MMUCT (mmuct.c)
 int makeMMUCTMove(rep_t rep, int *side, int numIterations, double C, heuristics_t h, int budget,
@@ -141,6 +141,7 @@ int makeRandomMove(int board[2][NUM_PITS+1], int *side);
 
 //BFB (bfb.c)
 int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, double CT, heuristics_t heuristic, int budget, int* bestMoves, int* numBestMoves, int backupOp, int threshold, int policy);
+void printBfbStats();
 
 //BRUE (brue.c)
 int makeBrueMove(rep_t rep, int *side, int numIterations, heuristics_t  heuristic, int* bestMoves, int* numBestMoves, int budget);
