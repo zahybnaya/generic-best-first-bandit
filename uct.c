@@ -283,7 +283,7 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
    the value returned) */
 int makeUCTMove(rep_t rep, int *side, int numIterations, double C,
 		heuristics_t heuristic, int budget,
-		int* bestMoves, int* numBestMoves, int backupOp, int ci_threshold) {
+		int* bestMoves, int* numBestMoves, int backupOp, int ci_threshold, double *moveVals) {
 	int i;
 	double val;
 	int bestMove = NULL_MOVE;
@@ -317,6 +317,10 @@ int makeUCTMove(rep_t rep, int *side, int numIterations, double C,
 		// If this was min's move, negate the utility value (this makes things a little cleaner
 		// as we can then always take the max of the children, since min(s1,s2,...) = -max(-s1,-s2,...))
 		val = (*side == min) ? -val : val;
+		
+		if (moveVals != 0)
+		  moveVals[i-1] = val;
+		
 		// If this is the first child, or the best scoring child, then store it
 		if ((*numBestMoves == 0) || (val > bestScore)) {
 			bestMoves[0] = i;
@@ -487,7 +491,7 @@ static vci *vciMinmaxUCT(treeNode* node, int ci_threshold) {
 int makeMinmaxOnUCTMove(rep_t rep, int *side, int numIterations, double C,
 		heuristics_t heuristic,
 		int budget,
-		int* bestMoves, int* numBestMoves, int ci_threshold) {
+		int* bestMoves, int* numBestMoves, int ci_threshold, double *moveVals) {
 	int i;
 	double val;
 	int bestMove = NULL_MOVE;
@@ -509,14 +513,21 @@ int makeMinmaxOnUCTMove(rep_t rep, int *side, int numIterations, double C,
 	// Now minimax the tree we just built (we minimax starting from each child)
 	for (i = 1; i < _DOM->getNumOfChildren(); i++) {
 		if (rootNode->children[i]) { // if this child was explored
-			vci *VCI = vciMinmaxUCT(rootNode->children[i], ci_threshold); // do a minmax backup of the subtree rooted at this child
-			val = VCI->score;
-			free(VCI);
+			if (ci_threshold < 0) {
+			  val = minmaxUCT(rootNode->children[i]);
+			} else {
+			  vci *VCI = vciMinmaxUCT(rootNode->children[i], ci_threshold); // do a minmax backup of the subtree rooted at this child
+			  val = VCI->score;
+			  free(VCI);
+			}
 			
 			// If this was min's move, negate the utility value (this makes things a little cleaner
 			// as we can then always take the max of the children, since min(s1,s2,...) = -max(-s1,-s2,...))
 			val = (*side == min) ? -val : val;
 			    
+			if (moveVals != 0)
+			  moveVals[i-1] = val;
+			
 			// If this is the first child, or the best scoring child, then store it
 			if ((*numBestMoves == 0) || (val > bestScore)) {
 				bestMoves[0] = i;
@@ -539,9 +550,13 @@ int makeMinmaxOnUCTMove(rep_t rep, int *side, int numIterations, double C,
 
 	if (verbose)
 		printf("Best move: %d\n", bestMove);
-/*printf("parentCIWin %d parentCITotal %d percent %f\n", parentCIWin, parentCITotal, 100 * (double)parentCIWin / (double)parentCITotal);
-parentCIWin = 0;
-parentCITotal = 0;*/
+	
+	if (ci_threshold > 0)
+	  printf("%d ," ,(int)(100 * parentCIWin / (double)parentCITotal));
+	
+	parentCIWin = 0;
+	parentCITotal = 0;
+	
 	// Clean up when done
 	freeTree(rootNode);
 

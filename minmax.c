@@ -83,7 +83,7 @@ static double alphaBeta(rep_t rep, int searchDepth, int depth, int side, double 
 
 /* Perform alpha-beta search from given board position, and make the best move
    The set of bestMoves is returned via parameter bestMoves[] */
-int makeMinmaxMove(rep_t rep, int* side, int depth, heuristics_t heuristic, int budget, int randomTieBreaks, int noisyMM, int* bestMoves, int* numBestMoves, double* termPercentage) {
+int makeMinmaxMove(rep_t rep, int* side, int depth, heuristics_t heuristic, int budget, int randomTieBreaks, int noisyMM, int* bestMoves, int* numBestMoves, double* termPercentage, double *moveVals) {
   int i;
   rep_t dummyRep;
   double val;
@@ -109,11 +109,14 @@ int makeMinmaxMove(rep_t rep, int* side, int depth, heuristics_t heuristic, int 
     // Compute MM-(k-1) value of i^th child (since the children are already at depth 1 from the root node,
     // and we do a search from each child)
     val = alphaBeta(dummyRep , 1, depth, *side, MIN_WINS, MAX_WINS, heuristic, budget, id);
-
+    
     // If this was min's move, negate the utility value (this makes things a little cleaner
     // as we can then always take the max of the children, since min(s1,s2,...) = -max(-s1,-s2,...))    
     scores[i] = (origSide == min) ? -val : val;
 
+    if (moveVals != 0)
+      moveVals[i-1] = val;
+    
     // If this is either the first child, or the best scoring child, store it
     if ((*numBestMoves == 0) || (scores[i] > bestScore)) {
       bestMoves[0] = i;

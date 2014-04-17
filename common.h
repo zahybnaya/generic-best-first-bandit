@@ -111,10 +111,10 @@ void swapPtrs(void** val1, void** val2);
 void swapInts(int* val1, int* val2);
 
 // UCT routines (uct.c)
-int makeUCTMove(rep_t rep, int *side, int numIterations, double C, heuristics_t heuristic, int budget, int* bestMoves, int* numBestMoves, int backupOp, int ci_threshold);
+int makeUCTMove(rep_t rep, int *side, int numIterations, double C, heuristics_t heuristic, int budget, int* bestMoves, int* numBestMoves, int backupOp, int ci_threshold, double *moveVals);
 void genUCTTree(rep_t rep, int side, int numIterations, double C, heuristics_t heuristic, int budget);
 void printUctStats();
-int makeMinmaxOnUCTMove(rep_t rep, int *side, int numIterations, double C, heuristics_t heuristic, int budget, int* bestMoves, int* numBestMoves, int ci_threshold);
+int makeMinmaxOnUCTMove(rep_t rep, int *side, int numIterations, double C, heuristics_t heuristic, int budget, int* bestMoves, int* numBestMoves, int ci_threshold, double *moveVals);
 
 //MMUCT (mmuct.c)
 int makeMMUCTMove(rep_t rep, int *side, int numIterations, double C, heuristics_t h, int budget,
@@ -124,7 +124,7 @@ void resetTrapCounter();
 
 
 // Minimax routines (minmax.c)
-int makeMinmaxMove(rep_t rep, int* side, int depth, heuristics_t heuristic, int budget, int randomTieBreaks, int noisyMM, int* bestMoves, int* numBestMoves, double* termPercentage) ;
+int makeMinmaxMove(rep_t rep, int* side, int depth, heuristics_t heuristic, int budget, int randomTieBreaks, int noisyMM, int* bestMoves, int* numBestMoves, double* termPercentage, double *moveVals) ;
 int getAlphaBetaTreeSize(rep_t rep, int, int,  heuristics_t heuristic, int);
 void genAlphaBetaTree(rep_t rep, int, int,  heuristics_t heuristic, int);
 

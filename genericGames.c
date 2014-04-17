@@ -473,13 +473,63 @@ int main(int argc, char* argv[]) {
 
 		//generate #games weathers
 		int **weathers;
+		rep_t *testStates;
 		if (_DOM->dom_name == SAILING) {
 		  weathers = calloc(numGames, sizeof(int *));
 		  int wi = 0;
 		  
 		  for (wi = 0; wi < numGames; wi++)
 		    weathers[wi] = generateWeather(1);
+		} else if (_DOM->dom_name == MANCALA) {
+		  int s;
+		  testStates = calloc(numGames, sizeof(rep_t));
+		  
+		  for (s = 0; s < numGames; s++) {
+		    testStates[s] = _DOM->allocate();
+		    _DOM->generateRandomStart(testStates[s],&side);
+		  }
 		}
+		
+		/*****************************************************************************************/
+		//Test section, cooment all to get back the original code where games are played to completion.	
+		int s;
+		side = max;
+		double *mmVals = calloc(6, sizeof(double));
+		double *uctVals = calloc(6, sizeof(double));
+		double *ciFoldingVals = calloc(6, sizeof(double));
+		double *mmFoldingVals = calloc(6, sizeof(double));
+		
+		printf("MM_Move, MM_Move_Val, UCT_Move, UCT_Move_Val, UCT_Opt_Val, CI_Parent_Win, CI_Move, CI_Move_Val, CI_Opt_Val, MMF_Move, MMF_Move_Val, MMF_Opt_Val\n");
+		
+		for (s = 0; s < numGames; s++) {
+		  //Make minmax move to depth 16
+		  int mmMove = makeMinmaxMove(testStates[s], &side, 8, heuristic[side], budget[side], randomTieBreaks, noisyMM, bestMoves, &numBestMoves, &termPercentage, mmVals);
+		  
+		  printf("%d, %f, ", mmMove, mmVals[mmMove]);
+		  
+		  //Make classic uct move (avg backprop)
+		  int uctMove = makeUCTMove(testStates[s], &side, numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, AVERAGE, INF, uctVals);
+		  
+		  printf("%d, %f, %f ", uctMove, uctVals[uctMove], uctVals[mmMove]);
+		  
+		  //Make confidence folding uct move (avg backprop)
+		  int ciFoldingMove = makeMinmaxOnUCTMove(testStates[s], &side, numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, ci_threshold[side], ciFoldingVals);
+		  
+		  printf("%d, %f, %f, ", ciFoldingMove, ciFoldingVals[ciFoldingMove], ciFoldingVals[mmMove]);
+		  
+		  //Make minmax folding uct move (avg backprop)
+		  int mmFoldingMove = makeMinmaxOnUCTMove(testStates[s], &side, numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, -1, mmFoldingVals);
+		  
+		  printf("%d, %f, %f", mmFoldingMove, mmFoldingVals[mmFoldingMove], mmFoldingVals[mmMove]);
+		  
+		  printf("\n");
+		}
+		
+		
+		
+		return 0;
+		/*****************************************************************************************/
+		
 		
 		/* Loops until end of games*/
 		while (1) {
@@ -511,16 +561,16 @@ int main(int argc, char* argv[]) {
 								start = startTiming();
 								switch(player[side]){
 										case UCT:
-												moveMade = makeUCTMove(state, &side, numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, backupOp[side],ci_threshold[side]);
+												moveMade = makeUCTMove(state, &side, numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, backupOp[side],ci_threshold[side],0);
 												break;
 										case MINMAX:
-												moveMade = makeMinmaxMove(state, &side,depth[side],heuristic[side],budget[side],randomTieBreaks,noisyMM,bestMoves,&numBestMoves, &termPercentage);
+												moveMade = makeMinmaxMove(state, &side,depth[side],heuristic[side],budget[side],randomTieBreaks,noisyMM,bestMoves,&numBestMoves, &termPercentage,0);
 												break;
 										case BFB:
 												moveMade = makeBFBMove(state, &side, type_system[side], numIterations[side], C[side], CT[side], heuristic[side], budget[side], bestMoves, &numBestMoves, backupOp[side], threshold[side], policy[side]);			
 												break;
 										case MINMAX_ON_UCT:
-												  moveMade = makeMinmaxOnUCTMove(state, &side, numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, ci_threshold[side]);	
+												  moveMade = makeMinmaxOnUCTMove(state, &side, numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, ci_threshold[side],0);	
 												break;
 										default:
 												puts("Unknown algorithm\n");
