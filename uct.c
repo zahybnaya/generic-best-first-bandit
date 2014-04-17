@@ -513,7 +513,7 @@ int makeMinmaxOnUCTMove(rep_t rep, int *side, int numIterations, double C,
 	// Now minimax the tree we just built (we minimax starting from each child)
 	for (i = 1; i < _DOM->getNumOfChildren(); i++) {
 		if (rootNode->children[i]) { // if this child was explored
-			if (ci_threshold < 0) {
+			if (ci_threshold <= 0) {
 			  val = minmaxUCT(rootNode->children[i]);
 			} else {
 			  vci *VCI = vciMinmaxUCT(rootNode->children[i], ci_threshold); // do a minmax backup of the subtree rooted at this child
@@ -551,8 +551,9 @@ int makeMinmaxOnUCTMove(rep_t rep, int *side, int numIterations, double C,
 	if (verbose)
 		printf("Best move: %d\n", bestMove);
 	
-	if (ci_threshold > 0)
-	  printf("%d ," ,(int)(100 * parentCIWin / (double)parentCITotal));
+	if (ci_threshold > 0) {
+	  printf(",%f ," ,parentCIWin / (double)parentCITotal);
+	}
 	
 	parentCIWin = 0;
 	parentCITotal = 0;
