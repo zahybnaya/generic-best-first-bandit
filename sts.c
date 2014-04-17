@@ -1,46 +1,82 @@
 #include "type.h"
 
-void assignToType_sts(void *void_ts, treeNode *node, int fatherType, int threshold, int policy) {
-  type_system *ts = (type_system *)void_ts;
+void backprop_sts(void *void_ts, treeNode *node, double rollout, int generated, int typeId, int threshold) {
+  type_system *ts = void_ts;
+  int aboveType = false;
+  int i;
   
-  if (fatherType == -1) { //no father means root node
-    ts->types[0]->root = node;
-    ts->types[0]->birth = ts->visits;
-  } else {
-    type *t = ts->types[fatherType];
+  while (node != NULL) {
+    node->n++;
+    if (generated)
+      node->subtreeSize++;
     
-    //The size of a type is the size of the subtree rooted at the node representing the type
-    //which is updated at the expansion phase, so only need to take care of splitting types
-    if (t->root->subtreeSize > threshold) {
-      //In order to stay consistent with the type to insert into all current children, find out who of the children of the root of the type
-      //is the ancestor of the current node to be inserted.
-      //This ancestor will become the root of a new type which will be in the same index as the old type.
-      treeNode *newFather = node;
-      while (newFather->parent != t->root)
-newFather = newFather->parent;
+    if (!aboveType || !TYPE_FROM_ROOT) {
+      node->scoreSum += rollout;
+    
+      if (node->type == true) {
+	//Split
+	if (node->subtreeSize > threshold) {	  
+	  node->type = false;
+	  
+	  for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+	    if (node->children[i]) {
+	      node->children[i]->type = true;
+	      
+	      if (!TYPE_FROM_ROOT) {
+		if (typeId != -1) {
+		  //reuse the index of the old type
+		  ts->types[typeId] = node->children[i];
+		  ts->birthdays[typeId] = ts->visits;
+		  typeId = -1;
+		} else {
+		  //need to increase the size of the type system
+		  ts->numTypes++;
+		  ts->types = realloc(ts->types, ts->numTypes * sizeof(treeNode *));
+		  ts->birthdays = realloc(ts->birthdays, ts->numTypes * sizeof(int));
+		  
+		  ts->types[ts->numTypes - 1] = node->children[i];
+		  ts->birthdays[ts->numTypes - 1] = ts->visits;
+		}
+	      }
+	    }
+	  }
+	}
+	
+	//the node above the type is treated as a leaf in a minmax tree, thus we want to update the one above him.
+	if (node->parent != NULL && node->subtreeSize <= threshold) {
+	  //Add action cost for mdps
+	  if (_DOM->dom_name == SAILING)
+	    rollout += actionCostFindMove(node);
+    
+	  node = node->parent;
+	  node->n++;
+	  node->scoreSum += rollout;
+	  if (generated)
+	    node->subtreeSize++;
+	}
+	
+	aboveType = true;
+      }
       
-      int i;
+    } else {
+      double bestScore = (node->side == max) ? -INF : INF;
+      double score;
+      
       for (i = 1; i < _DOM->getNumOfChildren(); i++) {
-//skip empty children or this is the new father (will be taken care of later)
-if (!_DOM->isValidChild(t->root->rep, t->root->side, i) || t->root->children[i] == newFather)
-continue;
-
-ts->numTypes++;
-ts->types = realloc(ts->types, ts->numTypes * sizeof(type *)); //alocate a new type
-
-ts->types[ts->numTypes - 1] = calloc(1, sizeof(type));
-ts->types[ts->numTypes - 1]->root = t->root->children[i];
-ts->types[ts->numTypes - 1]->birth = ts->visits;
-
-if (policy == DELETE_VMAB)
-ts->types[ts->numTypes - 1]->root->n = 0;
-
+	if (node->children[i] && node->children[i]->type == false) { // if child exists, is it the best scoring child?
+	  score = node->children[i]->scoreSum / (double)node->children[i]->n;
+	  if (((node->side == max) && (score > bestScore)) || ((node->side == min) && (score < bestScore)))
+	    bestScore = score;
+	}
       }
 
-      t->root = newFather;
-      t->birth = ts->visits;
-      if (policy == DELETE_VMAB)
-t->root->n = 0;
+      node->scoreSum = (node->n) * bestScore; // reset score to that of min/max of children
     }
+    
+    //Add action cost for mdps
+    if (_DOM->dom_name == SAILING)
+      rollout += actionCostFindMove(node);
+
+    node = node->parent;
   }
 }

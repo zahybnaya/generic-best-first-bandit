@@ -20,9 +20,11 @@ static int mm_Counter; // for counting nodes
 
 /* This is a node in the UCT tree. */
 typedef struct node {
-	double scoreSum; // stores the sum of the rewards of the episodes that have gone through this node
+	double scoreSum; // stores the value of this node times n. didnt change the name in order not to break old code.
 	int n; // tracks the visit count
 	double M2; // variance of rewards == M2 / (n -1)
+	double ci; //confidence interval in the score
+	double realScoreSum; // this is the sum of total rewards gone through this node.
 	int id; // used for graph visualization purposes
 	rep_t rep; // generic representation of the state
 	int side; // side on move at this board position
@@ -123,12 +125,14 @@ void updateStatistics(treeNode *node, double sample) {
   if (node->n == 0) {
     node->n++;
     node->scoreSum = sample;
+    node->realScoreSum = sample;
+    node->ci = INF;
     return;
   }
   
   int n = node->n;  
   double M2 = node->M2;
-  double mean = node->scoreSum / (double)n;
+  double mean = node->realScoreSum / (double)n;
   double delta = sample - mean;
   
   n++;
@@ -137,11 +141,12 @@ void updateStatistics(treeNode *node, double sample) {
   
   node->n = n;
   node->scoreSum += sample;
+  node->realScoreSum += sample;
   node->M2 = M2;
 }
 
 /* Recursively constructs the UCT search tree */
-static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int budget, int backupOp , int isRoot) {
+static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int budget, int backupOp , int isRoot, int ci_threshold) {
 	double ret;
 	int move;
 	int i;
@@ -206,7 +211,7 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 	}
 
 	// Descend recursively
-	ret = uctRecurse(node->children[move], C, heuristic, budget, backupOp,false);
+	ret = uctRecurse(node->children[move], C, heuristic, budget, backupOp, false, ci_threshold);
 
 	//In a stochastic domain
 	//Update ret to include the cost of getting to the child node from this parent.
@@ -221,7 +226,7 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 	else if (backupOp == MINMAX) { // use minimaxing back-up
 		(node->n)++;
 		bestScore = (node->side == max) ? MIN_WINS : MAX_WINS;
-
+		
 		for (i = 1; i < _DOM->getNumOfChildren(); i++) {
 			if (node->children[i]) { // if child exists, is it the best scoring child?
 				score = node->children[i]->scoreSum / (double)node->children[i]->n;
@@ -232,6 +237,39 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 		}
 
 		node->scoreSum = (node->n) * bestScore; // reset score to that of min/max of children
+	}
+	else if (backupOp == CI) {
+		if (node->n < ci_threshold) {
+		  updateStatistics(node, ret);
+		  return ret;
+		}
+		
+		bestScore = (node->side == max) ? MIN_WINS : MAX_WINS;
+		double bestCI = INF;
+		
+		for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+			if (node->children[i]) { // if child exists, is it the best scoring child?
+				score = node->children[i]->scoreSum / (double)node->children[i]->n;
+				if (((node->side == max) && (score > bestScore)) || ((node->side == min) && (score < bestScore))) {
+					bestScore = score;
+					bestCI = node->children[i]->ci;
+				}
+			}
+		}
+
+		// Calculate the CI length for the current node.
+		double variance = node->M2 / (double)(node->n - 1);
+		node->ci = 2 * z975 * sqrt(variance / (double)node->n);
+		
+		if (bestCI < node->ci) {
+		  node->scoreSum = (node->n) * bestScore; // reset score to that of min/max of children
+		  node->ci = bestCI;
+		  updateStatistics(node, ret);
+		  node->scoreSum -= ret; //updateStatistics also adds the reward to the scoreSum which shouldn't happen in this case.
+		} else {
+		  node->scoreSum = node->realScoreSum; // reset score to average of current node
+		  updateStatistics(node, ret);
+		}
 	}
 	else { // shouldn't happen
 		puts("Invalid back-up operator!");
@@ -245,7 +283,7 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
    the value returned) */
 int makeUCTMove(rep_t rep, int *side, int numIterations, double C,
 		heuristics_t heuristic, int budget,
-		int* bestMoves, int* numBestMoves, int backupOp) {
+		int* bestMoves, int* numBestMoves, int backupOp, int ci_threshold) {
 	int i;
 	double val;
 	int bestMove = NULL_MOVE;
@@ -262,7 +300,7 @@ int makeUCTMove(rep_t rep, int *side, int numIterations, double C,
 	// Run specified number of iterations of UCT
 	for (i = 0; i < numIterations; i++){
 		//printf("ITERATION %d\n", i);
-		uctRecurse(rootNode, C, heuristic, budget, backupOp, true);
+		uctRecurse(rootNode, C, heuristic, budget, backupOp, true, ci_threshold);
 	}
 
 	// Now look at the children 1-ply deep and determing the best one (break ties
@@ -328,12 +366,11 @@ void genUCTTree(rep_t rep, int side, int numIterations, double C, heuristics_t h
 	rootNode->rep=_DOM->cloneRep(rep);
 	rootNode->side = side;
 	rootNode->id = ++id;
-	//Alon
 	rootNode->children =(treeNode**) calloc(_DOM->getNumOfChildren(), sizeof(treeNode*));
 
 	// Run specified number of iterations of UCT (this outputs the search tree)
 	for (i = 0; i < numIterations; i++)
-		uctRecurse(rootNode, C, heuristic, budget, AVERAGE, true);
+		uctRecurse(rootNode, C, heuristic, budget, AVERAGE, true, INF);
 
 	dotFormat = false;
 
@@ -381,63 +418,6 @@ static double minmaxUCT(treeNode* node) {
 	return bestScore;
 }
 
-/*Return true if the value of the given node can be statistically trusted*/
-int trustNode(treeNode *node, double threshold) {  
-  if (node->n < 30)
-    return false;
-  
-  double variance = node->M2 / (double)(node->n - 1);
-  
-  double ci = 2 * z975 * sqrt(variance / (double)node->n);
-  
-  printf("depth %d N %d SD %f Confidence Interval %f\n", node->depth, node->n, sqrt(variance), ci);
-  if (ci < threshold)
-    return true;
-  
-  return false;
-}
-
-/* Recursively computes the minimax value of the UCT-constructed tree rooted at 'node' based on values with low confidence intervals*/
-static double confidenceMinmaxUCT(treeNode* node, double threshold) {
-	int i;
-	double val;
-	double bestScore;
-
-	// Should never be reaching a non-existent node
-	assert(node != NULL);
-
-	// Initialize bestScore to a very unfavorable value based on who is on move
-	bestScore = (node->side == max) ? MIN_WINS : MAX_WINS;
-
-	// Is this a terminal node?
-	if ((val = _DOM->getGameStatus(node->rep)) != INCOMPLETE)
-		return val; // return something from the set {MIN_WINS, DRAW, MAX_WINS}
-
-	// Is this a leaf node? (can determine this by looking at the UCT visit count to this node)
-	if (node->n < 30)
-	  return (node->side == max) ? -INF : INF;
-/**
-	// If we can trust this node, than it already has its value
-	if (trustNode(node, threshold))
-	  return node->scoreSum / (double)node->n;*/
-	  
-	// Otherwise, we are at an internal node, so descend recursively
-	for (i = 1; i < _DOM->getNumOfChildren(); i++) {
-	  if (node->children[i]) { // only descend if child exists
-	    val = confidenceMinmaxUCT(node->children[i], threshold); // compute minimax value of i^th child	
-	    if (val == INF || val == -INF)
-	      continue;
-	    
-	    if ((node->side == max) && (val > bestScore)) // maximizing level -- is this child score higher than the best so far?
-	      bestScore = val;
-	    else if ((node->side == min) && (val < bestScore)) // minimizing level -- is this child score lower than the best so far?
-	      bestScore = val;
-	  }
-	}
-
-	return bestScore;
-}
-
 //Value and confidence interval
 typedef struct vci {
 	double score;
@@ -456,17 +436,17 @@ static vci *vciMinmaxUCT(treeNode* node, int ci_threshold) {
   
   vci *currentVCI = 0;
   
-  // Is this a terminal node?
-  if (_DOM->getGameStatus(node->rep) != INCOMPLETE) {
-    bestVCI->score = node->scoreSum / (double)node->n;
-    bestVCI->ci = 0;
-    return bestVCI;
-  }
-  
   // Is this a leaf node?
   if (node->n < ci_threshold) {
     bestVCI->score = node->scoreSum / (double)node->n;
     bestVCI->ci = INF;
+    return bestVCI;
+  }
+  
+  // Is this a terminal node?
+  if (_DOM->getGameStatus(node->rep) != INCOMPLETE) {
+    bestVCI->score = node->scoreSum / (double)node->n;
+    bestVCI->ci = 0;
     return bestVCI;
   }
   
@@ -498,7 +478,7 @@ static vci *vciMinmaxUCT(treeNode* node, int ci_threshold) {
     parentCIWin++;
     bestVCI->score = node->scoreSum / (double)node->n;
     bestVCI->ci = ci;
-  }    
+  }
   
   return bestVCI;
 }
@@ -513,8 +493,6 @@ int makeMinmaxOnUCTMove(rep_t rep, int *side, int numIterations, double C,
 	int bestMove = NULL_MOVE;
 	double bestScore;
 	treeNode* rootNode;
-
-	//double threshold = 0.25;
 	
 	*numBestMoves = 0; // reset size of set of best moves
 
@@ -526,7 +504,7 @@ int makeMinmaxOnUCTMove(rep_t rep, int *side, int numIterations, double C,
 
 	// Run specified number of iterations of UCT
 	for (i = 0; i < numIterations; i++)
-		uctRecurse(rootNode, C, heuristic, budget, AVERAGE, true);
+		uctRecurse(rootNode, C, heuristic, budget, AVERAGE, true, INF);
 
 	// Now minimax the tree we just built (we minimax starting from each child)
 	for (i = 1; i < _DOM->getNumOfChildren(); i++) {

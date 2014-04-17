@@ -32,6 +32,7 @@
 #define MM_ORACLE 1
 #define STS 2
 #define VTS 3
+#define CITS 4
 
 //Type selection policies for BFB
 #define MAB 1
@@ -40,6 +41,7 @@
 
 // UCT back-up operator choices
 #define AVERAGE 0
+#define CI 2
 // Note that MINMAX is already defined above as 1, so we'll just use that
 
 // Game parameters
@@ -109,7 +111,7 @@ void swapPtrs(void** val1, void** val2);
 void swapInts(int* val1, int* val2);
 
 // UCT routines (uct.c)
-int makeUCTMove(rep_t rep, int *side, int numIterations, double C, heuristics_t heuristic, int budget, int* bestMoves, int* numBestMoves, int backupOp);
+int makeUCTMove(rep_t rep, int *side, int numIterations, double C, heuristics_t heuristic, int budget, int* bestMoves, int* numBestMoves, int backupOp, int ci_threshold);
 void genUCTTree(rep_t rep, int side, int numIterations, double C, heuristics_t heuristic, int budget);
 void printUctStats();
 int makeMinmaxOnUCTMove(rep_t rep, int *side, int numIterations, double C, heuristics_t heuristic, int budget, int* bestMoves, int* numBestMoves, int ci_threshold);

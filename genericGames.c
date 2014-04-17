@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
 		const char* playerStrings[] = {"max", "min"};
 		const char* hStrings[] = {"heuristic 1", "heuristic 2", "playouts", "random leaf values", "coarsened h1", "finer playouts"};
 		char heurString[][30] = {"heuristic 1", "heuristic 1"};
-		const char* backupOpStrings[] = {"average", "minimax"};
+		const char* backupOpStrings[] = {"average", "minimax", "confidence"};
 		double bolzmanConstant = -2.44, probWeight = 0.5;
 		double gameScore[2]; //The socre of each player for a specific game. Currently used for sailing only.
 		double totalScore[2]; //The socre of each player for all games. Currently used for sailing only.
@@ -220,14 +220,14 @@ int main(int argc, char* argv[]) {
 										MISSING("ts2")
 				}
 				else if OPTION("-ci1") {
-						CHECK(max, MINMAX_ON_UCT, "-ci1")
+						CHECK(max, (UCT | MINMAX_ON_UCT), "-ci1")
 								if (++i < argc)
 										ci_threshold[max] = atoi(argv[i]);
 								else
 										MISSING("ci1")
 				}
 				else if OPTION("-ci2") {
-						CHECK(min, MINMAX_ON_UCT, "-ci2")
+						CHECK(min, (UCT | MINMAX_ON_UCT), "-ci2")
 								if (++i < argc)
 										ci_threshold[min] = atoi(argv[i]);
 								else
@@ -511,7 +511,7 @@ int main(int argc, char* argv[]) {
 								start = startTiming();
 								switch(player[side]){
 										case UCT:
-												moveMade = makeUCTMove(state, &side, numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, backupOp[side]);
+												moveMade = makeUCTMove(state, &side, numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, backupOp[side],ci_threshold[side]);
 												break;
 										case MINMAX:
 												moveMade = makeMinmaxMove(state, &side,depth[side],heuristic[side],budget[side],randomTieBreaks,noisyMM,bestMoves,&numBestMoves, &termPercentage);

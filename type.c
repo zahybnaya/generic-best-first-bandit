@@ -74,13 +74,18 @@ int selectMove(treeNode* node, double C) {
 
 void *init_type_system(int t) {
   type_system *ts = calloc(1, sizeof(type_system));
-  
+  ts->numTypes = 1;
+  ts->types = calloc(ts->numTypes, sizeof(treeNode *));
+  ts->birthdays = calloc(ts->numTypes, sizeof(int));
+      
   switch (t) {   
     case STS:
-      ts->name = STS;
-      ts->numTypes = 1;
-      ts->types = calloc(ts->numTypes, sizeof(treeNode *));
-      ts->birthdays = calloc(ts->numTypes, sizeof(int));
+      ts->name = STS;    
+      ts->backprop = backprop_sts;
+      break;
+    case CITS:
+      ts->name = CITS;
+      ts->backprop = backprop_cits;
       break;
   }
   return ts;
