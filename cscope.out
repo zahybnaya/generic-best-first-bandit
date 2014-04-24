@@ -1,4 +1,5458 @@
-cscope 15 $HOME/generic-best-first-bandit -q 0000002287 0000202985
+cscope 15 $HOME/generic-best-first-bandit               0000278748
+	@bfb.c
+
+1 
+	~"commÚ.h
+"
+
+2 
+	~"ty³.h
+"
+
+3 
+	~"ty³_»achab™y.h
+"
+
+4 
+	#USE_MINIMAX_REWARDS
+ 0
+
+	)
+
+7 
+	$ä“T»e
+(
+Œ“Node
+* 
+node
+) {
+
+8 
+i
+;
+
+9 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+10 ià(
+node
+->
+chd»n
+[
+i
+]) {
+
+11 
+	`ä“T»e
+(
+node
+->
+chd»n
+[
+i
+]);
+
+12 
+node
+->
+chd»n
+[
+i
+] = 
+NULL
+;
+
+15 
+_DOM
+->
+	`de¡ruùR•
+(
+node
+->
+»p
+);
+
+16 
+	`ä“
+(
+node
+->
+chd»n
+);
+
+17 
+	`ä“
+(
+node
+);
+
+18 
+	}
+}
+
+20 
+	$ä“Ty³Sy¡ems
+(
+ty³_sy¡em
+ **
+ty³_sy¡ems
+) {
+
+21 
+i
+;
+
+22 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++)
+
+23 ià(
+ty³_sy¡ems
+[
+i
+])
+
+24 
+ty³_sy¡ems
+[
+i
+]->
+	`de¡roy
+(type_systems[i]);
+
+26 
+	`ä“
+(
+ty³_sy¡ems
+);
+
+27 
+	}
+}
+
+29 
+	$»pÜtTy³St
+(
+ty³_sy¡em
+* 
+ts
+){
+
+30 
+av”ageD•th
+ =0;
+
+31 
+av”ageSide
+ = 0;
+
+32 
+n_ty³s
+ = 
+ts
+->
+numTy³s
+;
+
+33 
+i
+ = 0;
+
+34 
+i
+ =0;i<
+n_ty³s
+;i++){
+
+35 
+av”ageD•th
++=((
+ty³_¡s
+ *)
+ts
+->
+ty³s
+[
+i
+])->
+roÙ
+->
+d•th
+;
+
+36 
+av”ageSide
++=((
+ty³_¡s
+ *)
+ts
+->
+ty³s
+[
+i
+])->
+roÙ
+->
+side
+;
+
+38 
+avgV®ueFÜTy³
+ = 
+	`av”ageV®ueOfAÎTy³s
+(
+ts
+);
+
+39 
+	`as£¹
+(
+av”ageSide
+/
+n_ty³s
+ == 1.0 ||averageSide/n_types == 0.0 );
+
+40 
+	`´štf
+("#vis™s: %d #ty³s:%d‡v”ageD•th:%àav”ageV®ue:%àav”ageSide:%f\n",
+ts
+->
+vis™s
+, 
+n_ty³s
+, 
+av”ageD•th
+/n_ty³s,
+avgV®ueFÜTy³
+,
+av”ageSide
+/n_types );
+
+43 
+	}
+}
+
+48 
+	$£ËùTy³
+(*
+void_ts
+, 
+C
+, 
+side
+, 
+pŞicy
+, 
+backupOp
+,
+bŞzmªCÚ¡ªt
+,
+´obWeight
+) {
+
+49 
+ty³_sy¡em
+ *
+ts
+ = (ty³_sy¡em *)
+void_ts
+;
+
+50 
+i
+;
+
+51 
+qh©
+;
+
+52 
+scÜe
+;
+
+53 
+numBe¡Ty³s
+ = 0;
+
+54 
+be¡ScÜe
+;
+
+55 
+be¡Ty³s
+[
+ts
+->
+numTy³s
+];
+
+56 ià(
+USE_MINIMAX_REWARDS
+){
+
+57 
+C
+ = C* 
+	`av”ageV®ueOfAÎTy³s
+(
+ts
+);
+
+62 
+muÉl›r
+ = (
+side
+ =ğ
+max
+) ? 1 : -1;
+
+63 
+pŞicyVis™s
+;
+
+64 ià(
+v”bo£
+){
+
+65 
+	`»pÜtTy³St
+(
+ts
+);
+
+67 
+Œs
+[
+ts
+->
+numTy³s
+];
+
+68 
+sum_Œs
+=0;
+
+69 
+i
+ = 0; i < 
+ts
+->
+numTy³s
+; i++) {
+
+70 
+Œs
+[
+i
+]ğ
+	`ÿlcuÏ‹Ty³R—chab™y
+(
+ts
+->
+ty³s
+[i],
+bŞzmªCÚ¡ªt
+);
+
+71 
+sum_Œs
++=
+Œs
+[
+i
+];
+
+73 
+i
+ = 0; i < 
+ts
+->
+numTy³s
+; i++) {
+
+74 
+Œs
+[
+i
+]ğŒs[i]/
+sum_Œs
+;
+
+77 
+i
+ = 0; i < 
+ts
+->
+numTy³s
+; i++) {
+
+79 ià(
+ts
+->
+ty³s
+[
+i
+]->
+vis™s
+ == 0)
+
+80  
+i
+;
+
+81 ià(
+pŞicy
+ =ğ
+MAB
+)
+
+82 
+pŞicyVis™s
+ = 
+ts
+->
+vis™s
+;
+
+83 ià(
+pŞicy
+ =ğ
+KEEP_VMAB
+)
+
+84 
+pŞicyVis™s
+ = 
+ts
+->
+vis™s
+ -s->
+ty³s
+[
+i
+]->
+bœth
+ +s->types[i]->visits;
+
+85 ià(
+pŞicy
+ =ğ
+DELETE_VMAB
+)
+
+86 
+pŞicyVis™s
+ = 
+ts
+->
+vis™s
+ -s->
+ty³s
+[
+i
+]->
+bœth
+;
+
+87 ià(
+USE_MINIMAX_REWARDS
+){
+
+88 
+qh©
+ = 
+	`ÿlcQh©Ba£dOnMšimax
+(
+ts
+,
+i
+);
+
+89 
+scÜe
+ = 1 * 
+qh©
+ + 
+C
+ * 
+	`sq¹
+(
+	`log
+(
+pŞicyVis™s
+è/ ()
+ts
+->
+ty³s
+[
+i
+]->
+vis™s
+);
+
+92 
+qh©
+ = 
+ts
+->
+ty³s
+[
+i
+]->
+scÜeSum
+ / (és->ty³s[i]->
+vis™s
+;
+
+93 ià(
+v”bo£
+){
+
+94 
+	`´štf
+("C: %àqh©: %àËv–:%d \À",
+C
+, 
+qh©
+, 
+	`couÁLev–
+(
+ts
+->
+ty³s
+[
+i
+]));
+
+96 
+scÜe
+ = 
+qh©
+ + (
+muÉl›r
+ * 
+C
+è* 
+	`sq¹
+(
+	`log
+(
+pŞicyVis™s
+è/ ()
+ts
+->
+ty³s
+[
+i
+]->
+vis™s
+);
+
+97 
+scÜe
+ = (1-
+´obWeight
+) * score +
+
+98 
+´obWeight
+ * 
+Œs
+[
+i
+] +
+
+99 (
+muÉl›r
+ * 
+C
+è* 
+	`sq¹
+(
+	`log
+(
+pŞicyVis™s
+è/ ()
+ts
+->
+ty³s
+[
+i
+]->
+vis™s
+);
+
+101 
+scÜe
+ = (
+side
+ =ğ
+mš
+) ? -score : score;
+
+104 ià((
+numBe¡Ty³s
+ =ğ0è|| (
+scÜe
+ > 
+be¡ScÜe
+)) {
+
+105 
+be¡Ty³s
+[0] = 
+i
+;
+
+106 
+be¡ScÜe
+ = 
+scÜe
+;
+
+107 
+numBe¡Ty³s
+ = 1;
+
+109 ià(
+scÜe
+ =ğ
+be¡ScÜe
+)
+
+110 
+be¡Ty³s
+[
+numBe¡Ty³s
+++] = 
+i
+;
+
+114  
+be¡Ty³s
+[
+	`¿ndom
+(è% 
+numBe¡Ty³s
+];
+
+115 
+	}
+}
+
+118 
+	$g’”©eChd
+(
+Œ“Node
+ *
+node
+, 
+i
+) {
+
+119 
+node
+->
+chd»n
+[
+i
+] = 
+	`ÿÎoc
+(1, (
+Œ“Node
+));
+
+120 
+node
+->
+chd»n
+[
+i
+]->chd»Àğ
+	`ÿÎoc
+(
+_DOM
+->
+	`g‘NumOfChd»n
+(), (
+Œ“Node
+*));
+
+121 
+node
+->
+chd»n
+[
+i
+]->
+»p
+ = 
+_DOM
+->
+	`şÚeR•
+(node->rep);
+
+122 
+node
+->
+chd»n
+[
+i
+]->
+side
+ =‚ode->side;
+
+123 
+_DOM
+->
+	`makeMove
+(
+node
+->
+chd»n
+[
+i
+]->
+»p
+, &Òode->chd»n[i]->
+side
+), i);
+
+124 
+node
+->
+chd»n
+[
+i
+]->
+·»Á
+ =‚ode;
+
+125 
+node
+->
+chd»n
+[
+i
+]->
+d•th
+ =‚ode->depth + 1;
+
+126 
+node
+->
+chd»n
+[
+i
+]->
+subŒ“Size
+ = 1;
+
+127 
+	}
+}
+
+129 
+	$mmfunùiÚ
+(
+mmLev–
+,
+Ëv–
+){
+
+130 ià(
+Ëv–
+==0){
+
+133  (1- (
+mmLev–
+/
+Ëv–
+));
+
+135 
+	}
+}
+
+142 
+	$bfbI‹¿tiÚ
+(
+ty³_sy¡em
+ *
+ts
+, 
+C
+, 
+CT
+, 
+heuri¡ics_t
+ 
+heuri¡ic
+, 
+budg‘
+, 
+backupOp
+, 
+side
+, 
+th»shŞd
+, 
+pŞicy
+, 
+bŞzmªCÚ¡ªt
+, 
+´obWeight
+) {
+
+143 
+i
+;
+
+144 
+ty³Id
+ = 
+	`£ËùTy³
+(
+ts
+, 
+CT
+, 
+side
+, 
+pŞicy
+, 
+backupOp
+, 
+bŞzmªCÚ¡ªt
+, 
+´obWeight
+);
+
+145 ià(
+ty³Id
+ == -1)
+
+147 
+ty³
+ *
+t
+ = 
+ts
+->
+ty³s
+[
+ty³Id
+];
+
+148 
+Œ“Node
+ *
+node
+ = 
+ts
+->
+	`£ËùFromTy³
+(
+t
+, 
+C
+);
+
+149 
+»t
+;
+
+150 
+gameOv”
+ = 0;
+
+151 ià((
+»t
+ = 
+_DOM
+->
+	`g‘GameStus
+(
+node
+->
+»p
+)è!ğ
+INCOMPLETE
+) {
+
+152 
+gameOv”
+ = 1;
+
+158 ià((
+heuri¡ic
+ =ğ
+_DOM
+->
+hFunùiÚs
+.
+h3
+è|| (heuri¡iø=ğ_DOM->hFunùiÚs.
+h4
+è|| (heuri¡iø=ğ_DOM->hFunùiÚs.
+h5
+))
+
+159 
+»t
+ /ğ
+MAX_WINS
+;
+
+161 
+»t
+ = 
+	`heuri¡ic
+(
+node
+->
+»p
+,‚ode->
+side
+, 
+budg‘
+);
+
+164 
+mmËv–OfNode
+ = 
+	`mšmaxLev–
+(
+node
+);
+
+165 
+Œ“Node
+ *
+bp
+ = 
+node
+;
+
+166 
+aboveTy³VTS
+ = 
+çl£
+;
+
+167 
+aboveTy³
+ = 
+çl£
+;
+
+168 
+bpM—n
+;
+
+169 
+bp
+ !ğ
+NULL
+) {
+
+170 
+bp
+->
+n
+++;
+
+171 ià(
+backupOp
+ =ğ
+AVERAGE
+) {
+
+172 
+bp
+->
+scÜeSum
+ = bp->scÜeSum + 
+»t
+;
+
+173 ià(!
+aboveTy³
+) {
+
+174 ià(
+bp
+->
+n
+ =ğ1 || (
+gameOv”
+ =ğ1 && b°=ğ
+node
+))
+
+175 
+bp
+->
+mšmax
+ = 
+»t
+;
+
+177 
+be¡ScÜe
+ = (
+bp
+->
+side
+ =ğ
+max
+è? 
+MIN_WINS
+ : 
+MAX_WINS
+;
+
+178 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+179 ià(
+_DOM
+->
+	`isV®idChd
+(
+bp
+->
+»p
+, bp->
+side
+, 
+i
+)) {
+
+180 ià((
+bp
+->
+side
+ =ğ
+max
+ && bp->
+chd»n
+[
+i
+]->
+mšmax
+ > 
+be¡ScÜe
+è|| (bp->sid=ğ
+mš
+ && bp->children[i]->minmax < bestScore))
+
+181 
+be¡ScÜe
+ = 
+bp
+->
+mšmax
+;
+
+184 
+bp
+->
+mšmax
+ = 
+be¡ScÜe
+;
+
+186 ià(
+bp
+->
+ty³Defš”
+ =ğ
+Œue
+)
+
+187 
+aboveTy³
+ = 
+Œue
+;
+
+189 
+nodeLev–
+ = 
+	`couÁLev–Node
+(
+bp
+);
+
+190 ià(
+nodeLev–
+ >=
+mmËv–OfNode
+){
+
+191 
+bp
+->
+mšimaxScÜeSum
+ +ğ
+	`mmfunùiÚ
+(
+mmËv–OfNode
+,
+nodeLev–
+);
+
+192 
+bp
+->
+mšimax_n
+++;
+
+194 
+bpM—n
+ = 
+bp
+->
+scÜeSum
+/bp->
+n
+;
+
+195 
+bp
+->
+sd
+ =(bp->
+n
+>1)?(()(bp->À- 2è/ ()(bp->À- 1)è* bp->sd + (
+»t
+ - 
+bpM—n
+ ) * (ret - bpMean) / (()bp->n):0;
+
+196 ià(
+ts
+->
+Çme
+ =ğ
+VTS
+) {
+
+197 ià(!
+aboveTy³VTS
+) {
+
+198 
+bp
+->
+ty³dN
+++;
+
+199 
+bp
+->
+ty³dScÜeSum
+ = bp->ty³dScÜeSum + 
+»t
+;
+
+200 
+bpM—n
+ = 
+bp
+->
+ty³dScÜeSum
+ / ()(bp->typedScoreSum);
+
+201 
+bp
+->
+sd
+ = (()(bp->
+ty³dN
+ - 2è/ ()(bp->ty³dN - 1)è* bp->sd + (
+»t
+ - 
+bpM—n
+) * (ret - bpMean) / (()bp->typedN);
+
+202 ià(
+bp
+ =ğ((
+ty³_vts
+ *)
+t
+)->
+roÙ
+)
+
+203 
+aboveTy³VTS
+ = 
+Œue
+;
+
+206 } ià(
+backupOp
+ =ğ
+MINMAX
+) {
+
+208 ià(
+bp
+->
+n
+ == 1)
+
+209 
+bp
+->
+scÜeSum
+ = 
+»t
+;
+
+210 ià(
+gameOv”
+ =ğ1 && 
+bp
+ =ğ
+node
+)
+
+211 
+bp
+->
+scÜeSum
+ = bp->scÜeSum + 
+»t
+;
+
+213 
+be¡ScÜe
+ = (
+bp
+->
+side
+ =ğ
+max
+è? 
+MIN_WINS
+ : 
+MAX_WINS
+;
+
+214 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+215 ià(
+_DOM
+->
+	`isV®idChd
+(
+bp
+->
+»p
+, bp->
+side
+, 
+i
+)) {
+
+216 
+scÜe
+ = 
+bp
+->
+chd»n
+[
+i
+]->
+scÜeSum
+ / ()(bp->chd»n[i]->
+n
+);
+
+217 ià((
+bp
+->
+side
+ =ğ
+max
+ && 
+scÜe
+ > 
+be¡ScÜe
+è|| (bp->sid=ğ
+mš
+ && score < bestScore))
+
+218 
+be¡ScÜe
+ = 
+scÜe
+;
+
+221 
+bp
+->
+scÜeSum
+ = 
+be¡ScÜe
+ * bp->
+n
+;
+
+224 
+bp
+ = bp->
+·»Á
+;
+
+227 
+t
+->
+vis™s
+++;
+
+228 ià(
+backupOp
+ =ğ
+AVERAGE
+) {
+
+229 if(
+USE_MINIMAX_REWARDS
+){
+
+230 
+mmLev–OfTy³
+ = 
+	`mšmaxLev–
+(((
+ty³_¡s
+*)
+t
+)->
+roÙ
+);
+
+231 
+ty³Lev–
+ = 
+	`couÁLev–
+(
+t
+);
+
+232 
+	`as£¹
+(
+mmLev–OfTy³
+ <ğ
+	`couÁLev–
+(
+t
+));
+
+233 
+t
+->
+scÜeSum
+ =->scÜeSum + 
+	`mmfunùiÚ
+(
+mmLev–OfTy³
+,
+ty³Lev–
+);
+
+234 
+	`as£¹
+(
+t
+->
+scÜeSum
+/t->
+vis™s
+<=
+ty³Lev–
+);
+
+236 
+t
+->
+scÜeSum
+ =->scÜeSum + 
+»t
+;
+
+238 } ià(
+backupOp
+ =ğ
+MINMAX
+) {
+
+239 ià(
+t
+->
+vis™s
+ == 1)
+
+240 
+t
+->
+scÜeSum
+ = 
+»t
+;
+
+242 
+scÜe
+ = 
+t
+->
+scÜeSum
+ / ()Ñ->
+vis™s
+ - 1);
+
+243 ià((
+side
+ =ğ
+max
+ && 
+»t
+ > 
+scÜe
+è|| (sid=ğ
+mš
+ &&„et < score))
+
+244 
+t
+->
+scÜeSum
+ = 
+»t
+ *->
+vis™s
+;
+
+246 
+t
+->
+scÜeSum
+ = 
+scÜe
+ *->
+vis™s
+;
+
+249 ià(
+gameOv”
+)
+
+252 
+numOfChd»n
+ = 0;
+
+253 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+254 ià(!
+_DOM
+->
+	`isV®idChd
+(
+node
+->
+»p
+,‚ode->
+side
+, 
+i
+))
+
+256 
+	`g’”©eChd
+(
+node
+, 
+i
+);
+
+257 
+ts
+->
+	`assignToTy³
+Ñs, 
+node
+->
+chd»n
+[
+i
+], 
+ty³Id
+, 
+th»shŞd
+, 
+pŞicy
+);
+
+258 
+numOfChd»n
+++;
+
+261 
+Œ“Node
+ **
+·th
+;
+
+262 
+·thL’gth
+=-1;
+
+263 ià(
+ts
+->
+Çme
+ =ğ
+VTS
+) {
+
+264 
+t
+ = 
+ts
+->
+ty³s
+[
+ty³Id
+];
+
+265 
+·thL’gth
+ = 
+node
+->
+d•th
+ - ((
+ty³_vts
+ *)
+t
+)->
+roÙ
+->depth;
+
+266 
+·th
+ = 
+	`ÿÎoc
+(
+·thL’gth
+, (
+Œ“Node
+ *));
+
+269 ià(
+·thL’gth
+ == 0)
+
+270 
+aboveTy³
+ = 
+Œue
+;
+
+272 
+aboveTy³
+ = 
+çl£
+;
+
+273 
+bp
+ = 
+node
+;
+
+274 
+i
+ = 0;
+
+275 
+bp
+ !ğ
+NULL
+) {
+
+276 
+bp
+->
+subŒ“Size
+ = bp->subŒ“Siz+ 
+numOfChd»n
+;
+
+277 ià(
+ts
+->
+Çme
+ =ğ
+VTS
+) {
+
+278 ià(!
+aboveTy³
+) {
+
+279 
+bp
+->
+ty³dSubŒ“Size
+ = bp->ty³dSubŒ“Siz+ 
+numOfChd»n
+;
+
+280 
+·th
+[
+i
+++] = 
+bp
+;
+
+281 ià(
+bp
+ =ğ
+·th
+[
+·thL’gth
+ - 1])
+
+282 
+aboveTy³
+ = 
+Œue
+;
+
+285 
+bp
+ = bp->
+·»Á
+;
+
+287 ià(
+ts
+->
+Çme
+ =ğ
+VTS
+) {
+
+288 ià(
+·thL’gth
+ > 0)
+
+289 
+	`ty³Signifiÿnû
+(
+ts
+, (
+ty³_vts
+ *)
+t
+, 
+·th
+);
+
+290 
+	`ä“
+(
+·th
+);
+
+292 
+	}
+}
+
+298 
+	$makeBFBMove
+(
+»p_t
+ 
+»p
+, *
+side
+, 
+tsId
+, 
+numI‹¿tiÚs
+, 
+C
+, 
+CT
+, 
+heuri¡ics_t
+ 
+heuri¡ic
+, 
+budg‘
+, * 
+be¡Moves
+, * 
+numBe¡Moves
+, 
+backupOp
+, 
+th»shŞd
+, 
+pŞicy
+, 
+bŞzmªCÚ¡ªt
+, 
+´obWeight
+) {
+
+299 
+i
+;
+
+300 
+v®
+;
+
+301 
+be¡Move
+ = 
+NULL_MOVE
+;
+
+302 
+be¡ScÜe
+;
+
+303 
+Œ“Node
+* 
+roÙNode
+;
+
+304 
+ty³_sy¡em
+ **
+ty³_sy¡ems
+ = 
+	`ÿÎoc
+(
+_DOM
+->
+	`g‘NumOfChd»n
+(), (type_system *));
+
+306 *
+numBe¡Moves
+ = 0;
+
+309 
+roÙNode
+ = 
+	`ÿÎoc
+(1, (
+Œ“Node
+));
+
+310 
+roÙNode
+->
+chd»n
+ = 
+	`ÿÎoc
+(
+_DOM
+->
+	`g‘NumOfChd»n
+(), (
+Œ“Node
+*));
+
+311 
+roÙNode
+->
+»p
+ = 
+_DOM
+->
+	`şÚeR•
+(rep);
+
+312 
+roÙNode
+->
+side
+ = *side;
+
+313 
+roÙNode
+->
+d•th
+ = 0;
+
+314 
+roÙNode
+->
+subŒ“Size
+ = 1;
+
+316 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+317 ià(!
+_DOM
+->
+	`isV®idChd
+(
+roÙNode
+->
+»p
+,„oÙNode->
+side
+, 
+i
+))
+
+319 
+	`g’”©eChd
+(
+roÙNode
+, 
+i
+);
+
+320 
+roÙNode
+->
+subŒ“Size
+++;
+
+322 
+ty³_sy¡ems
+[
+i
+] = 
+	`š™_ty³_sy¡em
+(
+tsId
+, 
+»p
+, *
+side
+);
+
+323 
+ty³_sy¡ems
+[
+i
+]->
+	`assignToTy³
+Ñy³_sy¡ems[i], 
+roÙNode
+->
+chd»n
+[i], -1, 
+th»shŞd
+, 
+pŞicy
+);
+
+328 
+i
+ = 1; i < 
+numI‹¿tiÚs
+ + 1; i++) {
+
+329 
+ty³_sy¡em
+ *
+ts
+ = 
+ty³_sy¡ems
+[
+	`£ËùMove
+(
+roÙNode
+, 
+C
+)];
+
+330 
+ts
+->
+vis™s
+++;
+
+331 
+	`bfbI‹¿tiÚ
+(
+ts
+, 
+C
+, 
+CT
+, 
+heuri¡ic
+, 
+budg‘
+, 
+backupOp
+, *
+side
+, 
+th»shŞd
+, 
+pŞicy
+, 
+bŞzmªCÚ¡ªt
+, 
+´obWeight
+);
+
+335 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+336 ià(!
+_DOM
+->
+	`isV®idChd
+(
+roÙNode
+->
+»p
+,„oÙNode->
+side
+, 
+i
+))
+
+339 ià(!
+roÙNode
+->
+chd»n
+[
+i
+])
+
+343 
+v®
+ = 
+roÙNode
+->
+chd»n
+[
+i
+]->
+scÜeSum
+ / (ìoÙNode->chd»n[i]->
+n
+;
+
+346 
+v®
+ = (*
+side
+ =ğ
+mš
+) ? -val : val;
+
+349 ià((*
+numBe¡Moves
+ =ğ0è|| (
+v®
+ > 
+be¡ScÜe
+)) {
+
+350 
+be¡Moves
+[0] = 
+i
+;
+
+351 
+be¡ScÜe
+ = 
+v®
+;
+
+352 *
+numBe¡Moves
+ = 1;
+
+354 ià(
+v®
+ =ğ
+be¡ScÜe
+)
+
+355 
+be¡Moves
+[(*
+numBe¡Moves
+)++] = 
+i
+;
+
+357 ià(
+v”bo£
+)
+
+358 
+	`´štf
+("Mov# %d -- V®u%f, CouÁ %d\n", 
+i
+, ((*
+side
+ =ğ
+mš
+è? -
+v®
+ : v®), 
+roÙNode
+->
+chd»n
+[i]->
+n
+);
+
+362 
+	`as£¹
+(*
+numBe¡Moves
+ != 0);
+
+364 
+be¡Move
+ = 
+be¡Moves
+[
+	`¿ndom
+(è% *
+numBe¡Moves
+];
+
+366 
+_DOM
+->
+	`makeMove
+(
+»p
+, 
+side
+, 
+be¡Move
+);
+
+368 ià(
+v”bo£
+) {
+
+369 
+	`´štf
+("V®uoàroÙ‚ode: %f\n", 
+roÙNode
+->
+scÜeSum
+ / (ìoÙNode->
+n
+);
+
+370 
+	`´štf
+("Be¡ move: %d\n", 
+be¡Move
+);
+
+374 
+	`ä“T»e
+(
+roÙNode
+);
+
+375 
+	`ä“Ty³Sy¡ems
+(
+ty³_sy¡ems
+);
+
+377  
+be¡Move
+;
+
+378 
+	}
+}
+
+	@bfb_changing_to_minmax_reward.c
+
+1 
+	~"commÚ.h
+"
+
+2 
+	~"ty³.h
+"
+
+3 
+	~"ty³_»achab™y.h
+"
+
+7 
+	$ä“T»e
+(
+Œ“Node
+* 
+node
+) {
+
+8 
+i
+;
+
+9 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+10 ià(
+node
+->
+chd»n
+[
+i
+]) {
+
+11 
+	`ä“T»e
+(
+node
+->
+chd»n
+[
+i
+]);
+
+12 
+node
+->
+chd»n
+[
+i
+] = 
+NULL
+;
+
+15 
+_DOM
+->
+	`de¡ruùR•
+(
+node
+->
+»p
+);
+
+16 
+	`ä“
+(
+node
+->
+chd»n
+);
+
+17 
+	`ä“
+(
+node
+);
+
+18 
+	}
+}
+
+20 
+	$ä“Ty³Sy¡ems
+(
+ty³_sy¡em
+ **
+ty³_sy¡ems
+) {
+
+21 
+i
+;
+
+22 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++)
+
+23 ià(
+ty³_sy¡ems
+[
+i
+])
+
+24 
+ty³_sy¡ems
+[
+i
+]->
+	`de¡roy
+(type_systems[i]);
+
+26 
+	`ä“
+(
+ty³_sy¡ems
+);
+
+27 
+	}
+}
+
+30 
+	$£ËùTy³
+(*
+void_ts
+, 
+C
+, 
+side
+, 
+pŞicy
+) {
+
+31 
+ty³_sy¡em
+ *
+ts
+ = (ty³_sy¡em *)
+void_ts
+;
+
+32 
+i
+;
+
+33 
+qh©
+;
+
+34 
+scÜe
+;
+
+35 
+numBe¡Ty³s
+ = 0;
+
+36 
+be¡ScÜe
+;
+
+37 
+be¡Ty³s
+[
+ts
+->
+numTy³s
+];
+
+38 
+C
+ = 
+	`av”ageV®ueOfAÎTy³s
+(
+ts
+);
+
+42 
+muÉl›r
+ = (
+side
+ =ğ
+max
+) ? 1 : -1;
+
+43 
+pŞicyVis™s
+;
+
+44 ià(
+v”bo£
+è
+	`´štf
+("---%p---\n",
+ts
+);
+
+45 
+i
+ = 0; i < 
+ts
+->
+numTy³s
+; i++) {
+
+47 ià(
+ts
+->
+ty³s
+[
+i
+]->
+vis™s
+ == 0)
+
+48  
+i
+;
+
+49 ià(
+pŞicy
+ =ğ
+MAB
+)
+
+50 
+pŞicyVis™s
+ = 
+ts
+->
+vis™s
+;
+
+51 ià(
+pŞicy
+ =ğ
+KEEP_VMAB
+)
+
+52 
+pŞicyVis™s
+ = 
+ts
+->
+vis™s
+ -s->
+ty³s
+[
+i
+]->
+bœth
+ +s->types[i]->visits;
+
+53 ià(
+pŞicy
+ =ğ
+DELETE_VMAB
+)
+
+54 
+pŞicyVis™s
+ = 
+ts
+->
+vis™s
+ -s->
+ty³s
+[
+i
+]->
+bœth
+;
+
+58 
+qh©
+ = 
+	`ÿlcQh©Ba£dOnMšimax
+(
+ts
+,
+i
+);
+
+59 ià(
+v”bo£
+){
+
+60 
+	`´štf
+("C: %àqh©: %àËv–:%d \À",
+C
+, 
+qh©
+, 
+	`couÁLev–
+(
+ts
+->
+ty³s
+[
+i
+]));
+
+62 
+scÜe
+ = 1 * 
+qh©
+ + 
+C
+ * 
+	`sq¹
+(
+	`log
+(
+pŞicyVis™s
+è/ ()
+ts
+->
+ty³s
+[
+i
+]->
+vis™s
+);
+
+68 ià((
+numBe¡Ty³s
+ =ğ0è|| (
+scÜe
+ > 
+be¡ScÜe
+)) {
+
+69 
+be¡Ty³s
+[0] = 
+i
+;
+
+70 
+be¡ScÜe
+ = 
+scÜe
+;
+
+71 
+numBe¡Ty³s
+ = 1;
+
+73 ià(
+scÜe
+ =ğ
+be¡ScÜe
+)
+
+74 
+be¡Ty³s
+[
+numBe¡Ty³s
+++] = 
+i
+;
+
+76 ià(
+v”bo£
+è
+	`puts
+("------");
+
+78  
+be¡Ty³s
+[
+	`¿ndom
+(è% 
+numBe¡Ty³s
+];
+
+79 
+	}
+}
+
+82 
+	$g’”©eChd
+(
+Œ“Node
+ *
+node
+, 
+i
+) {
+
+83 
+node
+->
+chd»n
+[
+i
+] = 
+	`ÿÎoc
+(1, (
+Œ“Node
+));
+
+84 
+node
+->
+chd»n
+[
+i
+]->chd»Àğ
+	`ÿÎoc
+(
+_DOM
+->
+	`g‘NumOfChd»n
+(), (
+Œ“Node
+*));
+
+85 
+node
+->
+chd»n
+[
+i
+]->
+»p
+ = 
+_DOM
+->
+	`şÚeR•
+(node->rep);
+
+86 
+node
+->
+chd»n
+[
+i
+]->
+side
+ =‚ode->side;
+
+87 
+_DOM
+->
+	`makeMove
+(
+node
+->
+chd»n
+[
+i
+]->
+»p
+, &Òode->chd»n[i]->
+side
+), i);
+
+88 
+node
+->
+chd»n
+[
+i
+]->
+·»Á
+ =‚ode;
+
+89 
+node
+->
+chd»n
+[
+i
+]->
+d•th
+ =‚ode->depth + 1;
+
+90 
+node
+->
+chd»n
+[
+i
+]->
+subŒ“Size
+ = 1;
+
+91 
+	}
+}
+
+99 
+	$bfbI‹¿tiÚ
+(
+ty³_sy¡em
+ *
+ts
+, 
+C
+, 
+heuri¡ics_t
+ 
+heuri¡ic
+, 
+budg‘
+, 
+backupOp
+, 
+side
+, 
+th»shŞd
+, 
+pŞicy
+) {
+
+100 
+i
+;
+
+101 
+ty³Id
+ = 
+	`£ËùTy³
+(
+ts
+, 
+C
+, 
+side
+, 
+pŞicy
+);
+
+102 ià(
+ty³Id
+ == -1)
+
+104 
+ty³
+ *
+t
+ = 
+ts
+->
+ty³s
+[
+ty³Id
+];
+
+105 
+Œ“Node
+ *
+node
+ = 
+ts
+->
+	`£ËùFromTy³
+(
+t
+, 
+C
+);
+
+106 
+»t
+;
+
+107 
+gameOv”
+ = 0;
+
+108 ià((
+»t
+ = 
+_DOM
+->
+	`g‘GameStus
+(
+node
+->
+»p
+)è!ğ
+INCOMPLETE
+) {
+
+109 
+gameOv”
+ = 1;
+
+115 ià((
+heuri¡ic
+ =ğ
+_DOM
+->
+hFunùiÚs
+.
+h3
+è|| (heuri¡iø=ğ_DOM->hFunùiÚs.
+h4
+è|| (heuri¡iø=ğ_DOM->hFunùiÚs.
+h5
+))
+
+116 
+»t
+ /ğ
+MAX_WINS
+;
+
+118 
+»t
+ = 
+	`heuri¡ic
+(
+node
+->
+»p
+,‚ode->
+side
+, 
+budg‘
+);
+
+121 
+mmËv–OfNode
+ = 
+	`mšmaxLev–
+(
+node
+);
+
+122 
+Œ“Node
+ *
+bp
+ = 
+node
+;
+
+123 
+bp
+ !ğ
+NULL
+) {
+
+124 
+bp
+->
+n
+++;
+
+125 ià(
+backupOp
+ =ğ
+AVERAGE
+) {
+
+126 
+bp
+->
+scÜeSum
+ = bp->scÜeSum + 
+»t
+;
+
+127 
+nodeLev–
+ = 
+	`couÁLev–Node
+(
+bp
+);
+
+128 ià(
+nodeLev–
+ >=
+mmËv–OfNode
+){
+
+129 
+bp
+->
+mšimaxScÜeSum
+ +ğ
+mmËv–OfNode
+;
+
+130 
+bp
+->
+mšimax_n
+++;
+
+132 } ià(
+backupOp
+ =ğ
+MINMAX
+) {
+
+134 ià(
+bp
+->
+n
+ == 1)
+
+135 
+bp
+->
+scÜeSum
+ = 
+»t
+;
+
+136 ià(
+gameOv”
+ =ğ1 && 
+bp
+ =ğ
+node
+)
+
+137 
+bp
+->
+scÜeSum
+ = bp->scÜeSum + 
+»t
+;
+
+139 
+be¡ScÜe
+ = (
+bp
+->
+side
+ =ğ
+max
+è? 
+MIN_WINS
+ : 
+MAX_WINS
+;
+
+140 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+141 ià(
+_DOM
+->
+	`isV®idChd
+(
+bp
+->
+»p
+, bp->
+side
+, 
+i
+)) {
+
+142 
+scÜe
+ = 
+bp
+->
+chd»n
+[
+i
+]->
+scÜeSum
+ / ()(bp->chd»n[i]->
+n
+);
+
+143 ià((
+bp
+->
+side
+ =ğ
+max
+ && 
+scÜe
+ > 
+be¡ScÜe
+è|| (bp->sid=ğ
+mš
+ && score < bestScore))
+
+144 
+be¡ScÜe
+ = 
+scÜe
+;
+
+147 
+bp
+->
+scÜeSum
+ = 
+be¡ScÜe
+ * bp->
+n
+;
+
+150 
+bp
+ = bp->
+·»Á
+;
+
+153 
+t
+->
+vis™s
+++;
+
+154 ((
+ty³_¡s
+*)
+t
+)->
+mm_vis™s
+++;
+
+155 
+mmLev–OfTy³
+ = 
+	`mšmaxLev–
+(((
+ty³_¡s
+*)
+t
+)->
+roÙ
+);
+
+156 
+ty³Lev–
+ = 
+	`couÁLev–
+(
+t
+);
+
+157 
+	`as£¹
+(
+mmLev–OfTy³
+ <ğ
+	`couÁLev–
+(
+t
+));
+
+158 ià(
+backupOp
+ =ğ
+AVERAGE
+) {
+
+159 
+t
+->
+scÜeSum
+ =->scÜeSum + 
+mmLev–OfTy³
+;
+
+160 
+	`as£¹
+(
+t
+->
+scÜeSum
+/((
+ty³_¡s
+*é)->
+mm_vis™s
+<=
+ty³Lev–
+);
+
+161 ià(
+ts
+->
+Çme
+ =ğ
+VTS
+)
+
+162 ((
+ty³_vts
+ *)
+t
+)->
+devŸtiÚSum
+ = (Ñy³_vt *é)->devŸtiÚSum + (
+»t
+ -->
+scÜeSum
+) * (ret -->scoreSum);
+
+163 } ià(
+backupOp
+ =ğ
+MINMAX
+) {
+
+164 ià(
+t
+->
+vis™s
+ == 1)
+
+165 
+t
+->
+scÜeSum
+ = 
+»t
+;
+
+167 
+scÜe
+ = 
+t
+->
+scÜeSum
+ / ()Ñ->
+vis™s
+ - 1);
+
+168 ià((
+side
+ =ğ
+max
+ && 
+»t
+ > 
+scÜe
+è|| (sid=ğ
+mš
+ &&„et < score))
+
+169 
+t
+->
+scÜeSum
+ = 
+»t
+ *->
+vis™s
+;
+
+172 ià(
+gameOv”
+)
+
+175 
+numOfChd»n
+ = 0;
+
+176 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+177 ià(!
+_DOM
+->
+	`isV®idChd
+(
+node
+->
+»p
+,‚ode->
+side
+, 
+i
+))
+
+179 
+	`g’”©eChd
+(
+node
+, 
+i
+);
+
+180 
+ts
+->
+	`assignToTy³
+Ñs, 
+node
+->
+chd»n
+[
+i
+], 
+ty³Id
+, 
+th»shŞd
+, 
+pŞicy
+);
+
+181 
+numOfChd»n
+++;
+
+184 
+Œ“Node
+ **
+·th
+;
+
+185 ià(
+ts
+->
+Çme
+ =ğ
+VTS
+) {
+
+186 
+·th
+ = 
+	`ÿÎoc
+(
+node
+->
+d•th
+ - ((
+ty³_vts
+ *)
+t
+)->
+roÙ
+->d•th, (
+Œ“Node
+ *));
+
+187 ((
+ty³_vts
+ *)
+t
+)->
+size
+ = (Ñy³_vt *é)->siz+ 
+numOfChd»n
+;
+
+189 
+i
+ = 0;
+
+190 
+bp
+ = 
+node
+;
+
+191 
+bp
+ !ğ
+NULL
+) {
+
+192 
+bp
+->
+subŒ“Size
+ = bp->subŒ“Siz+ 
+numOfChd»n
+;
+
+193 
+bp
+ = bp->
+·»Á
+;
+
+194 ià(
+ts
+->
+Çme
+ =ğ
+VTS
+) {
+
+195 ià(
+bp
+ =ğ((
+ty³_vts
+ *)
+t
+)->
+roÙ
+)
+
+196 
+i
+ = -1;
+
+197 ià(
+i
+ != -1)
+
+198 
+·th
+[
+i
+++] = 
+bp
+;
+
+201 ià(
+ts
+->
+Çme
+ =ğ
+VTS
+) {
+
+202 
+	`ty³Signifiÿnû
+(
+ts
+, (
+ty³_vts
+ *)
+t
+, 
+·th
+);
+
+203 
+	`ä“
+(
+·th
+);
+
+205 
+	}
+}
+
+211 
+	$makeBFBMove
+(
+»p_t
+ 
+»p
+, *
+side
+, 
+tsId
+, 
+numI‹¿tiÚs
+, 
+C
+, 
+heuri¡ics_t
+ 
+heuri¡ic
+, 
+budg‘
+,
+
+212 * 
+be¡Moves
+, * 
+numBe¡Moves
+, 
+backupOp
+, 
+th»shŞd
+, 
+pŞicy
+) {
+
+213 
+i
+;
+
+214 
+v®
+;
+
+215 
+be¡Move
+ = 
+NULL_MOVE
+;
+
+216 
+be¡ScÜe
+;
+
+217 
+Œ“Node
+* 
+roÙNode
+;
+
+218 
+ty³_sy¡em
+ **
+ty³_sy¡ems
+ = 
+	`ÿÎoc
+(
+_DOM
+->
+	`g‘NumOfChd»n
+(), (type_system *));
+
+220 *
+numBe¡Moves
+ = 0;
+
+223 
+roÙNode
+ = 
+	`ÿÎoc
+(1, (
+Œ“Node
+));
+
+224 
+roÙNode
+->
+chd»n
+ = 
+	`ÿÎoc
+(
+_DOM
+->
+	`g‘NumOfChd»n
+(), (
+Œ“Node
+*));
+
+225 
+roÙNode
+->
+»p
+ = 
+_DOM
+->
+	`şÚeR•
+(rep);
+
+226 
+roÙNode
+->
+side
+ = *side;
+
+227 
+roÙNode
+->
+d•th
+ = 0;
+
+228 
+roÙNode
+->
+subŒ“Size
+ = 1;
+
+231 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+232 ià(!
+_DOM
+->
+	`isV®idChd
+(
+roÙNode
+->
+»p
+,„oÙNode->
+side
+, 
+i
+))
+
+235 
+	`g’”©eChd
+(
+roÙNode
+, 
+i
+);
+
+236 
+roÙNode
+->
+subŒ“Size
+++;
+
+239 
+ty³_sy¡ems
+[
+i
+] = 
+	`š™_ty³_sy¡em
+(
+tsId
+, 
+»p
+, *
+side
+);
+
+240 
+ty³_sy¡ems
+[
+i
+]->
+	`assignToTy³
+Ñy³_sy¡ems[i], 
+roÙNode
+->
+chd»n
+[i], -1, 
+th»shŞd
+, 
+pŞicy
+);
+
+245 
+i
+ = 1; i < 
+numI‹¿tiÚs
+ + 1; i++) {
+
+246 
+ty³_sy¡em
+ *
+ts
+ = 
+ty³_sy¡ems
+[
+	`£ËùMove
+(
+roÙNode
+, 
+C
+)];
+
+247 
+ts
+->
+vis™s
+++;
+
+248 
+	`bfbI‹¿tiÚ
+(
+ts
+, 
+C
+, 
+heuri¡ic
+, 
+budg‘
+, 
+backupOp
+, *
+side
+, 
+th»shŞd
+, 
+pŞicy
+);
+
+252 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+253 ià(!
+_DOM
+->
+	`isV®idChd
+(
+roÙNode
+->
+»p
+,„oÙNode->
+side
+, 
+i
+))
+
+256 ià(!
+roÙNode
+->
+chd»n
+[
+i
+])
+
+260 
+v®
+ = 
+roÙNode
+->
+chd»n
+[
+i
+]->
+scÜeSum
+ / (ìoÙNode->chd»n[i]->
+n
+;
+
+264 
+v®
+ = (*
+side
+ =ğ
+mš
+) ? -val : val;
+
+267 ià((*
+numBe¡Moves
+ =ğ0è|| (
+v®
+ > 
+be¡ScÜe
+)) {
+
+268 
+be¡Moves
+[0] = 
+i
+;
+
+269 
+be¡ScÜe
+ = 
+v®
+;
+
+270 *
+numBe¡Moves
+ = 1;
+
+272 ià(
+v®
+ =ğ
+be¡ScÜe
+)
+
+273 
+be¡Moves
+[(*
+numBe¡Moves
+)++] = 
+i
+;
+
+275 ià(
+v”bo£
+)
+
+276 
+	`´štf
+("Mov# %d -- V®u%f, CouÁ %d\n", 
+i
+, ((*
+side
+ =ğ
+mš
+è? -
+v®
+ : v®), 
+roÙNode
+->
+chd»n
+[i]->
+n
+);
+
+280 
+	`as£¹
+(*
+numBe¡Moves
+ != 0);
+
+282 
+be¡Move
+ = 
+be¡Moves
+[
+	`¿ndom
+(è% *
+numBe¡Moves
+];
+
+284 
+_DOM
+->
+	`makeMove
+(
+»p
+, 
+side
+, 
+be¡Move
+);
+
+286 ià(
+v”bo£
+) {
+
+287 
+	`´štf
+("V®uoàroÙ‚ode: %f\n", 
+roÙNode
+->
+scÜeSum
+ / (ìoÙNode->
+n
+);
+
+288 
+	`´štf
+("Be¡ move: %d\n", 
+be¡Move
+);
+
+292 
+	`ä“T»e
+(
+roÙNode
+);
+
+293 
+	`ä“Ty³Sy¡ems
+(
+ty³_sy¡ems
+);
+
+295  
+be¡Move
+;
+
+296 
+	}
+}
+
+	@bfb_db19e2354fdbebbb74f29a828b514dee8332af71.c
+
+1 
+	~"commÚ.h
+"
+
+2 
+	~"ty³.h
+"
+
+3 
+	~"ty³_»achab™y.h
+"
+
+4 
+	#USE_MINIMAX_REWARDS
+ 0
+
+	)
+
+8 
+	$ä“T»e
+(
+Œ“Node
+* 
+node
+) {
+
+9 
+i
+;
+
+10 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+11 ià(
+node
+->
+chd»n
+[
+i
+]) {
+
+12 
+	`ä“T»e
+(
+node
+->
+chd»n
+[
+i
+]);
+
+13 
+node
+->
+chd»n
+[
+i
+] = 
+NULL
+;
+
+16 
+_DOM
+->
+	`de¡ruùR•
+(
+node
+->
+»p
+);
+
+17 
+	`ä“
+(
+node
+->
+chd»n
+);
+
+18 
+	`ä“
+(
+node
+);
+
+19 
+	}
+}
+
+21 
+	$ä“Ty³Sy¡ems
+(
+ty³_sy¡em
+ **
+ty³_sy¡ems
+) {
+
+22 
+i
+;
+
+23 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++)
+
+24 ià(
+ty³_sy¡ems
+[
+i
+])
+
+25 
+ty³_sy¡ems
+[
+i
+]->
+	`de¡roy
+(type_systems[i]);
+
+27 
+	`ä“
+(
+ty³_sy¡ems
+);
+
+28 
+	}
+}
+
+31 
+	$£ËùTy³
+(*
+void_ts
+, 
+C
+, 
+side
+, 
+pŞicy
+) {
+
+32 
+ty³_sy¡em
+ *
+ts
+ = (ty³_sy¡em *)
+void_ts
+;
+
+33 
+i
+;
+
+34 
+qh©
+;
+
+35 
+scÜe
+;
+
+36 
+numBe¡Ty³s
+ = 0;
+
+37 
+be¡ScÜe
+;
+
+38 
+be¡Ty³s
+[
+ts
+->
+numTy³s
+];
+
+39 ià(
+USE_MINIMAX_REWARDS
+){
+
+40 
+C
+ = 
+	`av”ageV®ueOfAÎTy³s
+(
+ts
+);
+
+45 
+muÉl›r
+ = (
+side
+ =ğ
+max
+) ? 1 : -1;
+
+46 
+pŞicyVis™s
+;
+
+47 
+i
+ = 0; i < 
+ts
+->
+numTy³s
+; i++) {
+
+49 ià(
+ts
+->
+ty³s
+[
+i
+]->
+vis™s
+ == 0)
+
+50  
+i
+;
+
+51 ià(
+pŞicy
+ =ğ
+MAB
+)
+
+52 
+pŞicyVis™s
+ = 
+ts
+->
+vis™s
+;
+
+53 ià(
+pŞicy
+ =ğ
+KEEP_VMAB
+)
+
+54 
+pŞicyVis™s
+ = 
+ts
+->
+vis™s
+ -s->
+ty³s
+[
+i
+]->
+bœth
+ +s->types[i]->visits;
+
+55 ià(
+pŞicy
+ =ğ
+DELETE_VMAB
+)
+
+56 
+pŞicyVis™s
+ = 
+ts
+->
+vis™s
+ -s->
+ty³s
+[
+i
+]->
+bœth
+;
+
+60 ià(
+USE_MINIMAX_REWARDS
+){
+
+61 
+qh©
+ = 
+	`ÿlcQh©Ba£dOnMšimax
+(
+ts
+,
+i
+);
+
+62 ià(
+v”bo£
+){
+
+63 
+	`´štf
+("C: %àqh©: %àËv–:%d \À",
+C
+, 
+qh©
+, 
+	`couÁLev–
+(
+ts
+->
+ty³s
+[
+i
+]));
+
+65 
+scÜe
+ = 1 * 
+qh©
+ + 
+C
+ * 
+	`sq¹
+(
+	`log
+(
+pŞicyVis™s
+è/ ()
+ts
+->
+ty³s
+[
+i
+]->
+vis™s
+);
+
+68 
+qh©
+ = 
+ts
+->
+ty³s
+[
+i
+]->
+scÜeSum
+ / (és->ty³s[i]->
+vis™s
+;
+
+69 
+scÜe
+ = 
+qh©
+ + (
+muÉl›r
+ * 
+C
+è* 
+	`sq¹
+(
+	`log
+(
+pŞicyVis™s
+è/ ()
+ts
+->
+ty³s
+[
+i
+]->
+vis™s
+);
+
+73 
+scÜe
+ = (
+side
+ =ğ
+mš
+) ? -score : score;
+
+76 ià((
+numBe¡Ty³s
+ =ğ0è|| (
+scÜe
+ > 
+be¡ScÜe
+)) {
+
+77 
+be¡Ty³s
+[0] = 
+i
+;
+
+78 
+be¡ScÜe
+ = 
+scÜe
+;
+
+79 
+numBe¡Ty³s
+ = 1;
+
+81 ià(
+scÜe
+ =ğ
+be¡ScÜe
+)
+
+82 
+be¡Ty³s
+[
+numBe¡Ty³s
+++] = 
+i
+;
+
+86  
+be¡Ty³s
+[
+	`¿ndom
+(è% 
+numBe¡Ty³s
+];
+
+87 
+	}
+}
+
+90 
+	$g’”©eChd
+(
+Œ“Node
+ *
+node
+, 
+i
+) {
+
+91 
+node
+->
+chd»n
+[
+i
+] = 
+	`ÿÎoc
+(1, (
+Œ“Node
+));
+
+92 
+node
+->
+chd»n
+[
+i
+]->chd»Àğ
+	`ÿÎoc
+(
+_DOM
+->
+	`g‘NumOfChd»n
+(), (
+Œ“Node
+*));
+
+93 
+node
+->
+chd»n
+[
+i
+]->
+»p
+ = 
+_DOM
+->
+	`şÚeR•
+(node->rep);
+
+94 
+node
+->
+chd»n
+[
+i
+]->
+side
+ =‚ode->side;
+
+95 
+_DOM
+->
+	`makeMove
+(
+node
+->
+chd»n
+[
+i
+]->
+»p
+, &Òode->chd»n[i]->
+side
+), i);
+
+96 
+node
+->
+chd»n
+[
+i
+]->
+·»Á
+ =‚ode;
+
+97 
+node
+->
+chd»n
+[
+i
+]->
+d•th
+ =‚ode->depth + 1;
+
+98 
+node
+->
+chd»n
+[
+i
+]->
+subŒ“Size
+ = 1;
+
+99 
+	}
+}
+
+107 
+	$bfbI‹¿tiÚ
+(
+ty³_sy¡em
+ *
+ts
+, 
+C
+, 
+CT
+, 
+heuri¡ics_t
+ 
+heuri¡ic
+, 
+budg‘
+, 
+backupOp
+, 
+side
+, 
+th»shŞd
+, 
+pŞicy
+) {
+
+108 
+i
+;
+
+109 
+ty³Id
+ = 
+	`£ËùTy³
+(
+ts
+, 
+CT
+, 
+side
+, 
+pŞicy
+);
+
+110 ià(
+ty³Id
+ == -1)
+
+112 
+ty³
+ *
+t
+ = 
+ts
+->
+ty³s
+[
+ty³Id
+];
+
+113 
+Œ“Node
+ *
+node
+ = 
+ts
+->
+	`£ËùFromTy³
+(
+t
+, 
+C
+);
+
+114 
+»t
+;
+
+115 
+gameOv”
+ = 0;
+
+116 ià((
+»t
+ = 
+_DOM
+->
+	`g‘GameStus
+(
+node
+->
+»p
+)è!ğ
+INCOMPLETE
+) {
+
+117 
+gameOv”
+ = 1;
+
+123 ià((
+heuri¡ic
+ =ğ
+_DOM
+->
+hFunùiÚs
+.
+h3
+è|| (heuri¡iø=ğ_DOM->hFunùiÚs.
+h4
+è|| (heuri¡iø=ğ_DOM->hFunùiÚs.
+h5
+))
+
+124 
+»t
+ /ğ
+MAX_WINS
+;
+
+126 
+»t
+ = 
+	`heuri¡ic
+(
+node
+->
+»p
+,‚ode->
+side
+, 
+budg‘
+);
+
+129 
+mmËv–OfNode
+ = 
+	`mšmaxLev–
+(
+node
+);
+
+130 
+Œ“Node
+ *
+bp
+ = 
+node
+;
+
+131 
+aboveTy³
+ = 
+çl£
+;
+
+132 
+bpM—n
+;
+
+133 
+bp
+ !ğ
+NULL
+) {
+
+134 
+bp
+->
+n
+++;
+
+135 ià(
+backupOp
+ =ğ
+AVERAGE
+) {
+
+136 
+bp
+->
+scÜeSum
+ = bp->scÜeSum + 
+»t
+;
+
+137 
+nodeLev–
+ = 
+	`couÁLev–Node
+(
+bp
+);
+
+138 ià(
+nodeLev–
+ >=
+mmËv–OfNode
+){
+
+139 
+bp
+->
+mšimaxScÜeSum
+ +ğ
+mmËv–OfNode
+;
+
+140 
+bp
+->
+mšimax_n
+++;
+
+142 ià(
+ts
+->
+Çme
+ =ğ
+VTS
+) {
+
+143 ià(!
+aboveTy³
+) {
+
+144 
+bp
+->
+ty³dN
+++;
+
+145 
+bp
+->
+ty³dScÜeSum
+ = bp->ty³dScÜeSum + 
+»t
+;
+
+146 
+bpM—n
+ = 
+bp
+->
+ty³dScÜeSum
+ / ()(bp->typedScoreSum);
+
+147 
+bp
+->
+sd
+ = (()(bp->
+ty³dN
+ - 2è/ ()(bp->ty³dN - 1)è* bp->sd + (
+»t
+ - 
+bpM—n
+) * (ret - bpMean) / (()bp->typedN);
+
+148 ià(
+bp
+ =ğ((
+ty³_vts
+ *)
+t
+)->
+roÙ
+)
+
+149 
+aboveTy³
+ = 
+Œue
+;
+
+152 } ià(
+backupOp
+ =ğ
+MINMAX
+) {
+
+154 ià(
+bp
+->
+n
+ == 1)
+
+155 
+bp
+->
+scÜeSum
+ = 
+»t
+;
+
+156 ià(
+gameOv”
+ =ğ1 && 
+bp
+ =ğ
+node
+)
+
+157 
+bp
+->
+scÜeSum
+ = bp->scÜeSum + 
+»t
+;
+
+159 
+be¡ScÜe
+ = (
+bp
+->
+side
+ =ğ
+max
+è? 
+MIN_WINS
+ : 
+MAX_WINS
+;
+
+160 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+161 ià(
+_DOM
+->
+	`isV®idChd
+(
+bp
+->
+»p
+, bp->
+side
+, 
+i
+)) {
+
+162 
+scÜe
+ = 
+bp
+->
+chd»n
+[
+i
+]->
+scÜeSum
+ / ()(bp->chd»n[i]->
+n
+);
+
+163 ià((
+bp
+->
+side
+ =ğ
+max
+ && 
+scÜe
+ > 
+be¡ScÜe
+è|| (bp->sid=ğ
+mš
+ && score < bestScore))
+
+164 
+be¡ScÜe
+ = 
+scÜe
+;
+
+167 
+bp
+->
+scÜeSum
+ = 
+be¡ScÜe
+ * bp->
+n
+;
+
+170 
+bp
+ = bp->
+·»Á
+;
+
+173 
+t
+->
+vis™s
+++;
+
+174 ià(
+backupOp
+ =ğ
+AVERAGE
+) {
+
+175 if(
+USE_MINIMAX_REWARDS
+){
+
+176 ((
+ty³_¡s
+*)
+t
+)->
+mm_vis™s
+++;
+
+177 
+mmLev–OfTy³
+ = 
+	`mšmaxLev–
+(((
+ty³_¡s
+*)
+t
+)->
+roÙ
+);
+
+178 
+ty³Lev–
+ = 
+	`couÁLev–
+(
+t
+);
+
+179 
+	`as£¹
+(
+mmLev–OfTy³
+ <ğ
+	`couÁLev–
+(
+t
+));
+
+180 
+t
+->
+scÜeSum
+ =->scÜeSum + 
+mmLev–OfTy³
+;
+
+181 
+	`as£¹
+(
+t
+->
+scÜeSum
+/((
+ty³_¡s
+*é)->
+mm_vis™s
+<=
+ty³Lev–
+);
+
+183 
+t
+->
+scÜeSum
+ =->scÜeSum + 
+»t
+;
+
+185 } ià(
+backupOp
+ =ğ
+MINMAX
+) {
+
+186 ià(
+t
+->
+vis™s
+ == 1)
+
+187 
+t
+->
+scÜeSum
+ = 
+»t
+;
+
+189 
+scÜe
+ = 
+t
+->
+scÜeSum
+ / ()Ñ->
+vis™s
+ - 1);
+
+190 ià((
+side
+ =ğ
+max
+ && 
+»t
+ > 
+scÜe
+è|| (sid=ğ
+mš
+ &&„et < score))
+
+191 
+t
+->
+scÜeSum
+ = 
+»t
+ *->
+vis™s
+;
+
+194 ià(
+gameOv”
+)
+
+197 
+numOfChd»n
+ = 0;
+
+198 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+199 ià(!
+_DOM
+->
+	`isV®idChd
+(
+node
+->
+»p
+,‚ode->
+side
+, 
+i
+))
+
+201 
+	`g’”©eChd
+(
+node
+, 
+i
+);
+
+202 
+ts
+->
+	`assignToTy³
+Ñs, 
+node
+->
+chd»n
+[
+i
+], 
+ty³Id
+, 
+th»shŞd
+, 
+pŞicy
+);
+
+203 
+numOfChd»n
+++;
+
+206 
+Œ“Node
+ **
+·th
+;
+
+207 
+·thL’gth
+;
+
+208 ià(
+ts
+->
+Çme
+ =ğ
+VTS
+) {
+
+209 
+t
+ = 
+ts
+->
+ty³s
+[
+ty³Id
+];
+
+210 
+·thL’gth
+ = 
+node
+->
+d•th
+ - ((
+ty³_vts
+ *)
+t
+)->
+roÙ
+->depth;
+
+211 
+·th
+ = 
+	`ÿÎoc
+(
+·thL’gth
+, (
+Œ“Node
+ *));
+
+213 ià(
+·thL’gth
+ == 0)
+
+214 
+aboveTy³
+ = 
+Œue
+;
+
+216 
+aboveTy³
+ = 
+çl£
+;
+
+217 
+bp
+ = 
+node
+;
+
+218 
+i
+ = 0;
+
+219 
+bp
+ !ğ
+NULL
+) {
+
+220 
+bp
+->
+subŒ“Size
+ = bp->subŒ“Siz+ 
+numOfChd»n
+;
+
+221 ià(
+ts
+->
+Çme
+ =ğ
+VTS
+) {
+
+222 ià(!
+aboveTy³
+) {
+
+223 
+bp
+->
+ty³dSubŒ“Size
+ = bp->ty³dSubŒ“Siz+ 
+numOfChd»n
+;
+
+224 
+·th
+[
+i
+++] = 
+bp
+;
+
+225 ià(
+bp
+ =ğ
+·th
+[
+·thL’gth
+ - 1])
+
+226 
+aboveTy³
+ = 
+Œue
+;
+
+229 
+bp
+ = bp->
+·»Á
+;
+
+231 ià(
+ts
+->
+Çme
+ =ğ
+VTS
+) {
+
+232 ià(
+·thL’gth
+ > 0)
+
+233 
+	`ty³Signifiÿnû
+(
+ts
+, (
+ty³_vts
+ *)
+t
+, 
+·th
+);
+
+234 
+	`ä“
+(
+·th
+);
+
+236 
+	}
+}
+
+242 
+	$makeBFBMove
+(
+»p_t
+ 
+»p
+, *
+side
+, 
+tsId
+, 
+numI‹¿tiÚs
+, 
+C
+, 
+CT
+, 
+heuri¡ics_t
+ 
+heuri¡ic
+, 
+budg‘
+, * 
+be¡Moves
+, * 
+numBe¡Moves
+, 
+backupOp
+, 
+th»shŞd
+, 
+pŞicy
+) {
+
+243 
+i
+;
+
+244 
+v®
+;
+
+245 
+be¡Move
+ = 
+NULL_MOVE
+;
+
+246 
+be¡ScÜe
+;
+
+247 
+Œ“Node
+* 
+roÙNode
+;
+
+248 
+ty³_sy¡em
+ **
+ty³_sy¡ems
+ = 
+	`ÿÎoc
+(
+_DOM
+->
+	`g‘NumOfChd»n
+(), (type_system *));
+
+250 *
+numBe¡Moves
+ = 0;
+
+253 
+roÙNode
+ = 
+	`ÿÎoc
+(1, (
+Œ“Node
+));
+
+254 
+roÙNode
+->
+chd»n
+ = 
+	`ÿÎoc
+(
+_DOM
+->
+	`g‘NumOfChd»n
+(), (
+Œ“Node
+*));
+
+255 
+roÙNode
+->
+»p
+ = 
+_DOM
+->
+	`şÚeR•
+(rep);
+
+256 
+roÙNode
+->
+side
+ = *side;
+
+257 
+roÙNode
+->
+d•th
+ = 0;
+
+258 
+roÙNode
+->
+subŒ“Size
+ = 1;
+
+261 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+262 ià(!
+_DOM
+->
+	`isV®idChd
+(
+roÙNode
+->
+»p
+,„oÙNode->
+side
+, 
+i
+))
+
+265 
+	`g’”©eChd
+(
+roÙNode
+, 
+i
+);
+
+266 
+roÙNode
+->
+subŒ“Size
+++;
+
+269 
+ty³_sy¡ems
+[
+i
+] = 
+	`š™_ty³_sy¡em
+(
+tsId
+, 
+»p
+, *
+side
+);
+
+270 
+ty³_sy¡ems
+[
+i
+]->
+	`assignToTy³
+Ñy³_sy¡ems[i], 
+roÙNode
+->
+chd»n
+[i], -1, 
+th»shŞd
+, 
+pŞicy
+);
+
+275 
+i
+ = 1; i < 
+numI‹¿tiÚs
+ + 1; i++) {
+
+276 
+ty³_sy¡em
+ *
+ts
+ = 
+ty³_sy¡ems
+[
+	`£ËùMove
+(
+roÙNode
+, 
+C
+)];
+
+277 
+ts
+->
+vis™s
+++;
+
+278 
+	`bfbI‹¿tiÚ
+(
+ts
+, 
+C
+, 
+CT
+, 
+heuri¡ic
+, 
+budg‘
+, 
+backupOp
+, *
+side
+, 
+th»shŞd
+, 
+pŞicy
+);
+
+282 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+283 ià(!
+_DOM
+->
+	`isV®idChd
+(
+roÙNode
+->
+»p
+,„oÙNode->
+side
+, 
+i
+))
+
+286 ià(!
+roÙNode
+->
+chd»n
+[
+i
+])
+
+290 
+v®
+ = 
+roÙNode
+->
+chd»n
+[
+i
+]->
+scÜeSum
+ / (ìoÙNode->chd»n[i]->
+n
+;
+
+294 
+v®
+ = (*
+side
+ =ğ
+mš
+) ? -val : val;
+
+297 ià((*
+numBe¡Moves
+ =ğ0è|| (
+v®
+ > 
+be¡ScÜe
+)) {
+
+298 
+be¡Moves
+[0] = 
+i
+;
+
+299 
+be¡ScÜe
+ = 
+v®
+;
+
+300 *
+numBe¡Moves
+ = 1;
+
+302 ià(
+v®
+ =ğ
+be¡ScÜe
+)
+
+303 
+be¡Moves
+[(*
+numBe¡Moves
+)++] = 
+i
+;
+
+305 ià(
+v”bo£
+)
+
+306 
+	`´štf
+("Mov# %d -- V®u%f, CouÁ %d\n", 
+i
+, ((*
+side
+ =ğ
+mš
+è? -
+v®
+ : v®), 
+roÙNode
+->
+chd»n
+[i]->
+n
+);
+
+310 
+	`as£¹
+(*
+numBe¡Moves
+ != 0);
+
+312 
+be¡Move
+ = 
+be¡Moves
+[
+	`¿ndom
+(è% *
+numBe¡Moves
+];
+
+314 
+_DOM
+->
+	`makeMove
+(
+»p
+, 
+side
+, 
+be¡Move
+);
+
+316 ià(
+v”bo£
+) {
+
+317 
+	`´štf
+("V®uoàroÙ‚ode: %f\n", 
+roÙNode
+->
+scÜeSum
+ / (ìoÙNode->
+n
+);
+
+318 
+	`´štf
+("Be¡ move: %d\n", 
+be¡Move
+);
+
+322 
+	`ä“T»e
+(
+roÙNode
+);
+
+323 
+	`ä“Ty³Sy¡ems
+(
+ty³_sy¡ems
+);
+
+325  
+be¡Move
+;
+
+326 
+	}
+}
+
 	@board.c
 
 2 
@@ -190,8 +5644,6 @@ heuri¡ics_t
 )
 h1
 , 0, 
-Œue
-, 
 çl£
 , f®£, 
 be¡Moves
@@ -201,7 +5653,7 @@ numBe¡Moves
 ‹rmP”ûÁage
 );
 
-73 } 
+72 } 
 g‘GameStus
 (
 bßrd
@@ -209,7 +5661,7 @@ bßrd
 INCOMPLETE
 );
 
-78 
+77 
 şÚeBßrd
 (
 ¤cBßrd
@@ -219,17 +5671,17 @@ NUM_PITS
 d¡Bßrd
 [2][NUM_PITS+1]) {
 
-79 
+78 
 	gi
 ;
 
-81 
+80 
 	gi
  = 0; i < 
 	gNUM_PITS
 +1; i++) {
 
-82 
+81 
 	gd¡Bßrd
 [
 max
@@ -239,7 +5691,7 @@ i
 ¤cBßrd
 [max][i];
 
-83 
+82 
 	gd¡Bßrd
 [
 mš
@@ -249,7 +5701,7 @@ i
 ¤cBßrd
 [min][i];
 
-104 
+103 
 »adBßrd
 (* 
 feName
@@ -263,7 +5715,7 @@ side
 mode
 ) {
 
-105 
+104 
 FILE
 * 
 	gf
@@ -271,25 +5723,25 @@ FILE
 NULL
 ;
 
-106 
+105 
 	gfeNameCİy
 [1024];
 
-107 
+106 
 	g‹mp
 ;
 
-108 
+107 
 	gtÙ®StÚeCouÁ
  = 0;
 
-109 
+108 
 	gi
 , 
 	gj
 ;
 
-112 
+111 
 as£¹
 ((
 mode
@@ -299,47 +5751,47 @@ READ
 CLOSE
 ));
 
-115 ià(
+114 ià(
 	gmode
  =ğ
 CLOSE
 ) {
 
-116 ià(
+115 ià(
 f
 ) {
 
-117 
+116 
 fşo£
 (
 f
 );
 
-118 
+117 
 	gf
  = 
 NULL
 ;
 
-119 
+118 
 ¡rıy
 (
 feNameCİy
 , "");
 
-120  
+119  
 	gŒue
 ;
 
-123  
+122  
 	gçl£
 ;
 
-127 ià(!
+126 ià(!
 	gf
 ) {
 
-128 
+127 
 	gf
  = 
 fİ’
@@ -347,21 +5799,21 @@ fİ’
 feName
 , "r");
 
-130 ià(!
+129 ià(!
 	gf
 ) {
 
-131 
+130 
 ´štf
 ("E¼Ü -- couldn'ˆİ’ f%s\n", 
 feName
 );
 
-132 
+131 
 ex™
 (1);
 
-135 
+134 
 ¡rıy
 (
 feNameCİy
@@ -369,7 +5821,7 @@ feNameCİy
 feName
 );
 
-139 
+138 
 as£¹
 (!
 ¡rcmp
@@ -379,17 +5831,17 @@ feName
 feNameCİy
 ));
 
-142 ià(
+141 ià(
 ãof
 (
 f
 ))
 
-143  
+142  
 	gçl£
 ;
 
-146 ià(
+145 ià(
 fsÿnf
 (
 f
@@ -397,53 +5849,53 @@ f
 ‹mp
 ) == 1) {
 
-148 ià(
+147 ià(
 ‹mp
  == 0)
 
-149 *
+148 *
 side
  = 
 max
 ;
 
-150 ià(
+149 ià(
 	g‹mp
  == 1)
 
-151 *
+150 *
 side
  = 
 mš
 ;
 
-153 
+152 
 puts
 ("Error„eading side on move");
 
-154 
+153 
 ex™
 (1);
+
+157 
+puts
+("Error„eading side on move");
 
 158 
-puts
-("Error„eading side on move");
-
-159 
 ex™
 (1);
 
-163 
+162 
 	gi
  = 0; i < 2; i++) {
 
-164 
+163 
 	gj
  = 0; j < 
 	gNUM_PITS
 +1; j++) {
 
-165 ià(
+164 ià(
 fsÿnf
 (
 f
@@ -451,7 +5903,7 @@ f
 ‹mp
 ) == 1) {
 
-166 
+165 
 bßrd
 [
 i
@@ -461,21 +5913,21 @@ j
 ‹mp
 ;
 
-167 
+166 
 	gtÙ®StÚeCouÁ
  +ğ
 ‹mp
 ;
 
-170 
+169 
 puts
 ("Error„eading board");
 
-171 
+170 
 ex™
 (1);
 
-177 ià(
+176 ià(
 	gtÙ®StÚeCouÁ
  !ğ(2 * 
 NUM_PITS
@@ -483,25 +5935,25 @@ NUM_PITS
 SHELLS_PER_PIT
 )) {
 
-178 
+177 
 puts
 ("Error -- invalid board");
 
-179 
+178 
 ex™
 (1);
 
-183 
+182 
 fsÿnf
 (
 f
 , "\n");
 
-185  
+184  
 	gŒue
 ;
 
-192 
+191 
 wr™eBßrd
 (* 
 feName
@@ -515,7 +5967,7 @@ side
 mode
 ) {
 
-193 
+192 
 FILE
 * 
 	gf
@@ -523,17 +5975,17 @@ FILE
 NULL
 ;
 
-194 
+193 
 	gfeNameCİy
 [1024];
 
-195 
+194 
 	gi
 , 
 	gj
 ;
 
-198 
+197 
 as£¹
 ((
 mode
@@ -543,39 +5995,39 @@ WRITE
 CLOSE
 ));
 
-201 ià(
+200 ià(
 	gmode
  =ğ
 CLOSE
 ) {
 
-202 ià(
+201 ià(
 f
 ) {
 
-203 
+202 
 fşo£
 (
 f
 );
 
-204 
+203 
 	gf
  = 
 NULL
 ;
 
-205 
+204 
 ¡rıy
 (
 feNameCİy
 , "");
 
-212 ià(!
+211 ià(!
 	gf
 ) {
 
-213 
+212 
 	gf
  = 
 fİ’
@@ -583,19 +6035,19 @@ fİ’
 feName
 , "w");
 
-215 ià(!
+214 ià(!
 	gf
 ) {
 
-216 
+215 
 puts
 ("Error -- could‚ot writeo specified file");
 
-217 
+216 
 ex™
 (1);
 
-220 
+219 
 ¡rıy
 (
 feNameCİy
@@ -603,7 +6055,7 @@ feNameCİy
 feName
 );
 
-223 
+222 
 årštf
 (
 f
@@ -611,17 +6063,17 @@ f
 side
 );
 
-226 
+225 
 	gi
  = 0; i < 2; i++)
 
-227 
+226 
 	gj
  = 0; j < 
 	gNUM_PITS
 +1; j++)
 
-228 
+227 
 årštf
 (
 f
@@ -633,13 +6085,13 @@ i
 j
 ]);
 
-229 
+228 
 årštf
 (
 f
 , "\n");
 
-235 
+234 
 isEqu®
 (
 bßrd1
@@ -649,17 +6101,17 @@ NUM_PITS
 bßrd2
 [2][NUM_PITS+1]) {
 
-236 
+235 
 	gi
 ;
 
-238 
+237 
 	gi
  = 0; i < 
 	gNUM_PITS
 +1; i++)
 
-239 ià((
+238 ià((
 	gbßrd1
 [
 max
@@ -673,93 +6125,1297 @@ bßrd1
 mš
 ][i] != board2[min][i]))
 
-240  
+239  
 çl£
 ;
 
-242  
+241  
 	gŒue
 ;
 
-247 
-´štBßrd
-(
+246 
+	$´štBßrd
+(**
 bßrd
-[2][
-NUM_PITS
-+1], 
+, 
 side
 ) {
 
-248 
-	gi
+247 
+	`TO_REGULAR_ARR
+(
+bßrd
+);
+
+249 
+i
 ;
 
-249 
-´štf
+250 
+	`´štf
 ("%s: ", (
 side
  =ğ
 max
 ) ? "*Max" : " Max");
 
-250 
-´štf
+251 
+	`´štf
 ("%2d ", 
-bßrd
+__bßrd
 [
 max
 ][
 ¡Üe
 ]);
 
-251 
-	gi
+252 
+i
  = 1; i < 
-	gNUM_PITS
+NUM_PITS
 +1; i++)
 
-252 
-´štf
+253 
+	`´štf
 ("%d ", 
-bßrd
+__bßrd
 [
 max
 ][
 i
 ]);
 
-253 
-´štf
+254 
+	`´štf
 ("\n");
 
-255 
-´štf
+256 
+	`´štf
 ("%s: ", (
 side
  =ğ
 mš
 ) ? "*Min" : " Min");
 
-256 
-	gi
+257 
+i
  = 
 NUM_PITS
 ; i >= 0; i--)
 
-257 
-´štf
+258 
+	`´štf
 ("%d ", 
-bßrd
+__bßrd
 [
 mš
 ][
 i
 ]);
 
-258 
-´štf
+259 
+	`´štf
 ("\n");
+
+260 
+	}
+}
+
+	@c4.c
+
+1 
+	~"commÚ.h
+"
+
+2 
+	~"c4.h
+"
+
+4 
+	$checkWš
+(*
+bßrd
+, *
+side
+)
+
+6  (
+	`hÜizÚlCheck
+(
+bßrd
+, 
+side
+è|| 
+	`v”tiÿlCheck
+(bßrd, sideè|| 
+	`dŸgÚ®Check
+(board, side));
+
+7 
+	}
+}
+
+9 
+	$checkFour
+(*
+bßrd
+, 
+a
+, 
+b
+, 
+c
+, 
+d
+)
+
+11  (
+bßrd
+[
+a
+] =ğbßrd[
+b
+] && bßrd[b] =ğbßrd[
+c
+] && bßrd[c] =ğbßrd[
+d
+] && board[a] != -1);
+
+12 
+	}
+}
+
+14 
+	$hÜizÚlCheck
+(*
+bßrd
+, *
+side
+)
+
+16 
+row
+, 
+cŞ
+, 
+idx
+;
+
+17 cÚ¡ 
+WIDTH
+ = 1;
+
+19 
+row
+ = 0;„ow < 
+BOARD_ROWS
+;„ow++)
+
+21 
+cŞ
+ = 0; cŞ < 
+BOARD_COLS
+ - 3; col++)
+
+23 
+idx
+ = 
+BOARD_COLS
+ * 
+row
+ + 
+cŞ
+;
+
+24 if(
+	`checkFour
+(
+bßrd
+, 
+idx
+, idx + 
+WIDTH
+, idx + WIDTH * 2, idx + WIDTH * 3))
+
+26 *
+side
+ = 
+bßrd
+[
+idx
+];
+
+32 
+	}
+}
+
+34 
+	$v”tiÿlCheck
+(*
+bßrd
+, *
+side
+)
+
+36 
+row
+, 
+cŞ
+, 
+idx
+;
+
+37 cÚ¡ 
+HEIGHT
+ = 7;
+
+39 
+row
+ = 0;„ow < 
+BOARD_ROWS
+ - 3;„ow++)
+
+41 
+cŞ
+ = 0; cŞ < 
+BOARD_COLS
+; col++)
+
+43 
+idx
+ = 
+BOARD_COLS
+ * 
+row
+ + 
+cŞ
+;
+
+44 if(
+	`checkFour
+(
+bßrd
+, 
+idx
+, idx + 
+HEIGHT
+, idx + HEIGHT * 2, idx + HEIGHT * 3))
+
+46 *
+side
+ = 
+bßrd
+[
+idx
+];
+
+52 
+	}
+}
+
+54 
+	$dŸgÚ®Check
+(*
+bßrd
+, *
+side
+)
+
+56 
+row
+, 
+cŞ
+, 
+idx
+, 
+couÁ
+ = 0;
+
+57 cÚ¡ 
+DIAG_RGT
+ = 6, 
+DIAG_LFT
+ = 8;
+
+59 
+row
+ = 0;„ow < 
+BOARD_ROWS
+ - 3;„ow++)
+
+61 
+cŞ
+ = 0; cŞ < 
+BOARD_COLS
+; col++)
+
+63 
+idx
+ = 
+BOARD_COLS
+ * 
+row
+ + 
+cŞ
+;
+
+64 if((
+couÁ
+ <ğ3 && 
+	`checkFour
+(
+bßrd
+, 
+idx
+, idx + 
+DIAG_LFT
+, idx + DIAG_LFT * 2, idx + DIAG_LFT * 3)) ||
+
+65 (
+couÁ
+ >ğ3 && 
+	`checkFour
+(
+bßrd
+, 
+idx
+, idx + 
+DIAG_RGT
+, idx + DIAG_RGT * 2, idx + DIAG_RGT * 3)))
+
+67 *
+side
+ = 
+bßrd
+[
+idx
+];
+
+70 
+couÁ
+++;
+
+72 
+couÁ
+ = 0;
+
+75 
+	}
+}
+
+78 
+	$pickRªdomMove_cÚÃù4
+(* 
+dummyBßrd
+, 
+side
+)
+
+80 
+numb”_moves
+, 
+¿ndom_move
+;
+
+81 
+numb”_moves
+ = 
+	`g‘NumOfChd»n_cÚÃù4
+();
+
+82 
+¿ndom_move
+ = 
+	`¿ndom
+(è% 
+numb”_moves
+;
+
+87 
+¿ndom_move
+ =ğ0 || !
+	`isV®idChd_cÚÃù4
+(
+dummyBßrd
+, 
+side
+,„andom_move))
+
+89 
+¿ndom_move
+ = 
+	`¿ndom
+(è% 
+numb”_moves
+;
+
+95  
+¿ndom_move
+;
+
+96 
+	}
+}
+
+98 
+	$¶ayout_c4
+(* 
+bßrd
+, 
+side
+) {
+
+99 
+v®
+;
+
+100 
+dummyBßrd
+[
+BOARD_ROWS
+ * 
+BOARD_COLS
+];
+
+103 
+	`cİy_cÚÃù4
+(
+bßrd
+, 
+dummyBßrd
+);
+
+106 (
+v®
+ = 
+	`g‘GameStus_cÚÃù4
+(
+dummyBßrd
+)è=ğ
+INCOMPLETE
+)
+
+107 
+	`makeMove_cÚÃù4
+(
+dummyBßrd
+, &
+side
+, 
+	`pickRªdomMove_cÚÃù4
+(dummyBoard, side));
+
+110 
+v®
+ /ğ
+MAX_WINS
+;
+
+115  
+v®
+;
+
+116 
+	}
+}
+
+118 
+	$h3_c4
+(
+»p_t
+ 
+»p
+, 
+side
+, 
+numPÏyouts
+) {
+
+119 * 
+bßrd
+ =(*)
+»p
+;
+
+120 
+¶ayoutSum
+ = 0;
+
+121 
+i
+;
+
+123 
+i
+ = 0; i < 
+numPÏyouts
+; i++)
+
+124 
+¶ayoutSum
+ +ğ
+	`¶ayout_c4
+(
+bßrd
+, 
+side
+);
+
+126  ()
+¶ayoutSum
+/()
+numPÏyouts
+;
+
+127 
+	}
+}
+
+129 
+	$g‘NumOfChd»n_cÚÃù4
+()
+
+131  
+BOARD_COLS
+ + 1;
+
+132 
+	}
+}
+
+137 
+	$e¡im©eT»eSize_cÚÃù4
+(
+Œ“Size
+)
+
+140 
+	}
+}
+
+143 
+	$isV®idChd_cÚÃù4
+(
+»p_t
+ 
+»p
+, 
+side
+, 
+move
+)
+
+145 * 
+bßrd
+ = (*è
+»p
+;
+
+146 
+row
+;
+
+147 
+move
+--;
+
+151 
+row
+ = 
+BOARD_ROWS
+ - 1;„ow >= 0;„ow--)
+
+153 if(
+bßrd
+[
+BOARD_COLS
+ * 
+row
+ + 
+move
+] == -1)
+
+159 
+	}
+}
+
+161 
+	$´štBßrd_c4
+(*
+bßrd
+)
+
+163 
+row
+, 
+cŞ
+;
+
+165 
+row
+ = 0;„ow < 
+BOARD_ROWS
+;„ow++)
+
+167 
+cŞ
+ = 0; cŞ < 
+BOARD_COLS
+; col++)
+
+169 
+	`´štf
+("| %d ", 
+bßrd
+[
+BOARD_COLS
+ * 
+row
+ + 
+cŞ
+]);
+
+171 
+	`puts
+("|");
+
+172 
+	`puts
+("-----------------------------");
+
+174 
+	`puts
+(" 1 2 3 4 5 6 7\n");
+
+176 
+	}
+}
+
+186 
+	$g‘GameStus_cÚÃù4
+(
+»p_t
+ 
+»p
+)
+
+188 
+»suÉ
+, 
+side
+, 
+i
+;
+
+189 * 
+bßrd
+ = (*è
+»p
+;
+
+190 
+side
+ = -1;
+
+191 
+»suÉ
+ = 
+	`checkWš
+(
+bßrd
+, &
+side
+);
+
+196 if(
+»suÉ
+)
+
+199 if(
+side
+)
+
+203  
+MIN_WINS
+;
+
+209  
+MAX_WINS
+;
+
+214 
+i
+ = 0; i < 
+BOARD_COLS
+ * 
+BOARD_ROWS
+; i++)
+
+216 if(
+bßrd
+[
+i
+] == -1)
+
+220  
+INCOMPLETE
+;
+
+226  
+DRAW
+;
+
+227 
+	}
+}
+
+229 
+	$makeMove_cÚÃù4
+(
+»p_t
+ 
+»p
+, * 
+side
+, 
+move
+)
+
+231 * 
+bßrd
+ = (*è
+»p
+;
+
+232 
+row
+;
+
+233 
+move
+--;
+
+235 
+row
+ = 
+BOARD_ROWS
+ - 1;„ow >= 0;„ow--){
+
+236 if(
+bßrd
+[
+BOARD_COLS
+ * 
+row
+ + 
+move
+] == -1){
+
+237 
+bßrd
+[
+BOARD_COLS
+ * 
+row
+ + 
+move
+] = *
+side
+;
+
+242 *
+side
+ = 1^*side;
+
+243 
+	}
+}
+
+245 
+»p_t
+ 
+	$şÚeR•_cÚÃù4
+(
+»p_t
+ 
+Üig
+)
+
+247 * 
+bßrd_Üig
+ = 
+Üig
+;
+
+248 * 
+bßrd
+ = (*è
+	`ÿÎoc
+(
+BOARD_ROWS
+ * 
+BOARD_COLS
+, ());
+
+249 
+i
+;
+
+250 
+i
+ = 0; i < 
+BOARD_ROWS
+ * 
+BOARD_COLS
+; i++)
+
+252 
+bßrd
+[
+i
+] = 
+bßrd_Üig
+[i];
+
+255  
+bßrd
+;
+
+256 
+	}
+}
+
+261 
+	$­¶yHeuri¡ics_cÚÃù4
+ (
+heuri¡ics_t
+ 
+h
+, 
+»p_t
+ 
+»p
+,
+side
+, 
+budg‘
+)
+
+263 * 
+bßrd
+ = (*è
+»p
+;
+
+264  
+	`h
+(
+bßrd
+, 
+side
+, 
+budg‘
+);
+
+265 
+	}
+}
+
+270 
+	$g’”©eRªdomS¹_cÚÃù4
+(
+»p_t
+ 
+»p
+, * 
+side
+)
+
+272 
+¿ndom_moves
+, 
+i
+, 
+cŞ
+, 
+row
+;
+
+273 * 
+bßrd
+ = (*è
+»p
+;
+
+275 
+row
+ = 0;„ow < 
+BOARD_ROWS
+;„ow++)
+
+277 
+cŞ
+ = 0; cŞ < 
+BOARD_COLS
+; col++)
+
+279 
+bßrd
+[
+BOARD_COLS
+ * 
+row
+ + 
+cŞ
+] = -1;
+
+284 
+¿ndom_moves
+ = 
+	`¿ndom
+(è% (
+BOARD_COLS
+ * 2);
+
+288 
+i
+ = 0; i < 
+¿ndom_moves
+; i++)
+
+290 
+	`makeMove_cÚÃù4
+(
+bßrd
+, 
+side
+, 
+	`pickRªdomMove_cÚÃù4
+(board, *side));
+
+294 
+	}
+}
+
+296 
+»p_t
+ 
+	$®loÿ‹_cÚÃù4
+()
+
+298 
+row
+, 
+cŞ
+;
+
+300 * 
+bßrd
+ = (*è
+	`ÿÎoc
+(
+BOARD_ROWS
+ * 
+BOARD_COLS
+, ());
+
+302 
+row
+ = 0;„ow < 
+BOARD_ROWS
+;„ow++)
+
+304 
+cŞ
+ = 0; cŞ < 
+BOARD_COLS
+; col++)
+
+306 
+bßrd
+[
+BOARD_COLS
+ * 
+row
+ + 
+cŞ
+] = -1;
+
+314  
+bßrd
+;
+
+315 
+	}
+}
+
+317 
+	$de¡ruùR•_cÚÃù4
+(
+»p_t
+ 
+»p
+)
+
+319 * 
+bßrd
+ = 
+»p
+;
+
+320 
+	`ä“
+(
+bßrd
+);
+
+321 
+	}
+}
+
+323 
+	$cİy_cÚÃù4
+(
+»p_t
+ 
+¤c
+,„•_ˆ
+d¡
+)
+
+325 * 
+c_¤c
+ = 
+¤c
+;
+
+326 * 
+c_d¡
+ = 
+d¡
+;
+
+327 
+i
+;
+
+328 
+i
+ = 0; i < 
+BOARD_ROWS
+ * 
+BOARD_COLS
+; i++)
+
+330 
+c_d¡
+[
+i
+] = 
+c_¤c
+[i];
+
+332 
+	}
+}
+
+	@c4.h
+
+1 #iâdeà
+CONNECT4_H__
+
+
+2 
+	#CONNECT4_H__
+
+
+	)
+
+4 
+	~"commÚ.h
+"
+
+6 
+	#BOARD_ROWS
+ 6
+
+	)
+
+7 
+	#BOARD_COLS
+ 7
+
+	)
+
+9 
+g‘NumOfChd»n_cÚÃù4
+();
+
+10 
+e¡im©eT»eSize_cÚÃù4
+(
+Œ“Size
+);
+
+11 
+isV®idChd_cÚÃù4
+(
+»p_t
+ 
+»p
+, 
+side
+, 
+move
+);
+
+12 
+g‘GameStus_cÚÃù4
+(
+»p_t
+ 
+»p
+);
+
+13 
+makeMove_cÚÃù4
+(
+»p_t
+ 
+»p
+,* 
+side
+, 
+move
+);
+
+14 
+»p_t
+ 
+şÚeR•_cÚÃù4
+Ô•_ˆ
+Üig
+);
+
+15 
+­¶yHeuri¡ics_cÚÃù4
+ (
+heuri¡ics_t
+ 
+h
+,
+»p_t
+ 
+»p
+,
+side
+, 
+budg‘
+);
+
+16 
+g’”©eRªdomS¹_cÚÃù4
+(
+»p_t
+ 
+»p
+,*);
+
+17 
+»p_t
+ 
+®loÿ‹_cÚÃù4
+();
+
+18 
+de¡ruùR•_cÚÃù4
+(
+»p_t
+ 
+»p
+);
+
+19 
+cİy_cÚÃù4
+(
+»p_t
+ 
+¤c
+,»p_ˆ
+d¡
+);
+
+21 
+h3_c4
+(
+»p_t
+ 
+»p
+, 
+side
+, 
+numPÏyouts
+);
+
+22 
+pickRªdomMove_cÚÃù4
+(* 
+dummyBßrd
+, 
+side
+);
+
+24 
+checkWš
+(*
+bßrd
+, *
+side
+);
+
+25 
+checkFour
+(*
+bßrd
+, 
+a
+, 
+b
+, 
+c
+, 
+d
+);
+
+26 
+hÜizÚlCheck
+(*
+bßrd
+, *
+side
+);
+
+27 
+v”tiÿlCheck
+(*
+bßrd
+, *
+side
+);
+
+28 
+dŸgÚ®Check
+(*
+bßrd
+, *
+side
+);
+
+29 
+´štBßrd_c4
+(*
+bßrd
+);
 
 	@chess.cpp
 
@@ -1197,43 +7853,85 @@ __COMMON__H__
 
 	)
 
-30 
+28 
+	#BFB
+ 512
+
+	)
+
+31 
+	#MM_ORACLE
+ 1
+
+	)
+
+32 
+	#STS
+ 2
+
+	)
+
+33 
+	#VTS
+ 3
+
+	)
+
+36 
+	#MAB
+ 1
+
+	)
+
+37 
+	#KEEP_VMAB
+ 2
+
+	)
+
+38 
+	#DELETE_VMAB
+ 3
+
+	)
+
+41 
 	#AVERAGE
  0
 
 	)
 
-34 
+45 
 	#NUM_PITS
  6
 
-35 
+46 
 	#SHELLS_PER_PIT
  4
 
-36 
+47 
 
 	)
 
-39 
+50 
 	#max
  0
 
 	)
 
-40 
+51 
 	#mš
  1
 
 	)
 
-41 
+52 
 	#¡Üe
  0
 
 	)
 
-44 
+55 
 	#MAX_WINS
  (
 NUM_PITS
@@ -1241,67 +7939,67 @@ NUM_PITS
 SHELLS_PER_PIT
  * 2)
 
-45 
+56 
 	#MIN_WINS
  -
 MAX_WINS
 
 
-46 
+57 
 	#DRAW
  0
 
-47 
+58 
 	#INCOMPLETE
  -1
 
-48 
+59 
 
 	)
 
-50 
+61 
 	#READ
  0
 
 	)
 
-51 
+62 
 	#WRITE
  1
 
 	)
 
-52 
+63 
 	#CLOSE
  2
 
 	)
 
-55 
+66 
 	#NULL_MOVE
  -1
 
-56 
+67 
 	#EPSILON
  0.35
 
 	)
 
-60 
+71 
 timev®
  
 	tTim”
 ;
 
-61 * 
+72 * 
 	t»p_t
 ;
 
-62 
+73 
 	tuid
 ;
 
-63 (*
+74 (*
 	theuri¡ics_t
 è(
 	t»p_t
@@ -1309,7 +8007,7 @@ timev®
 	t»p
 , , );
 
-66 
+77 
 	#MISSING
 (
 x
@@ -1321,7 +8019,7 @@ x
 	)
 }
 
-67 
+78 
 	#OPTION
 (
 x
@@ -1335,7 +8033,7 @@ i
 
 	)
 
-68 
+79 
 	#CHECK
 (
 p
@@ -1351,7 +8049,7 @@ mask
 
 	)
 
-69 
+80 
 	#MIN
 (
 x
@@ -1361,7 +8059,7 @@ y
 
 	)
 
-70 
+81 
 	#MAX
 (
 x
@@ -1371,11 +8069,11 @@ y
 
 	)
 
-74 
+85 
 v”bo£
 ;
 
-78 
+89 
 š™Bßrd
 (
 bßrd
@@ -1385,7 +8083,7 @@ NUM_PITS
 side
 );
 
-79 
+90 
 g’RªdomBßrd
 (
 bßrd
@@ -1397,7 +8095,7 @@ side
 d•th
 );
 
-80 
+91 
 şÚeBßrd
 (
 ¤cBßrd
@@ -1407,7 +8105,7 @@ NUM_PITS
 d¡Bßrd
 [2][NUM_PITS+1]);
 
-81 
+92 
 »adBßrd
 (* 
 feName
@@ -1421,7 +8119,7 @@ side
 mode
 );
 
-82 
+93 
 wr™eBßrd
 (* 
 feName
@@ -1435,7 +8133,7 @@ side
 mode
 );
 
-83 
+94 
 isEqu®
 (
 bßrd1
@@ -1445,17 +8143,15 @@ NUM_PITS
 bßrd2
 [2][NUM_PITS+1]);
 
-84 
+95 
 ´štBßrd
-(
+(**
 bßrd
-[2][
-NUM_PITS
-+1], 
+, 
 side
 );
 
-87 
+98 
 g‘GameStus
 (
 bßrd
@@ -1463,7 +8159,7 @@ bßrd
 NUM_PITS
 +1]);
 
-88 
+99 
 makeMove
 (
 bßrd
@@ -1475,7 +8171,7 @@ side
 move
 );
 
-89 
+100 
 g‘NumLeg®Moves
 (
 bßrd
@@ -1485,7 +8181,7 @@ NUM_PITS
 side
 );
 
-92 
+103 
 g‘EÏp£d
 (
 Tim”
@@ -1493,17 +8189,17 @@ Tim”
 ¡¬t
 );
 
-93 
+104 
 Tim”
  
 ¡¬tTimšg
 ();
 
-94 
+105 
 dev¿nd
 ();
 
-95 
+106 
 sw­Dbls
 (* 
 v®1
@@ -1511,7 +8207,7 @@ v®1
 v®2
 );
 
-96 
+107 
 sw­PŒs
 (** 
 v®1
@@ -1519,7 +8215,7 @@ v®1
 v®2
 );
 
-97 
+108 
 sw­IÁs
 (* 
 v®1
@@ -1527,7 +8223,7 @@ v®1
 v®2
 );
 
-100 
+111 
 makeUCTMove
 (
 »p_t
@@ -1553,7 +8249,7 @@ numBe¡Moves
 backupOp
 );
 
-101 
+112 
 g’UCTT»e
 (
 »p_t
@@ -1573,11 +8269,11 @@ heuri¡ic
 budg‘
 );
 
-102 
+113 
 ´štUùSts
 ();
 
-103 
+114 
 makeMšmaxOnUCTMove
 (
 »p_t
@@ -1601,7 +8297,7 @@ be¡Moves
 numBe¡Moves
 );
 
-107 
+117 
 makeMMUCTMove
 (
 »p_t
@@ -1621,7 +8317,7 @@ h
 budg‘
 ,
 
-108 * 
+118 * 
 be¡Moves
 , * 
 numBe¡Moves
@@ -1639,15 +8335,15 @@ uid
 howMªyT¿ps
 );
 
-109 
+119 
 ´štMmUùSts
 ();
 
-110 
+120 
 »£tT¿pCouÁ”
 ();
 
-114 
+124 
 makeMšmaxMove
 (
 »p_t
@@ -1664,8 +8360,6 @@ heuri¡ic
 , 
 budg‘
 , 
-´unšg
-, 
 ¿ndomT›B»aks
 , 
 noisyMM
@@ -1677,7 +8371,7 @@ numBe¡Moves
 ‹rmP”ûÁage
 ) ;
 
-115 
+125 
 g‘AÍhaB‘aT»eSize
 (
 »p_t
@@ -1689,7 +8383,7 @@ heuri¡ics_t
 heuri¡ic
 , );
 
-116 
+126 
 g’AÍhaB‘aT»e
 (
 »p_t
@@ -1701,11 +8395,11 @@ heuri¡ics_t
 heuri¡ic
 , );
 
-126 
+136 
 £tNoi£P¬ams
 (, );
 
-128 
+138 
 pickRªdomMove
 (
 bßrd
@@ -1715,7 +8409,7 @@ NUM_PITS
 side
 );
 
-129 
+139 
 makeRªdomMove
 (
 bßrd
@@ -1723,6 +8417,44 @@ bßrd
 NUM_PITS
 +1], *
 side
+);
+
+142 
+makeBFBMove
+(
+»p_t
+ 
+»p
+, *
+side
+, 
+tsId
+, 
+numI‹¿tiÚs
+, 
+C
+, 
+CT
+, 
+heuri¡ics_t
+ 
+heuri¡ic
+, 
+budg‘
+, * 
+be¡Moves
+, * 
+numBe¡Moves
+, 
+backupOp
+, 
+th»shŞd
+, 
+pŞicy
+, 
+bŞzmªCÚ¡ªt
+, 
+´obWeight
 );
 
 	@domain.c
@@ -1744,10 +8476,14 @@ side
 "
 
 5 
-	~"check”s.h
+	~"zİ.h
 "
 
-8 
+6 
+	~"c4.h
+"
+
+9 
 DOM
 * 
 	$š™_domaš
@@ -1757,7 +8493,7 @@ DOM_NAME
 Çme
 ){
 
-9 
+10 
 DOM
 * 
 »tV®
@@ -1765,15 +8501,175 @@ DOM
 	`m®loc
 ((DOM));
 
-10 
+11 
 Çme
 ){
 
-11 
+12 
+C4
+:
+
+13 
+»tV®
+->
+dom_Çme
+=
+C4
+;
+
+14 
+»tV®
+->
+g‘NumOfChd»n
+ = 
+g‘NumOfChd»n_cÚÃù4
+;
+
+15 
+»tV®
+->
+e¡im©eT»eSize
+ = 
+e¡im©eT»eSize_cÚÃù4
+;
+
+16 
+»tV®
+->
+isV®idChd
+ = 
+isV®idChd_cÚÃù4
+;
+
+17 
+»tV®
+->
+­¶yHeuri¡ics
+ = 
+­¶yHeuri¡ics_cÚÃù4
+;
+
+18 
+»tV®
+->
+şÚeR•
+ = 
+şÚeR•_cÚÃù4
+;
+
+19 
+»tV®
+->
+makeMove
+ = 
+makeMove_cÚÃù4
+;
+
+20 
+»tV®
+->
+g‘GameStus
+ = 
+g‘GameStus_cÚÃù4
+;
+
+21 
+»tV®
+->
+de¡ruùR•
+ = 
+de¡ruùR•_cÚÃù4
+;
+
+22 
+»tV®
+->
+®loÿ‹
+ = 
+®loÿ‹_cÚÃù4
+;
+
+23 
+»tV®
+->
+g’”©eRªdomS¹
+ = 
+g’”©eRªdomS¹_cÚÃù4
+;
+
+24 
+»tV®
+->
+cİy
+ = 
+cİy_cÚÃù4
+;
+
+25 
+»tV®
+->
+hFunùiÚs
+.
+h1
+ = 
+h3_c4
+;
+
+26 
+»tV®
+->
+hFunùiÚs
+.
+h2
+ = 
+h3_c4
+;
+
+27 
+»tV®
+->
+hFunùiÚs
+.
+h3
+ = 
+h3_c4
+;
+
+28 
+»tV®
+->
+hFunùiÚs
+.
+h4
+ = 
+h3_c4
+;
+
+29 
+»tV®
+->
+hFunùiÚs
+.
+h5
+ = 
+h3_c4
+;
+
+30 
+»tV®
+->
+hFunùiÚs
+.
+h6
+ = 
+h3_c4
+;
+
+32 
 MANCALA
 :
 
-12 
+33 
 »tV®
 ->
 dom_Çme
@@ -1781,7 +8677,7 @@ dom_Çme
 MANCALA
 ;
 
-13 
+34 
 »tV®
 ->
 g‘NumOfChd»n
@@ -1789,7 +8685,7 @@ g‘NumOfChd»n
 g‘NumOfChd»n_mªÿÏ
 ;
 
-14 
+35 
 »tV®
 ->
 e¡im©eT»eSize
@@ -1797,7 +8693,7 @@ e¡im©eT»eSize
 e¡im©eT»eSize_mªÿÏ
 ;
 
-15 
+36 
 »tV®
 ->
 isV®idChd
@@ -1805,7 +8701,7 @@ isV®idChd
 isV®idChd_mªÿÏ
 ;
 
-16 
+37 
 »tV®
 ->
 ­¶yHeuri¡ics
@@ -1813,7 +8709,7 @@ isV®idChd_mªÿÏ
 ­¶yHeuri¡ics_mªÿÏ
 ;
 
-17 
+38 
 »tV®
 ->
 şÚeR•
@@ -1821,7 +8717,7 @@ isV®idChd_mªÿÏ
 şÚeR•_mªÿÏ
 ;
 
-18 
+39 
 »tV®
 ->
 makeMove
@@ -1829,7 +8725,7 @@ makeMove
 makeMove_mªÿÏ
 ;
 
-19 
+40 
 »tV®
 ->
 g‘GameStus
@@ -1837,7 +8733,7 @@ g‘GameStus
 g‘GameStus_mªÿÏ
 ;
 
-20 
+41 
 »tV®
 ->
 de¡ruùR•
@@ -1845,7 +8741,7 @@ de¡ruùR•
 de¡ruùR•_mªÿÏ
 ;
 
-21 
+42 
 »tV®
 ->
 ®loÿ‹
@@ -1853,7 +8749,7 @@ de¡ruùR•_mªÿÏ
 ®loÿ‹_mªÿÏ
 ;
 
-22 
+43 
 »tV®
 ->
 g’”©eRªdomS¹
@@ -1861,7 +8757,7 @@ g’”©eRªdomS¹
 g’”©eRªdomS¹_mªÿÏ
 ;
 
-23 
+44 
 »tV®
 ->
 cİy
@@ -1869,7 +8765,7 @@ cİy
 cİy_mªÿÏ
 ;
 
-24 
+45 
 »tV®
 ->
 hFunùiÚs
@@ -1877,7 +8773,7 @@ hFunùiÚs
 h1
  = h1;
 
-25 
+46 
 »tV®
 ->
 hFunùiÚs
@@ -1885,7 +8781,7 @@ hFunùiÚs
 h2
  = h2;
 
-26 
+47 
 »tV®
 ->
 hFunùiÚs
@@ -1893,7 +8789,7 @@ hFunùiÚs
 h3
  = h3;
 
-27 
+48 
 »tV®
 ->
 hFunùiÚs
@@ -1901,7 +8797,7 @@ hFunùiÚs
 h4
  = h4;
 
-28 
+49 
 »tV®
 ->
 hFunùiÚs
@@ -1909,7 +8805,7 @@ hFunùiÚs
 h5
  = h5;
 
-29 
+50 
 »tV®
 ->
 hFunùiÚs
@@ -1917,11 +8813,11 @@ hFunùiÚs
 h6
  = h6;
 
-31 
+52 
 SYNTH
 :
 
-32 
+53 
 »tV®
 ->
 dom_Çme
@@ -1929,7 +8825,7 @@ dom_Çme
 SYNTH
 ;
 
-33 
+54 
 »tV®
 ->
 g‘NumOfChd»n
@@ -1937,7 +8833,7 @@ g‘NumOfChd»n
 g‘NumOfChd»n_syÁh
 ;
 
-34 
+55 
 »tV®
 ->
 e¡im©eT»eSize
@@ -1945,7 +8841,7 @@ e¡im©eT»eSize
 e¡im©eT»eSize_syÁh
 ;
 
-35 
+56 
 »tV®
 ->
 isV®idChd
@@ -1953,7 +8849,7 @@ isV®idChd
 isV®idChd_syÁh
 ;
 
-36 
+57 
 »tV®
 ->
 ­¶yHeuri¡ics
@@ -1961,7 +8857,7 @@ isV®idChd_syÁh
 ­¶yHeuri¡ics_syÁh
 ;
 
-37 
+58 
 »tV®
 ->
 şÚeR•
@@ -1969,7 +8865,7 @@ isV®idChd_syÁh
 şÚeR•_syÁh
 ;
 
-38 
+59 
 »tV®
 ->
 makeMove
@@ -1977,7 +8873,7 @@ makeMove
 makeMove_syÁh
 ;
 
-39 
+60 
 »tV®
 ->
 g‘GameStus
@@ -1985,7 +8881,7 @@ g‘GameStus
 g‘GameStus_syÁh
 ;
 
-40 
+61 
 »tV®
 ->
 de¡ruùR•
@@ -1993,7 +8889,7 @@ de¡ruùR•
 de¡ruùR•_syÁh
 ;
 
-41 
+62 
 »tV®
 ->
 ®loÿ‹
@@ -2001,7 +8897,7 @@ de¡ruùR•_syÁh
 ®loÿ‹_syÁh
 ;
 
-42 
+63 
 »tV®
 ->
 g’”©eRªdomS¹
@@ -2009,7 +8905,7 @@ g’”©eRªdomS¹
 g’”©eRªdomS¹_syÁh
 ;
 
-43 
+64 
 »tV®
 ->
 cİy
@@ -2017,7 +8913,7 @@ cİy
 cİy_syÁh
 ;
 
-44 
+65 
 »tV®
 ->
 hFunùiÚs
@@ -2025,7 +8921,7 @@ hFunùiÚs
 h1
  = h1;
 
-45 
+66 
 »tV®
 ->
 hFunùiÚs
@@ -2033,7 +8929,7 @@ hFunùiÚs
 h2
  = h2;
 
-46 
+67 
 »tV®
 ->
 hFunùiÚs
@@ -2041,7 +8937,7 @@ hFunùiÚs
 h3
  = h3;
 
-47 
+68 
 »tV®
 ->
 hFunùiÚs
@@ -2049,7 +8945,7 @@ hFunùiÚs
 h4
  = h4;
 
-48 
+69 
 »tV®
 ->
 hFunùiÚs
@@ -2057,7 +8953,7 @@ hFunùiÚs
 h5
  = h5;
 
-49 
+70 
 »tV®
 ->
 hFunùiÚs
@@ -2065,15 +8961,15 @@ hFunùiÚs
 h6
  = h6;
 
-51 
+72 
 CHESS
 :
 
-65 
+86 
 ZOP
 :
 
-66 
+87 
 »tV®
 ->
 dom_Çme
@@ -2081,7 +8977,7 @@ dom_Çme
 ZOP
  ;
 
-67 
+88 
 »tV®
 ->
 g‘NumOfChd»n
@@ -2089,7 +8985,7 @@ g‘NumOfChd»n
 g‘NumOfChd»n_zİ
 ;
 
-68 
+89 
 »tV®
 ->
 e¡im©eT»eSize
@@ -2097,7 +8993,7 @@ e¡im©eT»eSize
 e¡im©edT»eSize_zİ
 ;
 
-69 
+90 
 »tV®
 ->
 isV®idChd
@@ -2105,7 +9001,7 @@ isV®idChd
 isV®idChd_zİ
 ;
 
-70 
+91 
 »tV®
 ->
 ­¶yHeuri¡ics
@@ -2113,7 +9009,7 @@ isV®idChd_zİ
 ­¶yHeuri¡ics_zİ
 ;
 
-71 
+92 
 »tV®
 ->
 şÚeR•
@@ -2121,7 +9017,7 @@ isV®idChd_zİ
 şÚeR•_zİ
 ;
 
-72 
+93 
 »tV®
 ->
 makeMove
@@ -2129,7 +9025,7 @@ makeMove
 makeMove_zİ
 ;
 
-73 
+94 
 »tV®
 ->
 g‘GameStus
@@ -2137,7 +9033,7 @@ g‘GameStus
 g‘GameStus_zİ
 ;
 
-74 
+95 
 »tV®
 ->
 de¡ruùR•
@@ -2145,7 +9041,7 @@ de¡ruùR•
 de¡ruùR•_zİ
 ;
 
-75 
+96 
 »tV®
 ->
 ®loÿ‹
@@ -2153,7 +9049,7 @@ de¡ruùR•_zİ
 ®loÿ‹_zİ
 ;
 
-76 
+97 
 »tV®
 ->
 g’”©eRªdomS¹
@@ -2161,7 +9057,7 @@ g’”©eRªdomS¹
 g’”©eRªdomS¹_zİ
 ;
 
-77 
+98 
 »tV®
 ->
 cİy
@@ -2169,59 +9065,71 @@ cİy
 cİy_zİ
 ;
 
-78 
+99 
 »tV®
 ->
 hFunùiÚs
 .
 h1
- = h1;
+ = 
+h1_zİ
+;
 
-79 
+100 
 »tV®
 ->
 hFunùiÚs
 .
 h2
- = h2;
+ = 
+h1_zİ
+;
 
-80 
+101 
 »tV®
 ->
 hFunùiÚs
 .
 h3
- = h3;
+ = 
+h1_zİ
+;
 
-81 
+102 
 »tV®
 ->
 hFunùiÚs
 .
 h4
- = h4;
+ = 
+h1_zİ
+;
 
-82 
+103 
 »tV®
 ->
 hFunùiÚs
 .
 h5
- = h5;
+ = 
+h1_zİ
+;
 
-83 
+104 
 »tV®
 ->
 hFunùiÚs
 .
 h6
- = h6;
+ = 
+h1_zİ
+;
 
-88  
+109  
 »tV®
 ;
 
-89 
+110 
 	}
 }
 
@@ -2329,7 +9237,7 @@ DOMAIN_H_INCLUDED
 	t»p_t
  
 	t¡©e
-, 
+, *
 	tside
 );
 
@@ -2351,7 +9259,9 @@ SYNTH
 CHESS
  =2, 
 ZOP
-=3} 
+=3, 
+C4
+=4} 
 	tDOM_NAME
 ;
 
@@ -2495,53 +9405,57 @@ dom_Çme
 	~"syÁh.h
 "
 
-4 
+4 
+	~<¡ršg.h
+>
+
+5 
 	#PRINT_CSV
  
-çl£
+Œue
 
 
 	)
 
-5 
+6 
 	gv”bo£
  = 
 çl£
 ;
 
-6 
+7 
 	gisToPrštToDÙ
  = 
 çl£
 ;
 
-7 
+8 
 	gisDÙLab–
  = 
 çl£
 ;
 
-8 
+9 
 	gdebuglog
  = 
-Œue
+çl£
 ;
 
-9 
+10 
 	glog_this_™”©iÚ
 =-1;
 
-10 
+11 
 	glogI‹¿tiÚ
 =0;
 
-11 
+12 
 DOM
 * 
 	g_DOM
 ;
 
-13 
+14 
 isSu³r
 (
 fœ¡Outcome
@@ -2549,11 +9463,19 @@ fœ¡Outcome
 £cÚdOutcome
 );
 
-14 
+15 
 ´štMes§ge
 ();
 
-16 
+16 * 
+ü—‹AlgÜ™hmDeütiÚ
+(
+¶ay”
+[],
+¶ay”_side
+);
+
+22 
 	$maš
 (
 ¬gc
@@ -2561,7 +9483,7 @@ fœ¡Outcome
 ¬gv
 []) {
 
-18 
+23 
 maxWšs
 =0,
 d¿ws
@@ -2577,189 +9499,193 @@ mšSu³r
 §me
 =0;
 
-19 
+24 
 i
 , 
 j
 ;
 
-20 
+25 
 ¶ayedGames
 =0;
 
-21 
+26 
 side
  = 
 max
 ;
 
-22 
+27 
 roÙSide
 ;
 
-23 
+28 
 ÜigSide
 ;
 
-24 
+29 
 moveMade
 ;
 
-25 
+30 
 outcome
 ;
 
-26 
+31 
 moveCouÁ
  = 0;
 
-27 
+32 
 Tim”
  
 ¡¬t
 ;
 
-28 
+33 
 numBe¡Moves
 ;
 
-31 
+36 
 ¶ay”
 [2];
 
-32 
+37 
 d•th
 [2] = {8, 8};
 
-33 
-´unšg
-[2] = {
-Œue
-,rue};
-
-34 
+38 
 noisyMM
  = 
 çl£
 ;
 
-35 
+39 
 ‹rmP”ûÁage
 ;
 
-36 
+40 
 ¿ndomT›B»aks
  = 
 çl£
 ;
 
-37 
+41 
 numI‹¿tiÚs
 [2] = {5000, 5000};
 
-38 
+42 
 C
 [2] = {2.5, 2.5};
 
-39 
+43 
+CT
+[2] = {2.5, 2.5};
+
+44 
 budg‘
 [2] = {1, 1};
 
-40 
+45 
 usšgRªdomS¹Bßrd
  = 
 Œue
 ;
 
-41 
+46 
 bßrdFeName
 [1024];
 
-42 
+47 
 numGames
  = 1;
 
-43 
+48 
 £ed
 ;
 
-44 
+49 
 noisyHeuri¡ic
  = 
 çl£
 ;
 
-45 
+50 
 noi£Mag
  = 0;
 
-46 
+51 
 noi£Prob
  = 0.0;
 
-47 
+52 
 backupOp
 [2] = {
 MINMAX
 , MINMAX};
 
-48 
+53 
 mmT»eSize
 [2] = {3, 3};
 
-51 cÚ¡ * 
+54 
+ty³_sy¡em
+[2] = {
+STS
+, STS};
+
+55 
+th»shŞd
+[2] = {100, 100};
+
+56 
+pŞicy
+[2] = {
+KEEP_VMAB
+, KEEP_VMAB};
+
+57 
+time
+[2] = {0.0, 0.0};
+
+58 
+tuºs
+[2] = {0, 0};
+
+60 cÚ¡ * 
 ¶ay”SŒšgs
 [] = {"max", "min"};
 
-52 cÚ¡ * 
+61 cÚ¡ * 
 hSŒšgs
 [] = {"heuristic 1", "heuristic 2", "playouts", "random†eaf values", "coarsened h1", "finer…layouts"};
 
-53 
+62 
 heurSŒšg
 [][30] = {"heuristic 1", "heuristic 1"};
 
-54 cÚ¡ * 
+63 cÚ¡ * 
 backupOpSŒšgs
 [] = {"average", "minimax"};
 
-57 ià(
-¬gc
- < 2) {
+64 
+bŞzmªCÚ¡ªt
+ = -2.44, 
+´obWeight
+ = 0.5;
 
-58 
+66 ià(
+¬gc
+ < 3) {
+
+67 
 	`´štMes§ge
 ();
 
-64 
+73 
 £ed
  = ()
 	`dev¿nd
 ();
-
-68 
-i
- = 1; i <= 2; i++) {
-
-69 
-¶ay”
-[
-i
--1] = 
-UCT
-;
-
-73 
-¶ay”
-[0] = 
-UCT
-;
-
-74 
-¶ay”
-[1] = 
-MINMAX
-;
 
 76 
 dom_Çme
@@ -2806,10 +9732,18 @@ ZOP
 );
 
 92 
+_DOM
+ = 
+	`š™_domaš
+(
+C4
+);
+
+95 
 	`puts
 ("Unrecognized domain description.");
 
-95 
+98 
 be¡Moves
 [
 _DOM
@@ -2817,7 +9751,7 @@ _DOM
 	`g‘NumOfChd»n
 ()];
 
-96 
+99 
 heuri¡ics_t
  
 heuri¡ic
@@ -2829,17 +9763,173 @@ hFunùiÚs
 h1
 , _DOM->hFunctions.h1};
 
-102 
+103 
 i
- = 3; i < 
+ = 1; i <= 2; i++) {
+
+104 ià(
+	`¡rcmp
+(
+¬gv
+[
+i
+ + 1], "m") == 0)
+
+105 
+¶ay”
+[
+i
+-1] = 
+MINMAX
+;
+
+107 ià(
+	`¡rcmp
+(
+¬gv
+[
+i
+ + 1], "mmuct") == 0)
+
+108 
+¶ay”
+[
+i
+-1] = 
+MMUCT
+;
+
+109 ià(
+	`¡rcmp
+(
+¬gv
+[
+i
+ + 1], "u") == 0)
+
+110 
+¶ay”
+[
+i
+-1] = 
+UCT
+;
+
+111 ià(
+	`¡rcmp
+(
+¬gv
+[
+i
+ + 1], "r") == 0)
+
+112 
+¶ay”
+[
+i
+-1] = 
+RANDOM
+;
+
+113 ià(
+	`¡rcmp
+(
+¬gv
+[
+i
+ + 1], "mu") == 0)
+
+114 
+¶ay”
+[
+i
+-1] = 
+MINMAX_ON_UCT
+;
+
+115 ià(
+	`¡rcmp
+(
+¬gv
+[
+i
+ + 1], "b") == 0)
+
+116 
+¶ay”
+[
+i
+-1] = 
+BFB
+;
+
+118 
+	`´štf
+("UÄecognized‡lgÜ™hm choiû %s", 
+¬gv
+[
+i
+ + 1]);
+
+127 
+i
+ = 4; i < 
 ¬gc
 ; i++) {
 
-103 
+128 
+	`OPTION
+("-bz") {
+
+129 ià(++
+i
+ < 
+¬gc
+)
+
+130 
+bŞzmªCÚ¡ªt
+ = 
+	`©of
+(
+¬gv
+[
+i
+]);
+
+132 
+	`MISSING
+("-bz")
+
+134 }
+	`OPTION
+("-pw") {
+
+135 ià(++
+i
+ < 
+¬gc
+)
+
+136 
+´obWeight
+ = 
+	`©of
+(
+¬gv
+[
+i
+]);
+
+138 
+	`MISSING
+("-pw")
+
+141 } 
 	`OPTION
 ("-h1") {
 
-104 
+142 
 	`CHECK
 (
 max
@@ -2851,15 +9941,25 @@ UCT
 MINMAX_ON_UCT
  | 
 MMUCT
+ | 
+BFB
 ), "-h1")
 
-105 ià(++
+143 ià(++
 i
  < 
 ¬gc
 ) {
 
-106 
+144 
+	`©oi
+(
+¬gv
+[
+i
+])) {
+
+146 
 heuri¡ic
 [
 max
@@ -2871,7 +9971,67 @@ hFunùiÚs
 h1
 ;
 
-107 
+149 
+heuri¡ic
+[
+max
+] = 
+_DOM
+->
+hFunùiÚs
+.
+h2
+;
+
+152 
+heuri¡ic
+[
+max
+] = 
+_DOM
+->
+hFunùiÚs
+.
+h3
+;
+
+155 
+heuri¡ic
+[
+max
+] = 
+_DOM
+->
+hFunùiÚs
+.
+h4
+;
+
+158 
+heuri¡ic
+[
+max
+] = 
+_DOM
+->
+hFunùiÚs
+.
+h5
+;
+
+161 
+heuri¡ic
+[
+max
+] = 
+_DOM
+->
+hFunùiÚs
+.
+h6
+;
+
+165 
 	`¡rıy
 (
 heurSŒšg
@@ -2887,15 +10047,15 @@ hSŒšgs
 i
 ])-1]);
 
-110 
+168 
 	`MISSING
 ("h1")
 
-112 
+170 
 	`OPTION
 ("-h2") {
 
-113 
+171 
 	`CHECK
 (
 mš
@@ -2907,15 +10067,25 @@ UCT
 MINMAX_ON_UCT
  | 
 MMUCT
+ | 
+BFB
 ), "-h2")
 
-114 ià(++
+172 ià(++
 i
  < 
 ¬gc
 ) {
 
-115 
+173 
+	`©oi
+(
+¬gv
+[
+i
+])) {
+
+175 
 heuri¡ic
 [
 mš
@@ -2927,7 +10097,67 @@ hFunùiÚs
 h1
 ;
 
-116 
+178 
+heuri¡ic
+[
+mš
+] = 
+_DOM
+->
+hFunùiÚs
+.
+h2
+;
+
+181 
+heuri¡ic
+[
+mš
+] = 
+_DOM
+->
+hFunùiÚs
+.
+h3
+;
+
+184 
+heuri¡ic
+[
+mš
+] = 
+_DOM
+->
+hFunùiÚs
+.
+h4
+;
+
+187 
+heuri¡ic
+[
+mš
+] = 
+_DOM
+->
+hFunùiÚs
+.
+h5
+;
+
+190 
+heuri¡ic
+[
+mš
+] = 
+_DOM
+->
+hFunùiÚs
+.
+h6
+;
+
+193 
 	`¡rıy
 (
 heurSŒšg
@@ -2943,15 +10173,219 @@ hSŒšgs
 i
 ])-1]);
 
-119 
+196 
 	`MISSING
 ("h2")
 
-122 
+199 
+	`OPTION
+("-ts1") {
+
+200 
+	`CHECK
+(
+max
+, 
+BFB
+, "-ts1")
+
+201 ià(++
+i
+ < 
+¬gc
+)
+
+202 
+ty³_sy¡em
+[
+max
+] = 
+	`©oi
+(
+¬gv
+[
+i
+]);
+
+204 
+	`MISSING
+("ts1")
+
+206 
+	`OPTION
+("-ts2") {
+
+207 
+	`CHECK
+(
+mš
+, 
+BFB
+, "-ts2")
+
+208 ià(++
+i
+ < 
+¬gc
+)
+
+209 
+ty³_sy¡em
+[
+mš
+] = 
+	`©oi
+(
+¬gv
+[
+i
+]);
+
+211 
+	`MISSING
+("ts2")
+
+213 
+	`OPTION
+("-t1") {
+
+214 
+	`CHECK
+(
+max
+, 
+BFB
+, "-t1")
+
+215 ià(++
+i
+ < 
+¬gc
+)
+
+216 
+th»shŞd
+[
+max
+] = 
+	`©oi
+(
+¬gv
+[
+i
+]);
+
+218 
+	`MISSING
+("t1")
+
+220 
+	`OPTION
+("-t2") {
+
+221 
+	`CHECK
+(
+mš
+, 
+BFB
+, "-t2")
+
+222 ià(++
+i
+ < 
+¬gc
+)
+
+223 
+th»shŞd
+[
+mš
+] = 
+	`©oi
+(
+¬gv
+[
+i
+]);
+
+225 
+	`MISSING
+("t2")
+
+227 
+	`OPTION
+("-p1") {
+
+228 
+	`CHECK
+(
+max
+, 
+BFB
+, "-p1")
+
+229 ià(++
+i
+ < 
+¬gc
+)
+
+230 
+pŞicy
+[
+max
+] = 
+	`©oi
+(
+¬gv
+[
+i
+]);
+
+232 
+	`MISSING
+("p1")
+
+234 
+	`OPTION
+("-p2") {
+
+235 
+	`CHECK
+(
+mš
+, 
+BFB
+, "-p2")
+
+236 ià(++
+i
+ < 
+¬gc
+)
+
+237 
+pŞicy
+[
+mš
+] = 
+	`©oi
+(
+¬gv
+[
+i
+]);
+
+239 
+	`MISSING
+("p2")
+
+243 
 	`OPTION
 ("-c1") {
 
-123 
+244 
 	`CHECK
 (
 max
@@ -2961,15 +10395,17 @@ UCT
 MINMAX_ON_UCT
  | 
 MMUCT
+ | 
+BFB
 ), "-c1")
 
-124 ià(++
+245 ià(++
 i
  < 
 ¬gc
 )
 
-125 
+246 
 C
 [
 max
@@ -2981,15 +10417,15 @@ max
 i
 ]);
 
-127 
+248 
 	`MISSING
 ("c1")
 
-129 
+250 
 	`OPTION
 ("-c2") {
 
-130 
+251 
 	`CHECK
 (
 mš
@@ -2999,15 +10435,17 @@ UCT
 MINMAX_ON_UCT
  | 
 MMUCT
+ | 
+BFB
 ), "-c2")
 
-131 ià(++
+252 ià(++
 i
  < 
 ¬gc
 )
 
-132 
+253 
 C
 [
 mš
@@ -3019,15 +10457,83 @@ mš
 i
 ]);
 
-134 
+255 
 	`MISSING
 ("c2")
 
-136 
+258 
+	`OPTION
+("-ct1") {
+
+259 
+	`CHECK
+(
+max
+, 
+BFB
+, "-ct1")
+
+260 ià(++
+i
+ < 
+¬gc
+)
+
+261 
+CT
+[
+max
+] = 
+	`©of
+(
+¬gv
+[
+i
+]);
+
+263 
+	`MISSING
+("ct1")
+
+265 
+	`OPTION
+("-ct2") {
+
+266 
+	`CHECK
+(
+mš
+, 
+BFB
+, "-ct2")
+
+267 ià(++
+i
+ < 
+¬gc
+)
+
+268 
+CT
+[
+mš
+] = 
+	`©of
+(
+¬gv
+[
+i
+]);
+
+270 
+	`MISSING
+("ct2")
+
+272 
 	`OPTION
 ("-i1") {
 
-137 
+273 
 	`CHECK
 (
 max
@@ -3037,15 +10543,17 @@ UCT
 MINMAX_ON_UCT
 | 
 MMUCT
+ | 
+BFB
 ), "-i1")
 
-138 ià(++
+274 ià(++
 i
  < 
 ¬gc
 )
 
-139 
+275 
 numI‹¿tiÚs
 [
 max
@@ -3057,15 +10565,15 @@ max
 i
 ]);
 
-141 
+277 
 	`MISSING
 ("i1")
 
-143 
+279 
 	`OPTION
 ("-i2") {
 
-144 
+280 
 	`CHECK
 (
 mš
@@ -3075,15 +10583,17 @@ UCT
 MINMAX_ON_UCT
  | 
 MMUCT
+ | 
+BFB
 ), "-i2")
 
-145 ià(++
+281 ià(++
 i
  < 
 ¬gc
 )
 
-146 
+282 
 numI‹¿tiÚs
 [
 mš
@@ -3095,15 +10605,83 @@ mš
 i
 ]);
 
-148 
+284 
 	`MISSING
 ("i2")
 
-150 
+287 
+	`OPTION
+("-d1") {
+
+288 
+	`CHECK
+(
+max
+, 
+MINMAX
+, "-d1")
+
+289 ià(++
+i
+ < 
+¬gc
+)
+
+290 
+d•th
+[
+max
+] = 
+	`©oi
+(
+¬gv
+[
+i
+]);
+
+292 
+	`MISSING
+("d1")
+
+294 
+	`OPTION
+("-d2") {
+
+295 
+	`CHECK
+(
+mš
+, 
+MINMAX
+, "-d2")
+
+296 ià(++
+i
+ < 
+¬gc
+)
+
+297 
+d•th
+[
+mš
+] = 
+	`©oi
+(
+¬gv
+[
+i
+]);
+
+299 
+	`MISSING
+("d2")
+
+303 
 	`OPTION
 ("-b1") {
 
-151 
+304 
 	`CHECK
 (
 max
@@ -3115,13 +10693,13 @@ UCT
 MINMAX_ON_UCT
 ), "-b1")
 
-152 ià(++
+305 ià(++
 i
  < 
 ¬gc
 )
 
-153 
+306 
 budg‘
 [
 max
@@ -3133,15 +10711,15 @@ max
 i
 ]);
 
-155 
+308 
 	`MISSING
 ("b1")
 
-157 
+310 
 	`OPTION
 ("-b2") {
 
-158 
+311 
 	`CHECK
 (
 mš
@@ -3153,13 +10731,13 @@ UCT
 MINMAX_ON_UCT
 ), "-b2")
 
-159 ià(++
+312 ià(++
 i
  < 
 ¬gc
 )
 
-160 
+313 
 budg‘
 [
 mš
@@ -3171,29 +10749,31 @@ mš
 i
 ]);
 
-162 
+315 
 	`MISSING
 ("b2")
 
-164 
+317 
 	`OPTION
 ("-a1") {
 
-165 
+318 
 	`CHECK
 (
 max
-, 
+, (
 UCT
-, "-a1")
+ | 
+BFB
+), "-a1")
 
-166 ià(++
+319 ià(++
 i
  < 
 ¬gc
 )
 
-167 
+320 
 backupOp
 [
 max
@@ -3205,29 +10785,31 @@ max
 i
 ]) - 1;
 
-169 
+322 
 	`MISSING
 ("a1")
 
-171 
+324 
 	`OPTION
 ("-a2") {
 
-172 
+325 
 	`CHECK
 (
 mš
-, 
+, (
 UCT
-, "-a2")
+ | 
+BFB
+), "-a2")
 
-173 ià(++
+326 ià(++
 i
  < 
 ¬gc
 )
 
-174 
+327 
 backupOp
 [
 mš
@@ -3239,31 +10821,31 @@ mš
 i
 ]) - 1;
 
-176 
+329 
 	`MISSING
 ("a2")
 
-178 
+331 
 	`OPTION
 ("-v") {
 
-179 
+332 
 v”bo£
  = 
 Œue
 ;
 
-182 
+335 
 	`OPTION
 ("-l") {
 
-183 ià(++
+336 ià(++
 i
  < 
 ¬gc
 ) {
 
-184 
+337 
 	`¡rıy
 (
 bßrdFeName
@@ -3273,27 +10855,27 @@ bßrdFeName
 i
 ]);
 
-185 
+338 
 usšgRªdomS¹Bßrd
  = 
 çl£
 ;
 
-188 
+341 
 	`MISSING
 ("-l")
 
-191 
+344 
 	`OPTION
 ("-s") {
 
-192 ià(++
+345 ià(++
 i
  < 
 ¬gc
 )
 
-193 
+346 
 £ed
  = ()
 	`©oi
@@ -3303,21 +10885,21 @@ i
 i
 ]);
 
-195 
+348 
 	`MISSING
 ("s")
 
-197 
+350 
 	`OPTION
 ("-g") {
 
-198 ià(++
+351 ià(++
 i
  < 
 ¬gc
 )
 
-199 
+352 
 numGames
  = 
 	`©oi
@@ -3327,21 +10909,21 @@ numGames
 i
 ]);
 
-201 
+354 
 	`MISSING
 ("g")
 
-203 
+356 
 	`OPTION
 ("-nh") {
 
-204 ià(++
+357 ià(++
 i
  < 
 ¬gc
 ) {
 
-205 
+358 
 noi£Mag
  = 
 	`©oi
@@ -3351,13 +10933,13 @@ noi£Mag
 i
 ]);
 
-206 ià(++
+359 ià(++
 i
  < 
 ¬gc
 )
 
-207 
+360 
 noi£Prob
  = 
 	`©of
@@ -3367,21 +10949,21 @@ noi£Prob
 i
 ]);
 
-209 
+362 
 	`MISSING
 ("nh")
 
-210 
+363 
 noisyHeuri¡ic
  = 
 Œue
 ;
 
-213 
+366 
 	`MISSING
 ("nh")
 
-216 
+369 
 	`´štf
 ("\nUÄecognized o±iÚ %s\n", 
 ¬gv
@@ -3389,27 +10971,27 @@ noisyHeuri¡ic
 i
 ]);
 
-217 
+370 
 	`maš
 (0, 
 NULL
 );
 
-224 ià((!
+377 ià((!
 usšgRªdomS¹Bßrd
 è&& (
 numGames
  != 1)) {
 
-225 
+378 
 	`puts
 ("Ambiguous…arameters -- only use -l or -g flag,‚ot both");
 
-226 
+379 
 	`ex™
 (1);
 
-231 iàĞ((
+384 iàĞ((
 numI‹¿tiÚs
 [
 max
@@ -3425,7 +11007,7 @@ mš
 MINMAX
 ))
 
-232 || ((
+385 || ((
 numI‹¿tiÚs
 [
 mš
@@ -3441,15 +11023,15 @@ max
 MINMAX
 ))) {
 
-233 
+386 
 	`puts
 ("Error -- cannot match compute„esources of UCT…layerohat of‡‚on-MM…layer");
 
-234 
+387 
 	`ex™
 (1);
 
-238 ià((
+391 ià((
 noisyHeuri¡ic
 è&& (
 heuri¡ic
@@ -3465,31 +11047,31 @@ h1
 mš
 ] != _DOM->hFunctions.h1)) {
 
-239 
+392 
 	`puts
 ("Error -- you have specified…arameters for corrupting h1, yet‚either…layer is using h1");
 
-240 
+393 
 	`ex™
 (1);
 
-244 
+397 
 	`¤ªdom
 (
 £ed
 );
 
-247 
+400 
 	`´štf
 ("Parameters:\n");
 
-248 
+401 
 	`´štf
 ("Rªdom s“d: %d\n", 
 £ed
 );
 
-249 
+402 
 	`´štf
 ("Domaš u£d is: %d\n",
 _DOM
@@ -3497,7 +11079,7 @@ _DOM
 dom_Çme
 );
 
-250 
+403 
 	`´štf
 ("# P™s: %d, StÚe ³¸p™: %d\n", 
 NUM_PITS
@@ -3505,11 +11087,11 @@ NUM_PITS
 SHELLS_PER_PIT
 );
 
-251 ià(
+404 ià(
 noisyHeuri¡ic
 )
 
-252 
+405 
 	`´štf
 ("H1 i bešg cÜru±ed by‚oi£ w™h max. magn™ud%d,…robab™y %f\n", 
 noi£Mag
@@ -3517,7 +11099,7 @@ noi£Mag
 noi£Prob
 );
 
-253 
+406 
 i
  = 
 max
@@ -3525,7 +11107,7 @@ max
 mš
 ; i++) {
 
-254 ià(
+407 ià(
 ¶ay”
 [
 i
@@ -3533,7 +11115,7 @@ i
 MINMAX
 ) {
 
-255 
+408 
 	`´štf
 ("PÏy” %d (%sè--- Mšmax, D•th %d%s%s", 
 i
@@ -3543,11 +11125,11 @@ i
 d•th
 [i],\
 
-256 ((
+409 ((
 çl£
 ) ? ", with„andomie-breaks" : ""), ((false) ? ", with‚oise" : ""));
 
-257 
+410 
 	`´štf
 (", usšg %s", 
 heurSŒšg
@@ -3555,7 +11137,7 @@ heurSŒšg
 i
 ]);
 
-258 ià((
+411 ià((
 heuri¡ic
 [
 i
@@ -3569,7 +11151,7 @@ h3
 h6
 ))
 
-259 
+412 
 	`´štf
 (" (budg‘ = %d)\n", 
 budg‘
@@ -3577,11 +11159,11 @@ budg‘
 i
 ]);
 
-261 
+414 
 	`´štf
 ("\n");
 
-263 ià(
+416 ià(
 ¶ay”
 [
 i
@@ -3589,7 +11171,7 @@ i
 UCT
 ) {
 
-264 
+417 
 	`´štf
 ("PÏy” %d (%sè--- UCT, C %.3f, Num i‹¿tiÚ %d, w™h % backups, usšg %s", 
 i
@@ -3597,7 +11179,7 @@ i
 ¶ay”SŒšgs
 [i],
 
-265 
+418 
 C
 [
 i
@@ -3605,11 +11187,13 @@ i
 numI‹¿tiÚs
 [i], 
 backupOpSŒšgs
-[i], 
+[
+backupOp
+[i]], 
 heurSŒšg
 [i]);
 
-266 ià((
+419 ià((
 heuri¡ic
 [
 i
@@ -3623,7 +11207,7 @@ h3
 h6
 ))
 
-267 
+420 
 	`´štf
 (" (budg‘ = %d)\n", 
 budg‘
@@ -3631,21 +11215,77 @@ budg‘
 i
 ]);
 
-269 
+422 
 	`´štf
 ("\n");
 
-272 
+424 ià(
+¶ay”
+[
+i
+] =ğ
+BFB
+) {
+
+425 
+	`´štf
+("PÏy” %d (%sè--- BFB, C %.3f, Num i‹¿tiÚ %d, w™h % backups, usšg %s", 
+i
+, 
+¶ay”SŒšgs
+[i],
+
+426 
+C
+[
+i
+], 
+numI‹¿tiÚs
+[i], 
+backupOpSŒšgs
+[
+backupOp
+[i]], 
+heurSŒšg
+[i]);
+
+427 ià((
+heuri¡ic
+[
+i
+] =ğ
+_DOM
+->
+hFunùiÚs
+.
+h3
+è|| (heuri¡ic[i] =ğ_DOM->hFunùiÚs.
+h6
+))
+
+428 
+	`´štf
+(" (budg‘ = %d)\n", 
+budg‘
+[
+i
+]);
+
+430 
+	`´štf
+("\n");
+
+433 
 	`fæush
 (
 ¡dout
 );
 
-275 ià(
+436 ià(
 noisyHeuri¡ic
 )
 
-276 
+437 
 	`£tNoi£P¬ams
 (
 noi£Mag
@@ -3653,7 +11293,7 @@ noi£Mag
 noi£Prob
 );
 
-277 
+439 
 »p_t
  
 ¡©e
@@ -3661,7 +11301,7 @@ noi£Prob
 ¿ndS‹
 ;
 
-278 
+440 
 ¡©e
  = 
 _DOM
@@ -3669,7 +11309,7 @@ _DOM
 	`®loÿ‹
 ();
 
-279 
+441 
 ¿ndS‹
  = 
 _DOM
@@ -3677,21 +11317,21 @@ _DOM
 	`®loÿ‹
 ();
 
-283 ià(
+445 ià(
 usšgRªdomS¹Bßrd
 ) {
 
-284 
+446 
 _DOM
 ->
 	`g’”©eRªdomS¹
 (
 ¡©e
-,
-max
+,&
+side
 );
 
-288 
+450 
 _DOM
 ->
 	`cİy
@@ -3701,31 +11341,31 @@ _DOM
 ¿ndS‹
 );
 
-289 
+451 
 roÙSide
  = 
-max
+side
 ;
 
-290 
+453 
 _outcome
 ;
 
-291 
+454 
 j
  = 0; j <= 1 ; j++) {
 
-292 
+456 
 moveCouÁ
  = 0;
 
-293 
+457 
 side
  = 
 roÙSide
 ;
 
-294 
+458 
 _DOM
 ->
 	`cİy
@@ -3735,7 +11375,7 @@ _DOM
 ¡©e
 );
 
-296 (
+460 (
 outcome
  = 
 _DOM
@@ -3747,29 +11387,51 @@ _DOM
 INCOMPLETE
 ) {
 
-297 
+461 
 ÜigSide
  = 
 side
 ;
 
-299 
+463 ià(
+v”bo£
+) {
+
+464 
+	`´štf
+("\n");
+
+465 
+	`´štBßrd
+(
+¡©e
+, 
+side
+);
+
+466 
+	`fæush
+(
+¡dout
+);
+
+469 
 ¡¬t
  = 
 	`¡¬tTimšg
 ();
 
-301 
+471 
 ¶ay”
 [
 side
 ]){
 
-302 
+472 
 UCT
 :
 
-303 
+473 
 moveMade
  = 
 	`makeUCTMove
@@ -3793,11 +11455,11 @@ numBe¡Moves
 backupOp
 [side]);
 
-305 
+475 
 MINMAX
 :
 
-306 
+476 
 moveMade
  = 
 	`makeMšmaxMove
@@ -3812,8 +11474,6 @@ heuri¡ic
 [side],
 budg‘
 [side],
-´unšg
-[side],
 ¿ndomT›B»aks
 ,
 noisyMM
@@ -3825,15 +11485,55 @@ numBe¡Moves
 ‹rmP”ûÁage
 );
 
-309 
+478 
+BFB
+:
+
+479 
+moveMade
+ = 
+	`makeBFBMove
+(
+¡©e
+, &
+side
+, 
+ty³_sy¡em
+[side], 
+numI‹¿tiÚs
+[side], 
+C
+[side], 
+CT
+[side], 
+heuri¡ic
+[side], 
+budg‘
+[side], 
+be¡Moves
+, &
+numBe¡Moves
+, 
+backupOp
+[side], 
+th»shŞd
+[side], 
+pŞicy
+[side], 
+bŞzmªCÚ¡ªt
+, 
+´obWeight
+);
+
+482 
 	`puts
 ("Unknown‡lgorithm\n");
 
-312 ià(
+485 ià(
 v”bo£
 )
 
-313 
+486 
 	`´štf
 ("EÏp£dime: %f\n", 
 	`g‘EÏp£d
@@ -3841,15 +11541,31 @@ v”bo£
 ¡¬t
 ));
 
-314 
+488 
+tuºs
+[
+side
+]++;
+
+489 
+time
+[
+side
+] =ime[side] + 
+	`g‘EÏp£d
+(
+¡¬t
+);
+
+491 
 moveCouÁ
 ++;
 
-315 ià(
+492 ià(
 v”bo£
 ) {
 
-316 
+493 
 	`´štf
 ("Mov#%d --…Ïy” %d madmov%d\n", 
 moveCouÁ
@@ -3859,17 +11575,29 @@ moveCouÁ
 moveMade
 );
 
-317 
+494 
 	`fæush
 (
 ¡dout
 );
 
-320 ià(
+498 ià(
 v”bo£
-)
+) {
 
-321 
+499 
+	`´štBßrd
+(
+¡©e
+, 
+side
+);
+
+500 
+	`´štf
+("\n");
+
+501 
 	`´štf
 ("ResuÉ: %d\n", 
 outcome
@@ -3877,7 +11605,7 @@ outcome
 MAX_WINS
 );
 
-323 
+503 
 	`´štf
 ("%d ", 
 outcome
@@ -3885,67 +11613,67 @@ outcome
 MAX_WINS
 );
 
-324 
+504 
 	`fæush
 (
 ¡dout
 );
 
-325 
+505 
 outcome
 ){
 
-326 
+506 
 MAX_WINS
 :
 
-327 
+507 
 maxWšs
 ++;
 
-329 
+509 
 DRAW
 :
 
-330 
+510 
 d¿ws
 ++;
 
-332 
+512 
 MIN_WINS
 :
 
-333 
+513 
 mšWšs
 ++;
 
-335 
+515 
 INCOMPLETE
 :
 
-336 
+516 
 šcom¶‘es
 ++;
 
-339 
+519 
 	`´štf
 ("ERROR: outcome is unknown");
 
-342 if(
+522 if(
 j
 ==0){
 
-343 
+523 
 _outcome
 =
 outcome
 ;
 
-345 if(
+525 if(
 j
 ==1){
 
-346 
+526 
 »s
 =
 	`isSu³r
@@ -3955,27 +11683,27 @@ _outcome
 outcome
 );
 
-347 if(
+527 if(
 »s
 >0){
 
-348 
+528 
 maxSu³r
 ++;
 
-349 } ià(
+529 } ià(
 »s
 <0){
 
-350 
+530 
 mšSu³r
 ++;
 
-352 
+532 
 §me
 ++;
 
-357 
+537 
 	`sw­IÁs
 (&
 ¶ay”
@@ -3985,7 +11713,7 @@ max
 mš
 ]);
 
-358 
+538 
 	`sw­IÁs
 (&
 numI‹¿tiÚs
@@ -3995,7 +11723,7 @@ max
 mš
 ]);
 
-359 
+539 
 	`sw­IÁs
 (&
 budg‘
@@ -4005,7 +11733,7 @@ max
 mš
 ]);
 
-360 
+540 
 	`sw­IÁs
 (&
 backupOp
@@ -4015,7 +11743,7 @@ max
 mš
 ]);
 
-361 
+541 
 	`sw­IÁs
 (&
 mmT»eSize
@@ -4025,7 +11753,7 @@ max
 mš
 ]);
 
-362 
+542 
 	`sw­Dbls
 (&
 C
@@ -4035,7 +11763,17 @@ max
 mš
 ]);
 
-363 
+543 
+	`sw­Dbls
+(&
+CT
+[
+max
+], &CT[
+mš
+]);
+
+544 
 	`sw­PŒs
 ((**)&
 heuri¡ic
@@ -4045,17 +11783,77 @@ max
 mš
 ]);
 
-366 
+545 
+	`sw­IÁs
+(&
+ty³_sy¡em
+[
+max
+], &ty³_sy¡em[
+mš
+]);
+
+546 
+	`sw­IÁs
+(&
+th»shŞd
+[
+max
+], &th»shŞd[
+mš
+]);
+
+547 
+	`sw­IÁs
+(&
+pŞicy
+[
+max
+], &pŞicy[
+mš
+]);
+
+548 
+	`sw­IÁs
+(&
+d•th
+[
+max
+], &d•th[
+mš
+]);
+
+549 
+	`sw­Dbls
+(&
+time
+[
+max
+], &time[
+mš
+]);
+
+550 
+	`sw­IÁs
+(&
+tuºs
+[
+max
+], &tuºs[
+mš
+]);
+
+553 
 	`´štf
 ("\n");
 
-367 if(++
+554 if(++
 ¶ayedGames
 >=
 numGames
 )
 
-370 
+557 
 _DOM
 ->
 	`de¡ruùR•
@@ -4063,7 +11861,7 @@ _DOM
 ¡©e
 );
 
-371 
+558 
 _DOM
 ->
 	`de¡ruùR•
@@ -4071,33 +11869,45 @@ _DOM
 ¿ndS‹
 );
 
-373 if(!
+559 * 
+®gDesütiÚ
+ []={
+	`ü—‹AlgÜ™hmDeütiÚ
+(
+¶ay”
+,
+max
+),ü—‹AlgÜ™hmDeütiÚÕÏy”,
+mš
+)};
+
+561 if(!
 PRINT_CSV
 ){
 
-374 
+562 
 	`´štf
 ("------------------------------\n");
 
-375 
+563 
 	`´štf
 ("Gam¶ayed: %d\n",
 numGames
 );
 
-376 
+564 
 	`´štf
 ("D¿ws: %d\n",
 §me
 );
 
-377 
+565 
 	`´štf
 ("Incom¶‘games: %d\n",
 šcom¶‘es
 );
 
-378 
+566 
 	`´štf
 ("NÚM©chšg…Ïyed: %d\n",
 numGames
@@ -4105,19 +11915,19 @@ numGames
 §me
 );
 
-379 
+567 
 	`´štf
 ("TÙ® max wÚ games: %d\n",
 maxSu³r
 );
 
-380 
+568 
 	`´štf
 ("TÙ® mš wÚ games: %d\n",
 mšSu³r
 );
 
-381 
+569 
 	`´štf
 ("Max *su³riÜ™y*„©e: %f\n",()
 maxSu³r
@@ -4125,7 +11935,7 @@ maxSu³r
 mšSu³r
 ));
 
-382 
+570 
 	`´štf
 ("Mš *su³riÜ™y*„©e: %f\n",()
 mšSu³r
@@ -4133,33 +11943,57 @@ mšSu³r
 maxSu³r
 +minSuper));
 
-383 
+571 
 	`´štf
 ("------------------------------\n");
 
-385 
+573 
 	`puts
-("Game…layed,Draws,Incomplete games,Max/won games,Min/won games,TrapGap,TrapSize,Number of Traps, Total won games\n");
+("domain, max_alg, min_alg ,num_of_games,num_of_draws,num_of_incomplete,max_win,min_win,total_win_games,max_time,min_time\n");
 
-386 
+574 
+	`´štf
+("%d,",
+_DOM
+->
+dom_Çme
+);
+
+575 
+	`´štf
+("%s,",
+®gDesütiÚ
+[
+max
+]);
+
+576 
+	`´štf
+("%s,",
+®gDesütiÚ
+[
+mš
+]);
+
+577 
 	`´štf
 ("%d,",
 numGames
 );
 
-387 
+578 
 	`´štf
 ("%d,",
 §me
 );
 
-388 
+579 
 	`´štf
 ("%d,",
 šcom¶‘es
 );
 
-389 
+580 
 	`´štf
 ("%f,",()
 maxSu³r
@@ -4167,7 +12001,7 @@ maxSu³r
 mšSu³r
 ));
 
-390 
+581 
 	`´štf
 ("%f,",()
 mšSu³r
@@ -4175,21 +12009,53 @@ mšSu³r
 maxSu³r
 +minSuper));
 
-391 
+582 
 	`´štf
-("%d\n",
+("%d,",
 maxSu³r
 );
 
-394 
+583 
+	`´štf
+("%f,",
+time
+[
+max
+]/()
+tuºs
+[max]);
+
+584 
+	`´štf
+("%f\n",
+time
+[
+mš
+]/()
+tuºs
+[min]);
+
+586 
 	`´štUùSts
 ();
 
-397 
+587 
+	`ä“
+(
+®gDesütiÚ
+[0]);
+
+588 
+	`ä“
+(
+®gDesütiÚ
+[1]);
+
+591 
 	}
 }
 
-402 
+593 
 	$isSu³r
 (
 fœ¡Outcome
@@ -4197,153 +12063,227 @@ fœ¡Outcome
 £cÚdOutcome
 ){
 
-403  (
+594  (
 fœ¡Outcome
 -
 £cÚdOutcome
 );
 
-404 
+595 
 	}
 }
 
-406 
+597 
 	$´štMes§ge
 (){
 
-407 
+598 
 	`puts
 ("");
 
-408 
+599 
 	`puts
 ("Usage: games <DOMAIN> <optional-flags>");
 
-409 
+600 
 	`puts
 ("");
 
-410 
+601 
 	`puts
 ("Plays complete duplicate games betweenhewo specified‡lgorithms");
 
-411 
+602 
 	`puts
 ("");
 
-412 
+603 
 	`puts
 ("Note!‚ot‡ll options‡re supported");
 
-413 
+604 
 	`puts
 ("Available DOMAIN‚ames:");
 
-414 
+605 
 	`puts
 ("------------------");
 
-415 
+606 
 	`puts
 ("(0) MANCALA (1) SYNTH (2) CHESS (3) ZOP");
 
-416 
+607 
 	`puts
 ("Algorithm Options:");
 
-417 
+608 
 	`puts
 ("------------------");
 
-418 
+609 
 	`puts
 ("-T <trap_gap> <trap_size> <how_many_traps>");
 
-419 
+610 
 	`puts
 ("-h1/h2 <n>: Sets heuristic for…layer 1/2. Values = 1 (basic), 2 (alternate), 3 (playouts), 4 (random),");
 
-420 
+611 
 	`puts
 (" 5 (coarsened h1), 6 (finer…layouts). Default = 1");
 
-421 
+612 
 	`puts
 ("-d1/d2 <n>: Sets depth of minimax search for…layer 1/2. Default = 8.");
 
-422 
+613 
 	`puts
 ("-md1/md2 <n>: Sets depth of minimax search for…layer 1/2 for MMUCT‡lgorithm (default 3)");
 
-423 
+614 
 	`puts
 ("-c1/c2 <n>: Sets value ofƒxploration bias…arameter for…layer 1/2. Default = 0.5.");
 
-424 
+615 
+	`puts
+("-ct1/ct2 <n>: Sets value ofƒxploration bias…arameter for…layer 1/2 for selectingypes. Default = 2.5.");
+
+616 
 	`puts
 ("-i1/i2 <n>: Sets‚umber of iterations of UCT for…layer 1/2. The special value of 0 makeshe UCT…layer match it's");
 
-425 
+617 
 	`puts
 ("‚umber of iterationsohe‚umber of‚odeshat its opponent minimax…layer wouldƒxpand. Default = 5000.");
 
-426 
+618 
 	`puts
 ("-b1/b2 <n>: Sets…layout budget for…layer 1/2. Specified‚umber of…layouts‡re…erformed‡tƒach†eaf‚ode. Default = 1.");
 
-427 
+619 
 	`puts
 ("-a1/a2 <n>: Back-up operatoro be used for UCT…layer 1/2. Values = 1 (average), 2 (minimax), 3 (semimax). Default = 1.");
 
-428 
+620 
 	`puts
 ("-n: Makes minimax…layer‚oisy (disabled by default)");
 
-429 
+621 
 	`puts
 ("-r: Enables„andomie-breaking for minimax…layer (disabled by default)");
 
-430 
+622 
 	`puts
 ("-s <n>: Sets seed of„andom‚umber generatoro‚. By default, seeded with system‚oise.");
 
-431 
+623 
 	`puts
 ("-g <n>: Plays‚ duplicate games starting from‡„andomly generated starting board. Default = 1.");
 
-432 
+624 
 	`puts
 ("-l <filename>: Loadshe boards stored inhe specified file one‡t‡ime‡nd…lays 1 duplicate game starting fromƒach.");
 
-433 
+625 
 	`puts
 (" Not compatible with -g option.");
 
-434 
+626 
 	`puts
 ("-nh <m> <p>: Adds‚oiseohe heuristic h1. The maximum magnitude ofhe‚oise is m. With…robability…/2m,");
 
-435 
+627 
 	`puts
 ("he‚oiseakes one ofhe values {+/-1, +/-2, ..., +/-m}. With…robability 1-p,he magnitude ofhe‚oise");
 
-436 
+628 
 	`puts
 (" is 0.");
 
-437 
+629 
+	`puts
+("-ts1/ts2: Setheype system for bfb…layer 1/2. Values = 1 (Oracle), 2 (STS)");
+
+630 
+	`puts
+("-t1/t2: Sethe maximal size for bfb…layer 1/2 using STSype system. Default = 100");
+
+631 
+	`puts
+("-p1/p2: The…olicy used by…layer 1/2 for choosingypes in BFB. Values = 1 (MAB), 2 (VMAB). Default = 1.");
+
+632 
 	`puts
 ("-v: Enables VERBOSE output forracing");
 
-438 
+633 
 	`puts
 ("-h: Displayshis message");
 
-439 
+634 
 	`puts
 ("");
 
-442 
+636 
+	}
+}
+
+641 * 
+	$ü—‹AlgÜ™hmDeütiÚ
+(
+¶ay”
+[],
+¶ay”Ind
+){
+
+642 * 
+»t
+ = (*)
+	`m®loc
+(()*128);
+
+643 
+¶ay”
+[
+¶ay”Ind
+]) {
+
+644 
+MINMAX
+:
+
+645 
+	`¥rštf
+(
+»t
+,"%s", "MINMAX");
+
+647 
+UCT
+:
+
+648 
+	`¥rštf
+(
+»t
+, "%s", "UCT");
+
+650 
+BFB
+:
+
+651 
+	`¥rštf
+(
+»t
+, "%s", "BFB");
+
+654  
+»t
+;
+
+655 
 	}
 }
 
@@ -4903,11 +12843,2811 @@ numPÏyouts
 	}
 }
 
-	@heuristic.h
+	@justincase_bfb.c
 
 1 
 	~"commÚ.h
 "
+
+2 
+	~"ty³.h
+"
+
+3 
+	~"ty³_»achab™y.h
+"
+
+7 
+	$ä“T»e
+(
+Œ“Node
+* 
+node
+) {
+
+8 
+i
+;
+
+9 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+10 ià(
+node
+->
+chd»n
+[
+i
+]) {
+
+11 
+	`ä“T»e
+(
+node
+->
+chd»n
+[
+i
+]);
+
+12 
+node
+->
+chd»n
+[
+i
+] = 
+NULL
+;
+
+15 
+_DOM
+->
+	`de¡ruùR•
+(
+node
+->
+»p
+);
+
+16 
+	`ä“
+(
+node
+->
+chd»n
+);
+
+17 
+	`ä“
+(
+node
+);
+
+18 
+	}
+}
+
+20 
+	$ä“Ty³Sy¡ems
+(
+ty³_sy¡em
+ **
+ty³_sy¡ems
+) {
+
+21 
+i
+;
+
+22 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++)
+
+23 ià(
+ty³_sy¡ems
+[
+i
+])
+
+24 
+ty³_sy¡ems
+[
+i
+]->
+	`de¡roy
+(type_systems[i]);
+
+26 
+	`ä“
+(
+ty³_sy¡ems
+);
+
+27 
+	}
+}
+
+29 <<<<<<< 
+HEAD
+
+
+33 
+	$£ËùMove
+(
+Œ“Node
+* 
+node
+, 
+C
+) {
+
+34 
+i
+;
+
+35 
+qh©
+;
+
+36 
+scÜe
+;
+
+37 
+numBe¡Moves
+ = 0;
+
+38 
+be¡ScÜe
+;
+
+39 
+be¡Moves
+[
+_DOM
+->
+	`g‘NumOfChd»n
+()];
+
+44 
+muÉl›r
+ = (
+node
+->
+side
+ =ğ
+max
+) ? 1 : -1;
+
+46 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+47 ià(!
+_DOM
+->
+	`isV®idChd
+(
+node
+->
+»p
+,‚ode->
+side
+, 
+i
+))
+
+51 ià(
+node
+->
+chd»n
+[
+i
+]->
+n
+ == 0)
+
+52  
+i
+;
+
+56 
+qh©
+ = 
+node
+->
+chd»n
+[
+i
+]->
+scÜeSum
+ / (êode->chd»n[i]->
+n
+;
+
+57 
+scÜe
+ = 
+qh©
+ + (
+muÉl›r
+ * 
+C
+è* 
+	`sq¹
+(
+	`log
+(
+node
+->
+n
+è/ (êode->
+chd»n
+[
+i
+]->n);
+
+61 
+scÜe
+ = (
+node
+->
+side
+ =ğ
+mš
+) ? -score : score;
+
+64 ià((
+numBe¡Moves
+ =ğ0è|| (
+scÜe
+ > 
+be¡ScÜe
+)) {
+
+65 
+be¡Moves
+[0] = 
+i
+;
+
+66 
+be¡ScÜe
+ = 
+scÜe
+;
+
+67 
+numBe¡Moves
+ = 1;
+
+69 ià(
+scÜe
+ =ğ
+be¡ScÜe
+)
+
+70 
+be¡Moves
+[
+numBe¡Moves
+++] = 
+i
+;
+
+73  
+be¡Moves
+[0];
+
+74 
+	}
+}
+
+79 
+	$£ËùTy³
+(*
+void_ts
+, 
+C
+, 
+side
+, 
+pŞicy
+) {
+
+80 
+ty³_sy¡em
+ *
+ts
+ = (ty³_sy¡em *)
+void_ts
+;
+
+81 
+i
+;
+
+82 
+qh©
+;
+
+83 
+scÜe
+;
+
+84 
+numBe¡Ty³s
+ = 0;
+
+85 
+be¡ScÜe
+;
+
+86 
+be¡Ty³s
+[
+ts
+->
+numTy³s
+];
+
+87 
+C
+ = 
+	`av”ageV®ueOfAÎTy³s
+(
+ts
+);
+
+91 
+muÉl›r
+ = (
+side
+ =ğ
+max
+) ? 1 : -1;
+
+92 
+pŞicyVis™s
+;
+
+93 ià(
+v”bo£
+è
+	`´štf
+("---%p---\n",
+ts
+);
+
+94 
+i
+ = 0; i < 
+ts
+->
+numTy³s
+; i++) {
+
+96 ià(
+ts
+->
+ty³s
+[
+i
+]->
+vis™s
+ == 0)
+
+97  
+i
+;
+
+98 ià(
+pŞicy
+ =ğ
+MAB
+)
+
+99 
+pŞicyVis™s
+ = 
+ts
+->
+vis™s
+;
+
+100 ià(
+pŞicy
+ =ğ
+KEEP_VMAB
+)
+
+101 
+pŞicyVis™s
+ = 
+ts
+->
+vis™s
+ -s->
+ty³s
+[
+i
+]->
+bœth
+ +s->types[i]->visits;
+
+102 ià(
+pŞicy
+ =ğ
+DELETE_VMAB
+)
+
+103 
+pŞicyVis™s
+ = 
+ts
+->
+vis™s
+ -s->
+ty³s
+[
+i
+]->
+bœth
+;
+
+107 
+qh©
+ = 
+	`ÿlcQh©Ba£dOnMšimax
+(
+ts
+,
+i
+);
+
+108 ià(
+v”bo£
+){
+
+109 
+	`´štf
+("C: %àqh©: %àËv–:%d \À",
+C
+, 
+qh©
+, 
+	`couÁLev–
+(
+ts
+->
+ty³s
+[
+i
+]));
+
+111 
+scÜe
+ = 1 * 
+qh©
+ + 
+C
+ * 
+	`sq¹
+(
+	`log
+(
+pŞicyVis™s
+è/ ()
+ts
+->
+ty³s
+[
+i
+]->
+vis™s
+);
+
+117 ià((
+numBe¡Ty³s
+ =ğ0è|| (
+scÜe
+ > 
+be¡ScÜe
+)) {
+
+118 
+be¡Ty³s
+[0] = 
+i
+;
+
+119 
+be¡ScÜe
+ = 
+scÜe
+;
+
+120 
+numBe¡Ty³s
+ = 1;
+
+122 ià(
+scÜe
+ =ğ
+be¡ScÜe
+)
+
+123 
+be¡Ty³s
+[
+numBe¡Ty³s
+++] = 
+i
+;
+
+125 ià(
+v”bo£
+è
+	`puts
+("------");
+
+127  
+be¡Ty³s
+[
+	`¿ndom
+(è% 
+numBe¡Ty³s
+];
+
+128 
+	}
+}
+
+131 
+	$g’”©eChd
+(
+Œ“Node
+ *
+node
+, 
+i
+) {
+
+132 
+node
+->
+chd»n
+[
+i
+] = 
+	`ÿÎoc
+(1, (
+Œ“Node
+));
+
+133 
+node
+->
+chd»n
+[
+i
+]->chd»Àğ
+	`ÿÎoc
+(
+_DOM
+->
+	`g‘NumOfChd»n
+(), (
+Œ“Node
+*));
+
+134 
+node
+->
+chd»n
+[
+i
+]->
+»p
+ = 
+_DOM
+->
+	`şÚeR•
+(node->rep);
+
+135 
+node
+->
+chd»n
+[
+i
+]->
+side
+ =‚ode->side;
+
+136 
+_DOM
+->
+	`makeMove
+(
+node
+->
+chd»n
+[
+i
+]->
+»p
+, &Òode->chd»n[i]->
+side
+), i);
+
+137 
+node
+->
+chd»n
+[
+i
+]->
+·»Á
+ =‚ode;
+
+138 
+node
+->
+chd»n
+[
+i
+]->
+d•th
+ =‚ode->depth + 1;
+
+139 
+node
+->
+chd»n
+[
+i
+]->
+subŒ“Size
+ = 1;
+
+140 
+	}
+}
+
+148 <<<<<<< 
+HEAD
+
+
+149 
+	$bfbI‹¿tiÚ
+(
+ty³_sy¡em
+ *
+ts
+, 
+C
+, 
+heuri¡ics_t
+ 
+heuri¡ic
+, 
+budg‘
+, 
+backupOp
+, 
+side
+, 
+th»shŞd
+, 
+pŞicy
+) {
+
+150 
+i
+;
+
+153 
+ty³Id
+ = 
+	`£ËùTy³
+(
+ts
+, 
+C
+, 
+side
+, 
+pŞicy
+);
+
+155 ià(
+ty³Id
+ == -1)
+
+158 
+ty³
+ *
+t
+ = 
+ts
+->
+ty³s
+[
+ty³Id
+];
+
+160 
+Œ“Node
+ *
+node
+ = 
+ts
+->
+	`£ËùFromTy³
+(
+t
+, 
+C
+);
+
+162 
+»t
+;
+
+163 
+gameOv”
+ = 0;
+
+164 ià((
+»t
+ = 
+_DOM
+->
+	`g‘GameStus
+(
+node
+->
+»p
+)è!ğ
+INCOMPLETE
+) {
+
+165 
+gameOv”
+ = 1;
+
+171 ià((
+heuri¡ic
+ =ğ
+_DOM
+->
+hFunùiÚs
+.
+h3
+è|| (heuri¡iø=ğ_DOM->hFunùiÚs.
+h4
+è|| (heuri¡iø=ğ_DOM->hFunùiÚs.
+h5
+))
+
+172 
+»t
+ /ğ
+MAX_WINS
+;
+
+174 
+»t
+ = 
+	`heuri¡ic
+(
+node
+->
+»p
+,‚ode->
+side
+, 
+budg‘
+);
+
+176 
+mmËv–OfNode
+ = 
+	`mšmaxLev–
+(
+node
+);
+
+178 
+Œ“Node
+ *
+bp
+ = 
+node
+;
+
+179 
+bp
+ !ğ
+NULL
+) {
+
+180 
+bp
+->
+n
+++;
+
+182 ià(
+backupOp
+ =ğ
+AVERAGE
+) {
+
+183 
+bp
+->
+scÜeSum
+ = bp->scÜeSum + 
+»t
+;
+
+184 
+bp
+->
+devŸtiÚSum
+ = bp->devŸtiÚSum + (bp->
+scÜeSum
+ - 
+»t
+) * (bp->scoreSum -„et);
+
+185 
+nodeLev–
+ = 
+	`couÁLev–Node
+(
+bp
+);
+
+186 ià(
+nodeLev–
+ >=
+mmËv–OfNode
+){
+
+187 
+bp
+->
+mšimaxScÜeSum
+ +ğ
+mmËv–OfNode
+;
+
+188 
+bp
+->
+mšimax_n
+++;
+
+191 } ià(
+backupOp
+ =ğ
+MINMAX
+) {
+
+193 ià(
+bp
+->
+n
+ == 1)
+
+194 
+bp
+->
+scÜeSum
+ = 
+»t
+;
+
+195 ià(
+gameOv”
+ =ğ1 && 
+bp
+ =ğ
+node
+)
+
+196 
+bp
+->
+scÜeSum
+ = bp->scÜeSum + 
+»t
+;
+
+198 
+be¡ScÜe
+ = (
+bp
+->
+side
+ =ğ
+max
+è? 
+MIN_WINS
+ : 
+MAX_WINS
+;
+
+199 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+200 ià(
+_DOM
+->
+	`isV®idChd
+(
+bp
+->
+»p
+, bp->
+side
+, 
+i
+)) {
+
+201 
+scÜe
+ = 
+bp
+->
+chd»n
+[
+i
+]->
+scÜeSum
+ / ()(bp->chd»n[i]->
+n
+);
+
+202 ià((
+bp
+->
+side
+ =ğ
+max
+ && 
+scÜe
+ > 
+be¡ScÜe
+è|| (bp->sid=ğ
+mš
+ && score < bestScore))
+
+203 
+be¡ScÜe
+ = 
+scÜe
+;
+
+206 
+bp
+->
+scÜeSum
+ = 
+be¡ScÜe
+ * bp->
+n
+;
+
+209 
+bp
+ = bp->
+·»Á
+;
+
+213 
+t
+->
+vis™s
+++;
+
+214 ((
+ty³_¡s
+*)
+t
+)->
+mm_vis™s
+++;
+
+215 
+mmLev–OfTy³
+ = 
+	`mšmaxLev–
+(((
+ty³_¡s
+*)
+t
+)->
+roÙ
+);
+
+216 
+ty³Lev–
+ = 
+	`couÁLev–
+(
+t
+);
+
+217 
+	`as£¹
+(
+mmLev–OfTy³
+ <ğ
+	`couÁLev–
+(
+t
+));
+
+218 ià(
+backupOp
+ =ğ
+AVERAGE
+) {
+
+219 
+t
+->
+scÜeSum
+ =->scÜeSum + 
+mmLev–OfTy³
+;
+
+220 
+	`as£¹
+(
+t
+->
+scÜeSum
+/((
+ty³_¡s
+*é)->
+mm_vis™s
+<=
+ty³Lev–
+);
+
+221 ià(
+ts
+->
+Çme
+ =ğ
+VTS
+)
+
+222 ((
+ty³_vts
+ *)
+t
+)->
+devŸtiÚSum
+ = (Ñy³_vt *é)->devŸtiÚSum + (
+»t
+ -->
+scÜeSum
+) * (ret -->scoreSum);
+
+223 } ià(
+backupOp
+ =ğ
+MINMAX
+) {
+
+224 ià(
+t
+->
+vis™s
+ == 1)
+
+225 
+t
+->
+scÜeSum
+ = 
+»t
+;
+
+227 
+scÜe
+ = 
+t
+->
+scÜeSum
+ / ()Ñ->
+vis™s
+ - 1);
+
+228 ià((
+side
+ =ğ
+max
+ && 
+»t
+ > 
+scÜe
+è|| (sid=ğ
+mš
+ &&„et < score))
+
+229 
+t
+->
+scÜeSum
+ = 
+»t
+ *->
+vis™s
+;
+
+232 ià(
+gameOv”
+)
+
+235 
+numOfChd»n
+ = 0;
+
+237 
+	`bfbI‹¿tiÚ
+(
+ty³_sy¡em
+ *
+ts
+, 
+C
+, 
+CT
+, 
+heuri¡ics_t
+ 
+heuri¡ic
+, 
+budg‘
+, 
+backupOp
+, 
+side
+, 
+th»shŞd
+, 
+pŞicy
+) {
+
+238 
+i
+;
+
+241 
+ty³Id
+ = 
+	`£ËùTy³
+(
+ts
+, 
+CT
+, 
+side
+, 
+pŞicy
+);
+
+243 ià(
+ty³Id
+ == -1)
+
+246 
+ty³
+ *
+t
+ = 
+ts
+->
+ty³s
+[
+ty³Id
+];
+
+248 
+Œ“Node
+ *
+node
+ = 
+ts
+->
+	`£ËùFromTy³
+(
+t
+, 
+C
+);
+
+250 
+»t
+;
+
+251 
+gameOv”
+ = 0;
+
+252 ià((
+»t
+ = 
+_DOM
+->
+	`g‘GameStus
+(
+node
+->
+»p
+)è!ğ
+INCOMPLETE
+) {
+
+253 
+gameOv”
+ = 1;
+
+259 ià((
+heuri¡ic
+ =ğ
+_DOM
+->
+hFunùiÚs
+.
+h3
+è|| (heuri¡iø=ğ_DOM->hFunùiÚs.
+h4
+è|| (heuri¡iø=ğ_DOM->hFunùiÚs.
+h5
+))
+
+260 
+»t
+ /ğ
+MAX_WINS
+;
+
+262 
+»t
+ = 
+	`heuri¡ic
+(
+node
+->
+»p
+,‚ode->
+side
+, 
+budg‘
+);
+
+265 
+t
+->
+vis™s
+++;
+
+266 ià(
+backupOp
+ =ğ
+AVERAGE
+) {
+
+267 
+t
+->
+scÜeSum
+ =->scÜeSum + 
+»t
+;
+
+268 } ià(
+backupOp
+ =ğ
+MINMAX
+) {
+
+269 ià(
+t
+->
+vis™s
+ == 1)
+
+270 
+t
+->
+scÜeSum
+ = 
+»t
+;
+
+272 
+scÜe
+ = 
+t
+->
+scÜeSum
+ / ()Ñ->
+vis™s
+ - 1);
+
+273 ià((
+side
+ =ğ
+max
+ && 
+»t
+ > 
+scÜe
+è|| (sid=ğ
+mš
+ &&„et < score))
+
+274 
+t
+->
+scÜeSum
+ = 
+»t
+ *->
+vis™s
+;
+
+279 
+Œ“Node
+ *
+bp
+ = 
+node
+;
+
+280 
+aboveTy³
+ = 
+çl£
+;
+
+281 
+bpM—n
+;
+
+282 
+bp
+ !ğ
+NULL
+) {
+
+283 
+bp
+->
+n
+++;
+
+285 ià(
+backupOp
+ =ğ
+AVERAGE
+) {
+
+286 
+bp
+->
+scÜeSum
+ = bp->scÜeSum + 
+»t
+;
+
+288 ià(
+ts
+->
+Çme
+ =ğ
+VTS
+) {
+
+289 ià(!
+aboveTy³
+) {
+
+290 
+bp
+->
+ty³dN
+++;
+
+291 
+bp
+->
+ty³dScÜeSum
+ = bp->ty³dScÜeSum + 
+»t
+;
+
+292 
+bpM—n
+ = 
+bp
+->
+ty³dScÜeSum
+ / ()(bp->typedScoreSum);
+
+293 
+bp
+->
+sd
+ = (()(bp->
+ty³dN
+ - 2è/ ()(bp->ty³dN - 1)è* bp->sd + (
+»t
+ - 
+bpM—n
+) * (ret - bpMean) / (()bp->typedN);
+
+295 ià(
+bp
+ =ğ((
+ty³_vts
+ *)
+t
+)->
+roÙ
+)
+
+296 
+aboveTy³
+ = 
+Œue
+;
+
+299 } ià(
+backupOp
+ =ğ
+MINMAX
+) {
+
+301 ià(
+bp
+->
+n
+ == 1)
+
+302 
+bp
+->
+scÜeSum
+ = 
+»t
+;
+
+303 ià(
+gameOv”
+ =ğ1 && 
+bp
+ =ğ
+node
+)
+
+304 
+bp
+->
+scÜeSum
+ = bp->scÜeSum + 
+»t
+;
+
+306 
+be¡ScÜe
+ = (
+bp
+->
+side
+ =ğ
+max
+è? 
+MIN_WINS
+ : 
+MAX_WINS
+;
+
+309 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+310 ià(!
+_DOM
+->
+	`isV®idChd
+(
+node
+->
+»p
+,‚ode->
+side
+, 
+i
+))
+
+312 
+	`g’”©eChd
+(
+node
+, 
+i
+);
+
+313 
+ts
+->
+	`assignToTy³
+Ñs, 
+node
+->
+chd»n
+[
+i
+], 
+ty³Id
+, 
+th»shŞd
+, 
+pŞicy
+);
+
+314 
+numOfChd»n
+++;
+
+318 
+Œ“Node
+ **
+·th
+;
+
+319 ià(
+ts
+->
+Çme
+ =ğ
+VTS
+) {
+
+320 
+·th
+ = 
+	`ÿÎoc
+(
+node
+->
+d•th
+ - ((
+ty³_vts
+ *)
+t
+)->
+roÙ
+->d•th, (
+Œ“Node
+ *));
+
+321 ((
+ty³_vts
+ *)
+t
+)->
+size
+ = (Ñy³_vt *é)->siz+ 
+numOfChd»n
+;
+
+324 
+i
+ = 0;
+
+325 
+bp
+ = 
+node
+;
+
+326 
+bp
+ !ğ
+NULL
+) {
+
+327 
+bp
+->
+subŒ“Size
+ = bp->subŒ“Siz+ 
+numOfChd»n
+;
+
+328 
+bp
+ = bp->
+·»Á
+;
+
+330 ià(
+ts
+->
+Çme
+ =ğ
+VTS
+) {
+
+331 ià(
+bp
+ =ğ((
+ty³_vts
+ *)
+t
+)->
+roÙ
+)
+
+332 
+i
+ = -1;
+
+333 ià(
+i
+ != -1)
+
+334 
+·th
+[
+i
+++] = 
+bp
+;
+
+338 ià(
+ts
+->
+Çme
+ =ğ
+VTS
+) {
+
+339 
+	`ty³Signifiÿnû
+(
+ts
+, (
+ty³_vts
+ *)
+t
+, 
+·th
+);
+
+340 
+	`ä“
+(
+·th
+);
+
+342 <<<<<<< 
+HEAD
+
+
+345 
+	`makeBFBMove
+(
+»p_t
+ 
+»p
+, *
+side
+, 
+tsId
+, 
+numI‹¿tiÚs
+, 
+C
+, 
+heuri¡ics_t
+ 
+heuri¡ic
+, 
+budg‘
+,
+
+346 * 
+be¡Moves
+, * 
+numBe¡Moves
+, 
+backupOp
+, 
+th»shŞd
+, 
+pŞicy
+) {
+
+347 
+i
+;
+
+348 
+v®
+;
+
+349 
+be¡Move
+ = 
+NULL_MOVE
+;
+
+350 
+be¡ScÜe
+;
+
+351 
+Œ“Node
+* 
+roÙNode
+;
+
+352 
+ty³_sy¡em
+ **
+ty³_sy¡ems
+ = 
+	`ÿÎoc
+(
+_DOM
+->
+	`g‘NumOfChd»n
+(), (type_system *));
+
+354 *
+numBe¡Moves
+ = 0;
+
+357 
+roÙNode
+ = 
+	`ÿÎoc
+(1, (
+Œ“Node
+));
+
+358 
+roÙNode
+->
+chd»n
+ = 
+	`ÿÎoc
+(
+_DOM
+->
+	`g‘NumOfChd»n
+(), (
+Œ“Node
+*));
+
+359 
+roÙNode
+->
+»p
+ = 
+_DOM
+->
+	`şÚeR•
+(rep);
+
+360 
+roÙNode
+->
+side
+ = *side;
+
+361 
+roÙNode
+->
+d•th
+ = 0;
+
+362 
+roÙNode
+->
+subŒ“Size
+ = 1;
+
+365 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+366 ià(!
+_DOM
+->
+	`isV®idChd
+(
+roÙNode
+->
+»p
+,„oÙNode->
+side
+, 
+i
+))
+
+369 
+	`g’”©eChd
+(
+roÙNode
+, 
+i
+);
+
+370 
+roÙNode
+->
+subŒ“Size
+++;
+
+373 
+ty³_sy¡ems
+[
+i
+] = 
+	`š™_ty³_sy¡em
+(
+tsId
+, 
+»p
+, *
+side
+);
+
+374 
+ty³_sy¡ems
+[
+i
+]->
+	`assignToTy³
+Ñy³_sy¡ems[i], 
+roÙNode
+->
+chd»n
+[i], -1, 
+th»shŞd
+, 
+pŞicy
+);
+
+379 
+i
+ = 1; i < 
+numI‹¿tiÚs
+ + 1; i++) {
+
+380 
+ty³_sy¡em
+ *
+ts
+ = 
+ty³_sy¡ems
+[
+	`£ËùMove
+(
+roÙNode
+, 
+C
+)];
+
+381 
+ts
+->
+vis™s
+++;
+
+382 
+	`bfbI‹¿tiÚ
+(
+ts
+, 
+C
+, 
+heuri¡ic
+, 
+budg‘
+, 
+backupOp
+, *
+side
+, 
+th»shŞd
+, 
+pŞicy
+);
+
+386 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+387 ià(!
+_DOM
+->
+	`isV®idChd
+(
+roÙNode
+->
+»p
+,„oÙNode->
+side
+, 
+i
+))
+
+390 ià(!
+roÙNode
+->
+chd»n
+[
+i
+])
+
+394 
+v®
+ = 
+roÙNode
+->
+chd»n
+[
+i
+]->
+scÜeSum
+ / (ìoÙNode->chd»n[i]->
+n
+;
+
+398 
+v®
+ = (*
+side
+ =ğ
+mš
+) ? -val : val;
+
+401 ià((*
+numBe¡Moves
+ =ğ0è|| (
+v®
+ > 
+be¡ScÜe
+)) {
+
+402 
+be¡Moves
+[0] = 
+i
+;
+
+403 
+be¡ScÜe
+ = 
+v®
+;
+
+404 *
+numBe¡Moves
+ = 1;
+
+406 ià(
+v®
+ =ğ
+be¡ScÜe
+)
+
+407 
+be¡Moves
+[(*
+numBe¡Moves
+)++] = 
+i
+;
+
+409 ià(
+v”bo£
+)
+
+410 
+	`´štf
+("Mov# %d -- V®u%f, CouÁ %d\n", 
+i
+, ((*
+side
+ =ğ
+mš
+è? -
+v®
+ : v®), 
+roÙNode
+->
+chd»n
+[i]->
+n
+);
+
+414 
+	`as£¹
+(*
+numBe¡Moves
+ != 0);
+
+416 
+be¡Move
+ = 
+be¡Moves
+[
+	`¿ndom
+(è% *
+numBe¡Moves
+];
+
+418 
+_DOM
+->
+	`makeMove
+(
+»p
+, 
+side
+, 
+be¡Move
+);
+
+420 ià(
+v”bo£
+) {
+
+421 
+	`´štf
+("V®uoàroÙ‚ode: %f\n", 
+roÙNode
+->
+scÜeSum
+ / (ìoÙNode->
+n
+);
+
+422 
+	`´štf
+("Be¡ move: %d\n", 
+be¡Move
+);
+
+426 
+	`ä“T»e
+(
+roÙNode
+);
+
+427 
+	`ä“Ty³Sy¡ems
+(
+ty³_sy¡ems
+);
+
+429  
+be¡Move
+;
+
+433 
+bp
+->
+scÜeSum
+ = 
+be¡ScÜe
+ * bp->
+n
+;
+
+437 
+bp
+ = bp->
+·»Á
+;
+
+440 ià(
+gameOv”
+)
+
+444 
+numOfChd»n
+ = 0;
+
+445 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+446 ià(!
+_DOM
+->
+	`isV®idChd
+(
+node
+->
+»p
+,‚ode->
+side
+, 
+i
+))
+
+449 
+	`g’”©eChd
+(
+node
+, 
+i
+);
+
+450 
+ts
+->
+	`assignToTy³
+Ñs, 
+node
+->
+chd»n
+[
+i
+], 
+ty³Id
+, 
+th»shŞd
+, 
+pŞicy
+);
+
+451 
+numOfChd»n
+++;
+
+455 
+Œ“Node
+ **
+·th
+;
+
+456 
+·thL’gth
+;
+
+457 ià(
+ts
+->
+Çme
+ =ğ
+VTS
+) {
+
+458 
+t
+ = 
+ts
+->
+ty³s
+[
+ty³Id
+];
+
+459 
+·thL’gth
+ = 
+node
+->
+d•th
+ - ((
+ty³_vts
+ *)
+t
+)->
+roÙ
+->depth;
+
+460 
+·th
+ = 
+	`ÿÎoc
+(
+·thL’gth
+, (
+Œ“Node
+ *));
+
+463 ià(
+·thL’gth
+ == 0)
+
+464 
+aboveTy³
+ = 
+Œue
+;
+
+466 
+aboveTy³
+ = 
+çl£
+;
+
+468 
+bp
+ = 
+node
+;
+
+469 
+i
+ = 0;
+
+470 
+bp
+ !ğ
+NULL
+) {
+
+471 
+bp
+->
+subŒ“Size
+ = bp->subŒ“Siz+ 
+numOfChd»n
+;
+
+473 ià(
+ts
+->
+Çme
+ =ğ
+VTS
+) {
+
+474 ià(!
+aboveTy³
+) {
+
+475 
+bp
+->
+ty³dSubŒ“Size
+ = bp->ty³dSubŒ“Siz+ 
+numOfChd»n
+;
+
+476 
+·th
+[
+i
+++] = 
+bp
+;
+
+478 ià(
+bp
+ =ğ
+·th
+[
+·thL’gth
+ - 1])
+
+479 
+aboveTy³
+ = 
+Œue
+;
+
+483 
+bp
+ = bp->
+·»Á
+;
+
+486 ià(
+ts
+->
+Çme
+ =ğ
+VTS
+) {
+
+487 ià(
+·thL’gth
+ > 0)
+
+488 
+	`ty³Signifiÿnû
+(
+ts
+, (
+ty³_vts
+ *)
+t
+, 
+·th
+);
+
+489 
+	`ä“
+(
+·th
+);
+
+491 
+	}
+}
+
+493 
+	$makeBFBMove
+(
+»p_t
+ 
+»p
+, *
+side
+, 
+tsId
+, 
+numI‹¿tiÚs
+, 
+C
+, 
+CT
+, 
+heuri¡ics_t
+ 
+heuri¡ic
+, 
+budg‘
+, * 
+be¡Moves
+, * 
+numBe¡Moves
+, 
+backupOp
+, 
+th»shŞd
+, 
+pŞicy
+) {
+
+494 
+i
+;
+
+495 
+v®
+;
+
+496 
+be¡Move
+ = 
+NULL_MOVE
+;
+
+497 
+be¡ScÜe
+;
+
+498 
+Œ“Node
+* 
+roÙNode
+;
+
+499 
+ty³_sy¡em
+ **
+ty³_sy¡ems
+ = 
+	`ÿÎoc
+(
+_DOM
+->
+	`g‘NumOfChd»n
+(), (type_system *));
+
+501 *
+numBe¡Moves
+ = 0;
+
+504 
+roÙNode
+ = 
+	`ÿÎoc
+(1, (
+Œ“Node
+));
+
+505 
+roÙNode
+->
+chd»n
+ = 
+	`ÿÎoc
+(
+_DOM
+->
+	`g‘NumOfChd»n
+(), (
+Œ“Node
+*));
+
+506 
+roÙNode
+->
+»p
+ = 
+_DOM
+->
+	`şÚeR•
+(rep);
+
+507 
+roÙNode
+->
+side
+ = *side;
+
+508 
+roÙNode
+->
+d•th
+ = 0;
+
+509 
+roÙNode
+->
+subŒ“Size
+ = 1;
+
+512 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+513 ià(!
+_DOM
+->
+	`isV®idChd
+(
+roÙNode
+->
+»p
+,„oÙNode->
+side
+, 
+i
+))
+
+516 
+	`g’”©eChd
+(
+roÙNode
+, 
+i
+);
+
+517 
+roÙNode
+->
+subŒ“Size
+++;
+
+520 
+ty³_sy¡ems
+[
+i
+] = 
+	`š™_ty³_sy¡em
+(
+tsId
+, 
+»p
+, *
+side
+);
+
+521 
+ty³_sy¡ems
+[
+i
+]->
+	`assignToTy³
+Ñy³_sy¡ems[i], 
+roÙNode
+->
+chd»n
+[i], -1, 
+th»shŞd
+, 
+pŞicy
+);
+
+526 
+i
+ = 1; i < 
+numI‹¿tiÚs
+ + 1; i++) {
+
+527 
+ty³_sy¡em
+ *
+ts
+ = 
+ty³_sy¡ems
+[
+	`£ËùMove
+(
+roÙNode
+, 
+C
+)];
+
+528 
+ts
+->
+vis™s
+++;
+
+529 
+	`bfbI‹¿tiÚ
+(
+ts
+, 
+C
+, 
+CT
+, 
+heuri¡ic
+, 
+budg‘
+, 
+backupOp
+, *
+side
+, 
+th»shŞd
+, 
+pŞicy
+);
+
+533 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+534 ià(!
+_DOM
+->
+	`isV®idChd
+(
+roÙNode
+->
+»p
+,„oÙNode->
+side
+, 
+i
+))
+
+537 ià(!
+roÙNode
+->
+chd»n
+[
+i
+])
+
+541 
+v®
+ = 
+roÙNode
+->
+chd»n
+[
+i
+]->
+scÜeSum
+ / (ìoÙNode->chd»n[i]->
+n
+;
+
+545 
+v®
+ = (*
+side
+ =ğ
+mš
+) ? -val : val;
+
+548 ià((*
+numBe¡Moves
+ =ğ0è|| (
+v®
+ > 
+be¡ScÜe
+)) {
+
+549 
+be¡Moves
+[0] = 
+i
+;
+
+550 
+be¡ScÜe
+ = 
+v®
+;
+
+551 *
+numBe¡Moves
+ = 1;
+
+553 ià(
+v®
+ =ğ
+be¡ScÜe
+)
+
+554 
+be¡Moves
+[(*
+numBe¡Moves
+)++] = 
+i
+;
+
+556 ià(
+v”bo£
+)
+
+557 
+	`´štf
+("Mov# %d -- V®u%f, CouÁ %d\n", 
+i
+, ((*
+side
+ =ğ
+mš
+è? -
+v®
+ : v®), 
+roÙNode
+->
+chd»n
+[i]->
+n
+);
+
+561 
+	`as£¹
+(*
+numBe¡Moves
+ != 0);
+
+563 
+be¡Move
+ = 
+be¡Moves
+[
+	`¿ndom
+(è% *
+numBe¡Moves
+];
+
+565 
+_DOM
+->
+	`makeMove
+(
+»p
+, 
+side
+, 
+be¡Move
+);
+
+567 ià(
+v”bo£
+) {
+
+568 
+	`´štf
+("V®uoàroÙ‚ode: %f\n", 
+roÙNode
+->
+scÜeSum
+ / (ìoÙNode->
+n
+);
+
+569 
+	`´štf
+("Be¡ move: %d\n", 
+be¡Move
+);
+
+573 
+	`ä“T»e
+(
+roÙNode
+);
+
+574 
+	`ä“Ty³Sy¡ems
+(
+ty³_sy¡ems
+);
+
+576  
+be¡Move
+;
+
+577 
+	}
+}
 
 	@mancala.c
 
@@ -5131,7 +15871,7 @@ bßrd
 »p_t
  
 »p
-,
+, *
 side
 ){
 
@@ -5151,7 +15891,7 @@ NUM_PITS
 	`g’RªdomBßrd
 (
 dummy
-, &
+, 
 side
 , 0);
 
@@ -5210,8 +15950,8 @@ b_d¡
 98 ** 
 bßrd
  = (**)
-	`m®loc
-((*)*2);
+	`ÿÎoc
+(2, (*));
 
 99 
 i
@@ -5226,10 +15966,10 @@ bßrd
 [
 i
 ]ğ(*)
-	`m®loc
-(()*(
+	`ÿÎoc
+(
 NUM_PITS
-+1));
+ + 1, ());
 
 103  
 bßrd
@@ -5343,35 +16083,37 @@ MANCALA_H_INCLUDED
 	#TO_REGULAR_ARR
 (
 bßrd
-) \
+è\
+
+	)
 
 11 
-__bßrd
+	g__bßrd
 [2][
 NUM_PITS
 +1];\
 
 12 
-i_TRA
+	gi_TRA
 ,
-p™_TRA
+	gp™_TRA
 ;\
 
 13 
-i_TRA
+	gi_TRA
 =0;i_TRA<2;i_TRA++)
-p™_TRA
+	gp™_TRA
 =0;p™_TRA<
-NUM_PITS
+	gNUM_PITS
 +1;p™_TRA++)
-__bßrd
-[i_TRA][p™_TRA]=
+	g__bßrd
+[
+i_TRA
+][
+p™_TRA
+]=
 bßrd
 [i_TRA][pit_TRA];\
-
-14 
-
-	)
 
 15 
 	#COPY_ARR
@@ -5381,27 +16123,29 @@ bßrd
 d¡
 ){\
 
+	)
+
 16 
-i_CA
+	gi_CA
 ,
-p™_CA
+	gp™_CA
 ; \
 
 17 
-i_CA
+	gi_CA
 =0;i_CA<2;i_CA++)
-p™_CA
+	gp™_CA
 =0;p™_CA<
-NUM_PITS
+	gNUM_PITS
 +1;p™_CA++)
-d¡
-[i_CA][p™_CA]=
+	gd¡
+[
+i_CA
+][
+p™_CA
+]=
 ¤c
 [i_CA][pit_CA];\
-
-18 }
-
-	)
 
 21 
 g‘NumOfChd»n_mªÿÏ
@@ -5475,7 +16219,7 @@ g’”©eRªdomS¹_mªÿÏ
 »p_t
  
 »p
-,);
+,*);
 
 29 
 »p_t
@@ -5492,14 +16236,6 @@ de¡ruùR•_mªÿÏ
 );
 
 31 
-g’”©eRªdomS¹_mªÿÏ
-(
-»p_t
- 
-¡©e
-,);
-
-32 
 cİy_mªÿÏ
 (
 »p_t
@@ -5509,7 +16245,7 @@ cİy_mªÿÏ
 d¡
 );
 
-35 
+34 
 h1
 (
 »p_t
@@ -5521,7 +16257,7 @@ side
 dummy
 );
 
-36 
+35 
 h2
 (
 »p_t
@@ -5533,7 +16269,7 @@ side
 dummy
 );
 
-37 
+36 
 h3
 (
 »p_t
@@ -5545,7 +16281,7 @@ side
 numPÏyouts
 );
 
-38 
+37 
 h4
 (
 »p_t
@@ -5557,7 +16293,7 @@ side
 dummy
 );
 
-39 
+38 
 h5
 (
 »p_t
@@ -5569,7 +16305,7 @@ side
 dummy
 );
 
-40 
+39 
 h6
 (
 »p_t
@@ -5961,313 +16697,7 @@ v®1
 	}
 }
 
-86 
-	$noPrunšgMM
-(
-»p_t
- 
-»p
-, 
-£¬chD•th
-, 
-d•th
-, 
-side
-, 
-heuri¡ics_t
- 
-heuri¡ic
-, 
-budg‘
-, 
-cu¼’tNodeId
-) {
-
-87 
-v®1
-, 
-v®2
-;
-
-88 
-i
-;
-
-89 
-»p_t
- 
-dummyR•
-;
-
-90 
-ÜigSide
- = 
-side
-;
-
-92 
-numNodes
-++;
-
-95 ià((
-v®1
- = 
-_DOM
-->
-	`g‘GameStus
-(
-»p
-)è!ğ
-INCOMPLETE
-) {
-
-96 
-‹rmCouÁ
-++;
-
-97 ià(
-dÙFÜm©
-)
-
-98 
-	`´štf
-("n%d [cŞÜ=\"»d\"];", 
-cu¼’tNodeId
-);
-
-99  
-v®1
-;
-
-103 ià(
-£¬chD•th
- >ğ
-d•th
-) {
-
-105 
-v®1
- = 
-	`heuri¡ic
-(
-»p
-, 
-side
-, 
-budg‘
-);
-
-108 
-	`as£¹
- ((
-v®1
- < 
-MAX_WINS
-è&& (v®1 > 
-MIN_WINS
-));
-
-110  
-v®1
-;
-
-114 ià(
-side
- =ğ
-max
-) {
-
-115 
-v®1
- = -
-INF
-;
-
-116 
-i
- = 1; i < 
-_DOM
-->
-	`g‘NumOfChd»n
-(); i++) {
-
-117 
-side
- = 
-ÜigSide
-;
-
-118 ià(!
-_DOM
-->
-	`isV®idChd
-(
-»p
-,
-side
-,
-i
-))
-
-120 
-dummyR•
- = 
-_DOM
-->
-	`şÚeR•
-(
-»p
-);
-
-121 
-_DOM
-->
-	`makeMove
-(
-dummyR•
-,&
-side
-,
-i
-);
-
-124 ià(
-dÙFÜm©
-)
-
-125 
-	`´štf
-("n%d ->‚%d;\n", 
-cu¼’tNodeId
-, ++
-id
-);
-
-127 
-v®2
- = 
-	`noPrunšgMM
-(
-dummyR•
-, 
-£¬chD•th
-+1, 
-d•th
-, 
-side
-, 
-heuri¡ic
-, 
-budg‘
-, 
-id
-);
-
-128 
-v®1
- = (
-v®2
- > val1) ? val2 : val1;
-
-132 
-v®1
- = 
-INF
-;
-
-133 
-i
- = 1; i < 
-NUM_PITS
-+1; i++) {
-
-134 
-side
- = 
-ÜigSide
-;
-
-135 ià(!
-_DOM
-->
-	`isV®idChd
-(
-»p
-,
-side
-,
-i
-))
-
-137 
-dummyR•
- = 
-_DOM
-->
-	`şÚeR•
-(
-»p
-);
-
-138 
-_DOM
-->
-	`makeMove
-(
-dummyR•
-,&
-side
-,
-i
-);
-
-141 ià(
-dÙFÜm©
-)
-
-142 
-	`´štf
-("n%d ->‚%d;\n", 
-cu¼’tNodeId
-, ++
-id
-);
-
-144 
-v®2
- = 
-	`noPrunšgMM
-(
-dummyR•
- , 
-£¬chD•th
-+1, 
-d•th
-, 
-side
-, 
-heuri¡ic
-, 
-budg‘
-, 
-id
-);
-
-145 
-v®1
- = (
-v®2
- < val1) ? val2 : val1;
-
-149  
-v®1
-;
-
-150 
-	}
-}
-
-154 
+86 
 	$makeMšmaxMove
 (
 »p_t
@@ -6284,10 +16714,6 @@ heuri¡ic
 , 
 budg‘
 , 
-´unšg
-,
-
-155 
 ¿ndomT›B»aks
 , 
 noisyMM
@@ -6299,49 +16725,49 @@ numBe¡Moves
 ‹rmP”ûÁage
 ) {
 
-156 
+87 
 i
 ;
 
-157 
+88 
 »p_t
  
 dummyR•
 ;
 
-158 
+89 
 v®
 ;
 
-159 
+90 
 be¡Move
  = 
 NULL_MOVE
 ;
 
-160 
+91 
 £cÚdBe¡Move
  = 
 NULL_MOVE
 ;
 
-161 
+92 
 be¡ScÜe
 ;
 
-162 
+93 
 £cÚdBe¡ScÜe
  = -
 INF
 ;
 
-163 
+94 
 ÜigSide
  = *
 side
 ;
 
-164 
+95 
 scÜes
 [
 _DOM
@@ -6349,23 +16775,23 @@ _DOM
 	`g‘NumOfChd»n
 ()];
 
-165 
+96 
 d›
 ;
 
-167 
+98 
 numNodes
  = 0;
 
-168 *
+99 *
 numBe¡Moves
  = 0;
 
-169 
+100 
 ‹rmCouÁ
  = 0;
 
-171 
+102 
 i
  = 1; i <
 _DOM
@@ -6373,13 +16799,13 @@ _DOM
 	`g‘NumOfChd»n
 (); i++) {
 
-172 *
+103 *
 side
  = 
 ÜigSide
 ;
 
-173 ià(!
+104 ià(!
 _DOM
 ->
 	`isV®idChd
@@ -6391,7 +16817,7 @@ side
 i
 ))
 
-175 
+106 
 dummyR•
  = 
 _DOM
@@ -6401,7 +16827,7 @@ _DOM
 »p
 );
 
-176 
+107 
 _DOM
 ->
 	`makeMove
@@ -6413,11 +16839,7 @@ side
 i
 );
 
-180 if(
-´unšg
-)
-
-181 
+111 
 v®
  = 
 	`®phaB‘a
@@ -6439,25 +16861,7 @@ budg‘
 id
 );
 
-183 
-v®
- = 
-	`noPrunšgMM
-(
-dummyR•
- , 1, 
-d•th
-, *
-side
-, 
-heuri¡ic
-, 
-budg‘
-, 
-id
-);
-
-187 
+115 
 scÜes
 [
 i
@@ -6469,7 +16873,7 @@ mš
 v®
  : val;
 
-190 ià((*
+118 ià((*
 numBe¡Moves
  =ğ0è|| (
 scÜes
@@ -6479,13 +16883,13 @@ i
 be¡ScÜe
 )) {
 
-191 
+119 
 be¡Moves
 [0] = 
 i
 ;
 
-192 
+120 
 be¡ScÜe
  = 
 scÜes
@@ -6493,11 +16897,11 @@ scÜes
 i
 ];
 
-193 *
+121 *
 numBe¡Moves
  = 1;
 
-196 ià((
+124 ià((
 scÜes
 [
 i
@@ -6507,7 +16911,7 @@ be¡ScÜe
 ¿ndomT›B»aks
 ))
 
-197 
+125 
 be¡Moves
 [(*
 numBe¡Moves
@@ -6515,11 +16919,11 @@ numBe¡Moves
 i
 ;
 
-199 ià(
+127 ià(
 v”bo£
 )
 
-200 
+128 
 	`´štf
 ("Mov# %d -- V®u%f\n", 
 i
@@ -6527,13 +16931,13 @@ i
 v®
 );
 
-202 *
+130 *
 side
  = 
 ÜigSide
 ;
 
-203 
+131 
 be¡Move
  = 
 be¡Moves
@@ -6543,11 +16947,11 @@ be¡Moves
 numBe¡Moves
 ];
 
-205 ià(
+133 ià(
 v”bo£
 )
 
-206 
+134 
 	`´štf
 ("V®uoàroÙ‚ode: %f\n", (
 ÜigSide
@@ -6557,7 +16961,7 @@ mš
 be¡ScÜe
  : bestScore);
 
-210 
+138 
 i
  = 1; i < 
 _DOM
@@ -6565,7 +16969,7 @@ _DOM
 	`g‘NumOfChd»n
 (); i++) {
 
-211 ià(!
+139 ià(!
 _DOM
 ->
 	`isV®idChd
@@ -6577,7 +16981,7 @@ side
 i
 ))
 
-213 ià(
+141 ià(
 scÜes
 [
 i
@@ -6585,7 +16989,7 @@ i
 be¡ScÜe
 ) {
 
-214 ià((
+142 ià((
 be¡ScÜe
  - 
 scÜes
@@ -6595,7 +16999,7 @@ i
 £cÚdBe¡ScÜe
 )) {
 
-215 
+143 
 £cÚdBe¡ScÜe
  = 
 scÜes
@@ -6603,17 +17007,17 @@ scÜes
 i
 ];
 
-216 
+144 
 £cÚdBe¡Move
  = 
 i
 ;
 
-221 ià(
+149 ià(
 v”bo£
 )
 
-222 
+150 
 	`´štf
 ("Be¡ move: %d \ˆSecÚd be¡ move: %d\n", 
 be¡Move
@@ -6621,7 +17025,7 @@ be¡Move
 £cÚdBe¡Move
 );
 
-226 ià((
+154 ià((
 £cÚdBe¡Move
  !ğ
 NULL_MOVE
@@ -6629,7 +17033,7 @@ NULL_MOVE
 noisyMM
 )) {
 
-227 
+155 
 	`as£¹
 (
 heuri¡ic
@@ -6643,25 +17047,25 @@ hFunùiÚs
 h3
 );
 
-228 
+156 
 d›
  = ()(
 	`¿ndom
 () % 10000) / ()(10000 - 1);
 
-229 ià(
+157 ià(
 d›
  <ğ
 EPSILON
 )
 
-230 
+158 
 be¡Move
  = 
 £cÚdBe¡Move
 ;
 
-233 
+161 
 _DOM
 ->
 	`makeMove
@@ -6673,17 +17077,17 @@ side
 be¡Move
 );
 
-235 ià(
+163 ià(
 v”bo£
 )
 
-236 
+164 
 	`´štf
 ("Examšed %d‚odes\n", 
 numNodes
 );
 
-238 *
+166 *
 ‹rmP”ûÁage
  = ()
 ‹rmCouÁ
@@ -6691,15 +17095,15 @@ numNodes
 numNodes
 ;
 
-240  
+168  
 be¡Move
 ;
 
-241 
+169 
 	}
 }
 
-245 
+173 
 	$g‘AÍhaB‘aT»eSize
 (
 »p_t
@@ -6717,13 +17121,13 @@ heuri¡ic
 budg‘
 ) {
 
-246 
+174 
 numNodes
  = 
 ‹rmCouÁ
  = 0;
 
-247 
+175 
 	`®phaB‘a
 (
 »p
@@ -6743,15 +17147,15 @@ budg‘
 id
 );
 
-248  
+176  
 numNodes
 ;
 
-249 
+177 
 	}
 }
 
-253 
+181 
 	$g’AÍhaB‘aT»e
 (
 »p_t
@@ -6769,39 +17173,39 @@ heuri¡ic
 budg‘
 ) {
 
-255 
+183 
 	`puts
 ("digraph‡lphabeta {");
 
-256 
+184 
 	`puts
 ("root =‚1;");
 
-257 
+185 
 	`puts
 ("node [shape=\"point\"];");
 
-258 
+186 
 	`puts
 ("edge [arrowhead=\"none\"];");
 
-259 
+187 
 	`puts
 ("n1 [shape=\"box\", style=\"filled\", color=\"blue\", height=0.2, width=0.2,†abel=\"\"];");
 
-262 
+190 
 dÙFÜm©
  = 
 Œue
 ;
 
-263 
+191 
 	`as£¹
 (
 id
  == 0);
 
-264 
+192 
 	`®phaB‘a
 (
 »p
@@ -6821,17 +17225,17 @@ budg‘
 id
 );
 
-265 
+193 
 dÙFÜm©
  = 
 çl£
 ;
 
-267 
+195 
 	`´štf
 ("}\n");
 
-270 
+198 
 	}
 }
 
@@ -7171,6 +17575,856 @@ j
 	gINCOMPLETE
 ;
 
+	@oracleTypeSystem.c
+
+1 
+	~"ty³.h
+"
+
+3 
+	~<uni¡d.h
+>
+
+4 
+	~<fú.h
+>
+
+5 
+	~<sys/¡©.h
+>
+
+7 
+	gmy¡”yNodes
+ = 0;
+
+9 
+	$de¡roy_mmO¿şe
+(*
+void_ts
+) {
+
+10 
+i
+;
+
+11 
+ty³_sy¡em
+ *
+ts
+ = (ty³_sy¡em *)
+void_ts
+;
+
+13 
+i
+ = 0; i < 
+ts
+->
+numTy³s
+; i++) {
+
+14 
+	`ä“
+(((
+ty³_mmO¿şe
+ *)
+ts
+->
+ty³s
+[
+i
+])->
+İ’Li¡
+);
+
+15 
+	`ä“
+(
+ts
+->
+ty³s
+[
+i
+]);
+
+18 
+	`ä“
+(
+ts
+->
+ty³s
+);
+
+21 
+	`şo£
+(*(*)(
+ts
+->
+exŒa
+));
+
+22 
+	`»move
+(
+ORACLE_PATH
+);
+
+23 
+	`ä“
+(
+ts
+->
+exŒa
+);
+
+24 
+	}
+}
+
+26 
+Œ“Node
+ *
+	$£ËùFromTy³_mmO¿şe
+(*
+void_t
+, 
+C
+) {
+
+27 
+i
+;
+
+28 
+ty³_mmO¿şe
+ *
+t
+ = (ty³_mmO¿ş*)
+void_t
+;
+
+31 
+Œ“Node
+ *
+node
+;
+
+32 
+mš_d•th
+ = 
+INF
+;
+
+33 
+mš_node
+;
+
+34 
+i
+ = 0; i < 
+t
+->
+
+; i++) {
+
+35 ià(
+t
+->
+İ’Li¡
+[
+i
+] &&->İ’Li¡[i]->
+d•th
+ < 
+mš_d•th
+) {
+
+36 
+mš_node
+ = 
+i
+;
+
+37 
+mš_d•th
+ = 
+t
+->
+İ’Li¡
+[
+i
+]->
+d•th
+;
+
+40 
+node
+ = 
+t
+->
+İ’Li¡
+[
+mš_node
+];
+
+41 
+t
+->
+İ’Li¡
+[
+mš_node
+] = 0;
+
+42 
+t
+->
+size
+--;
+
+43 
+t
+->
+em±y
+ = 
+mš_node
+;
+
+45  
+node
+;
+
+46 
+	}
+}
+
+49 
+	$mªÿÏS‹ToOff£t
+(
+»p_t
+ 
+»p
+) {
+
+50 
+i
+, 
+j
+, 
+k
+;
+
+51 
+off£t
+ = 0;
+
+52 
+ba£TÙhePow”OfIndex
+;
+
+54 
+i
+ = 0; i < 1; i++) {
+
+55 
+j
+ = 0; j < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); j++) {
+
+56 
+ba£TÙhePow”OfIndex
+ = 1;
+
+58 
+k
+ = 
+_DOM
+->
+	`g‘NumOfChd»n
+(è- 1 - 
+j
+; k > 0; k--)
+
+59 
+ba£TÙhePow”OfIndex
+ = ba£TÙhePow”OfIndex * 
+MAX_WINS
+;
+
+61 
+off£t
+ = off£ˆ+ 
+ba£TÙhePow”OfIndex
+ * ((**)
+»p
+)[
+i
+][
+j
+];
+
+65  
+off£t
+;
+
+66 
+	}
+}
+
+69 
+	$§veMMV®
+(
+fd
+, 
+»p_t
+ 
+»p
+, 
+v®
+) {
+
+72 ià(
+v®
+ == 0)
+
+73 
+v®
+ = 
+MAX_WINS
+ + 1;
+
+75 
+	`l£ek
+(
+fd
+, 
+	`mªÿÏS‹ToOff£t
+(
+»p
+), 
+SEEK_SET
+);
+
+76 
+	`wr™e
+(
+fd
+, &
+v®
+, 1);
+
+77 
+	}
+}
+
+81 
+	$»adMMV®
+(
+fd
+, 
+»p_t
+ 
+»p
+) {
+
+82 
+v®
+;
+
+84 
+	`l£ek
+(
+fd
+, 
+	`mªÿÏS‹ToOff£t
+(
+»p
+), 
+SEEK_SET
+);
+
+85 
+	`»ad
+(
+fd
+, &
+v®
+, 1);
+
+88 ià(
+v®
+ == 0)
+
+89 
+v®
+ = -1;
+
+92 ià(
+v®
+ =ğ
+MAX_WINS
+ + 1)
+
+93 
+v®
+ = 0;
+
+95  
+v®
+;
+
+96 
+	}
+}
+
+99 
+	$¡ÜeMšimax
+(
+fd
+, 
+»p_t
+ 
+»p
+, 
+£¬chD•th
+, 
+d•th
+, 
+side
+, 
+heuri¡ics_t
+ 
+heuri¡ic
+, 
+budg‘
+) {
+
+100 
+v®1
+, 
+v®2
+;
+
+101 
+i
+;
+
+102 
+»p_t
+ 
+dummyR•
+;
+
+103 
+ÜigSide
+ = 
+side
+;
+
+106 ià((
+v®1
+ = 
+_DOM
+->
+	`g‘GameStus
+(
+»p
+)è!ğ
+INCOMPLETE
+) {
+
+107 
+	`§veMMV®
+(
+fd
+, 
+»p
+, 
+v®1
+);
+
+108  
+v®1
+;
+
+112 ià(
+£¬chD•th
+ >ğ
+d•th
+) {
+
+114 
+v®1
+ = 
+	`heuri¡ic
+(
+»p
+, 
+side
+, 
+budg‘
+);
+
+118 
+	`as£¹
+ ((
+v®1
+ < 
+MAX_WINS
+è&& (v®1 > 
+MIN_WINS
+));
+
+119 
+	`§veMMV®
+(
+fd
+, 
+»p
+, 
+v®1
+);
+
+120  
+v®1
+;
+
+124 ià(
+side
+ =ğ
+max
+) {
+
+125 
+v®1
+ = -
+INF
+;
+
+126 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+127 
+side
+ = 
+ÜigSide
+;
+
+128 ià(!
+_DOM
+->
+	`isV®idChd
+(
+»p
+,
+side
+,
+i
+))
+
+130 
+dummyR•
+ = 
+_DOM
+->
+	`şÚeR•
+(
+»p
+);
+
+131 
+_DOM
+->
+	`makeMove
+(
+dummyR•
+,&
+side
+,
+i
+);
+
+133 
+v®2
+ = 
+	`¡ÜeMšimax
+(
+fd
+, 
+dummyR•
+, 
+£¬chD•th
++1, 
+d•th
+, 
+side
+, 
+heuri¡ic
+, 
+budg‘
+);
+
+134 
+v®1
+ = (
+v®2
+ > val1) ? val2 : val1;
+
+138 
+v®1
+ = 
+INF
+;
+
+139 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+140 
+side
+ = 
+ÜigSide
+;
+
+141 ià(!
+_DOM
+->
+	`isV®idChd
+(
+»p
+,
+side
+,
+i
+))
+
+143 
+dummyR•
+ = 
+_DOM
+->
+	`şÚeR•
+(
+»p
+);
+
+144 
+_DOM
+->
+	`makeMove
+(
+dummyR•
+,&
+side
+,
+i
+);
+
+146 
+v®2
+ = 
+	`¡ÜeMšimax
+(
+fd
+, 
+dummyR•
+, 
+£¬chD•th
++1, 
+d•th
+, 
+side
+, 
+heuri¡ic
+, 
+budg‘
+);
+
+147 
+v®1
+ = (
+v®2
+ < val1) ? val2 : val1;
+
+151 
+	`§veMMV®
+(
+fd
+, 
+»p
+, 
+v®1
+);
+
+152  
+v®1
+;
+
+153 
+	}
+}
+
+156 
+	$assignToTy³_mmO¿şe
+(*
+void_ts
+, 
+Œ“Node
+ *
+node
+, 
+çth”Ty³
+, 
+th»shŞd
+, 
+pŞicy
+) {
+
+157 
+ty³_sy¡em
+ *
+ts
+ = (ty³_sy¡em *)
+void_ts
+;
+
+158 
+mmV®
+ = 
+	`»adMMV®
+(*(*)
+ts
+->
+exŒa
+, 
+node
+->
+»p
+);
+
+161 ià(
+mmV®
+ == -1) {
+
+162 
+mmV®
+ = 
+	`ORACLE_MISSING_H
+(
+node
+->
+»p
+,‚ode->
+side
+);
+
+163 
+my¡”yNodes
+++;
+
+166 
+mmV®
+ = mmV® + 
+MAX_WINS
+;
+
+168 
+ty³_mmO¿şe
+ *
+t
+ = (ty³_mmO¿ş*)
+ts
+->
+ty³s
+[
+mmV®
+];
+
+172 ià(
+t
+->
+
+ =ğt->
+ÿ·c™y
+) {
+
+173 
+t
+->
+ÿ·c™y
+ = 2 * (t->capacity + 1);
+
+174 
+t
+->
+İ’Li¡
+ = 
+	`»®loc
+Ñ->İ’Li¡,->
+ÿ·c™y
+ * (
+Œ“Node
+ *));
+
+177 ià(
+t
+->
+em±y
+ != -1) {
+
+178 
+t
+->
+İ’Li¡
+[t->
+em±y
+] = 
+node
+;
+
+179 
+t
+->
+em±y
+ = -1;
+
+181 
+t
+->
+İ’Li¡
+[t->
+
+] = 
+node
+;
+
+182 
+t
+->
+
+++;
+
+184 
+t
+->
+size
+++;
+
+185 
+	}
+}
+
 	@random.c
 
 2 
@@ -7268,6 +18522,626 @@ move
 27  
 	gmove
 ;
+
+	@sts.c
+
+1 
+	~"ty³.h
+"
+
+2 
+	#USE_MINIMAX_REWARDS
+ 1
+
+	)
+
+7 
+	$addTy³
+Ğ
+ty³_sy¡em
+* 
+ts
+, 
+ty³_¡s
+* 
+t
+,
+Œ“Node
+* 
+¥l™Cªdid©e
+,»eNode* 
+ÃwF©h”
+,
+pŞicy
+){
+
+8 ià(
+t
+->
+roÙ
+->
+side
+ !ğ
+¥l™Cªdid©e
+->side ||->root == splitCandidate) {
+
+9 
+i
+;
+
+10 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+11 ià(!
+_DOM
+->
+	`isV®idChd
+(
+¥l™Cªdid©e
+->
+»p
+, s¶™Cªdid©e->
+side
+, 
+i
+è||¥l™Cªdid©e->
+chd»n
+[i] =ğ
+ÃwF©h”
+ ||
+
+12 
+¥l™Cªdid©e
+->
+chd»n
+[
+i
+]==
+NULL
+){
+
+15 
+	`addTy³
+(
+ts
+,
+t
+,
+¥l™Cªdid©e
+->
+chd»n
+[
+i
+],
+ÃwF©h”
+,
+pŞicy
+);
+
+19 
+ts
+->
+numTy³s
+++;
+
+20 
+ts
+->
+ty³s
+ = (
+ty³
+**)
+	`»®loc
+Ñs->ty³s,s->
+numTy³s
+ * (
+ty³_¡s
+ *));
+
+21 
+ts
+->
+ty³s
+[ts->
+numTy³s
+ - 1] = (
+ty³
+*)
+	`ÿÎoc
+(1, (
+ty³_¡s
+));
+
+22 ((
+ty³_¡s
+ *)
+ts
+->
+ty³s
+[ts->
+numTy³s
+ - 1])->
+roÙ
+ = 
+¥l™Cªdid©e
+;
+
+23 ((
+ty³_¡s
+ *)
+ts
+->
+ty³s
+[ts->
+numTy³s
+ - 1])->
+bœth
+ =s->
+vis™s
+;
+
+24 ((
+ty³_¡s
+ *)
+ts
+->
+ty³s
+[ts->
+numTy³s
+ - 1])->
+mšmax
+ = 
+¥l™Cªdid©e
+->minmax;
+
+25 ià(
+USE_MINIMAX_REWARDS
+){
+
+26 ((
+ty³_¡s
+ *)
+ts
+->
+ty³s
+[ts->
+numTy³s
+ - 1])->
+scÜeSum
+ = 
+¥l™Cªdid©e
+->
+mšimaxScÜeSum
+;
+
+27 ((
+ty³_¡s
+ *)
+ts
+->
+ty³s
+[ts->
+numTy³s
+ - 1])->
+vis™s
+ = 
+¥l™Cªdid©e
+->
+mšimax_n
+;
+
+29 ((
+ty³_¡s
+ *)
+ts
+->
+ty³s
+[ts->
+numTy³s
+ - 1])->
+scÜeSum
+ = 
+¥l™Cªdid©e
+->scoreSum;
+
+31 ià(
+pŞicy
+ =ğ
+DELETE_VMAB
+)
+
+32 
+ts
+->
+ty³s
+[ts->
+numTy³s
+ - 1]->
+vis™s
+ = 0;
+
+34 
+ts
+->
+ty³s
+[ts->
+numTy³s
+ - 1]->
+vis™s
+ = 
+¥l™Cªdid©e
+->
+n
+;
+
+35 
+	`as£¹
+(
+¥l™Cªdid©e
+->
+side
+ =ğ
+t
+->
+roÙ
+->side);
+
+36 
+	}
+}
+
+38 
+	$assignToTy³_¡s
+(*
+void_ts
+, 
+Œ“Node
+ *
+node
+, 
+çth”Ty³
+, 
+th»shŞd
+, 
+pŞicy
+) {
+
+39 
+ty³_sy¡em
+ *
+ts
+ = (ty³_sy¡em *)
+void_ts
+;
+
+40 ià(
+çth”Ty³
+ == -1) {
+
+41 ((
+ty³_¡s
+ *)
+ts
+->
+ty³s
+[0])->
+roÙ
+ = 
+node
+;
+
+42 ((
+ty³_¡s
+ *)
+ts
+->
+ty³s
+[0])->
+bœth
+ =s->
+vis™s
+;
+
+44 
+ty³_¡s
+ *
+t
+ = (ty³_¡ *)
+ts
+->
+ty³s
+[
+çth”Ty³
+];
+
+45 ià(
+t
+->
+roÙ
+->
+subŒ“Size
+ > 
+th»shŞd
+) {
+
+49 
+Œ“Node
+ *
+ÃwF©h”
+ = 
+t
+->
+roÙ
+;
+
+50 
+Üigš®Ty³Side
+ = 
+t
+->
+roÙ
+->
+side
+;
+
+51 
+Œ“Node
+* 
+£¬chF©h”
+ = 
+node
+;
+
+52 
+£¬chF©h”
+!ğ
+t
+->
+roÙ
+){
+
+53 ià(
+£¬chF©h”
+->
+side
+ =ğ
+Üigš®Ty³Side
+){
+
+54 
+ÃwF©h”
+ = 
+£¬chF©h”
+;
+
+56 
+£¬chF©h”
+=£¬chF©h”->
+·»Á
+;
+
+58 
+	`as£¹
+(
+ÃwF©h”
+->
+side
+ =ğ
+t
+->
+roÙ
+->side);
+
+59 
+	`addTy³
+(
+ts
+,
+t
+,t->
+roÙ
+,
+ÃwF©h”
+,
+pŞicy
+);
+
+60 
+t
+->
+roÙ
+ = 
+ÃwF©h”
+;
+
+61 ià(
+pŞicy
+ =ğ
+DELETE_VMAB
+)
+
+62 
+t
+->
+vis™s
+ = 0;
+
+64 
+t
+->
+vis™s
+ = 
+ÃwF©h”
+->
+n
+;
+
+65 
+t
+->
+bœth
+ = 
+ts
+->
+vis™s
+;
+
+66 
+t
+->
+mšmax
+ = 
+ÃwF©h”
+->minmax;
+
+67 ià(
+USE_MINIMAX_REWARDS
+){
+
+68 
+t
+->
+scÜeSum
+ = 
+ÃwF©h”
+->
+mšimaxScÜeSum
+;
+
+69 
+t
+->
+vis™s
+ = 
+ÃwF©h”
+->
+mšimax_n
+;
+
+71 
+t
+->
+scÜeSum
+ = 
+ÃwF©h”
+->scoreSum;
+
+75 
+	}
+}
+
+77 
+Œ“Node
+ *
+	$£ËùFromTy³_¡s
+(*
+void_t
+, 
+C
+) {
+
+78 
+ty³_¡s
+ *
+t
+ = (ty³_¡ *)
+void_t
+;
+
+79 
+Œ“Node
+ *
+node
+ = 
+t
+->
+roÙ
+;
+
+82 
+_DOM
+->
+	`g‘GameStus
+(
+node
+->
+»p
+è=ğ
+INCOMPLETE
+ &&‚ode->
+n
+ > 0)
+
+83 
+node
+ =‚ode->
+chd»n
+[
+	`£ËùMove
+Òode, 
+C
+)];
+
+85  
+node
+;
+
+86 
+	}
+}
+
+88 
+	$de¡roy_¡s
+(*
+void_ts
+) {
+
+89 
+i
+;
+
+90 
+ty³_sy¡em
+ *
+ts
+ = (ty³_sy¡em *)
+void_ts
+;
+
+92 
+i
+ = 0; i < 
+ts
+->
+numTy³s
+; i++)
+
+93 
+	`ä“
+(
+ts
+->
+ty³s
+[
+i
+]);
+
+95 
+	`ä“
+(
+ts
+->
+ty³s
+);
+
+96 
+	}
+}
 
 	@synth.c
 
@@ -7975,17 +19849,17 @@ v®s
 šd
 ];
 
-143  
+142  
 hv®s
 ->
 deçuÉH
 ;
 
-144 
+143 
 	}
 }
 
-149 
+148 
 	$£¬chIndexOf
 (cÚ¡ 
 uid
@@ -7993,13 +19867,13 @@ uid
 id
 ){
 
-150 
+149 
 uid
  
 šd
  = 0;
 
-151 ;
+150 ;
 šd
 <
 hv®s
@@ -8007,7 +19881,7 @@ hv®s
 size
 ;ind++){
 
-152 if(
+151 if(
 hv®s
 ->
 ids
@@ -8017,25 +19891,25 @@ ids
 id
 ){
 
-153  
+152  
 šd
 ;
 
-157 
+156 
 	}
 }
 
-161 
+160 
 	$ä“Hv®s
 (){
 
-162 if(
+161 if(
 hv®s
 ==
 NULL
 ) ;
 
-163 
+162 
 	`ä“
 (
 hv®s
@@ -8043,7 +19917,7 @@ hv®s
 ids
 );
 
-164 
+163 
 	`ä“
 (
 hv®s
@@ -8051,17 +19925,17 @@ hv®s
 v®s
 );
 
-165 
+164 
 	`ä“
 (
 hv®s
 );
 
-166 
+165 
 	}
 }
 
-190 
+189 
 	$addT¿pById
 (cÚ¡ 
 uid
@@ -8075,17 +19949,17 @@ Hv®s
 h
 ){
 
-191 if(
+190 if(
 h
 ==
 NULL
 ){
 
-192 
+191 
 	`´štf
 ("H is‚ull\n");
 
-195 
+194 
 uid
  
 äom
@@ -8093,23 +19967,23 @@ uid
 to
 ;
 
-196 
+195 
 fœ¡U£
  = 
 Œue
 ;
 
-197 
+196 
 d
  = 
 k
 -1;
 
-198 
+197 
 d
 >0){
 
-199 
+198 
 uid
  
 –em’ts
@@ -8125,11 +19999,11 @@ d
 to
 );
 
-200 
+199 
 i
 =0;
 
-201 
+200 
 Œ­V®
  = 
 fœ¡U£
@@ -8141,19 +20015,19 @@ MAX_WINS
 EPS
 ;
 
-202 
+201 
 fœ¡U£
  = 
 çl£
 ;
 
-203 
+202 
 i
 =0;i<
 –em’ts
 ;i++){
 
-204 if(
+203 if(
 debuglog
 )
 	`´štf
@@ -8165,7 +20039,7 @@ i
 Œ­V®
 );
 
-205 
+204 
 	`addH
 (
 h
@@ -8177,7 +20051,7 @@ i
 Œ­V®
 );
 
-208 
+207 
 	`addH
 (
 h
@@ -8189,23 +20063,23 @@ MAX_WINS
 EPS
 );
 
-210 
+209 
 	}
 }
 
-230 
+229 
 	$g‘NumOfChd»n_syÁh
 (){
 
-231  
+230  
 b
 +1;
 
-232 
+231 
 	}
 }
 
-235 
+234 
 	$cİy_syÁh
  (
 »p_t
@@ -8215,7 +20089,7 @@ b
 de¡
 ){
 
-236 *(
+235 *(
 uid
 *)
 de¡
@@ -8223,33 +20097,33 @@ de¡
 ¤c
 ;
 
-237 
+236 
 	}
 }
 
-243 
+242 
 Hv®s
 * 
 	$š™Hv®s
 (){
 
-244 
+243 
 	`ä“Hv®s
 ();
 
-245 
+244 
 hv®s
  = 
 NULL
 ;
 
-246 if(
+245 if(
 hv®s
 ==
 NULL
 ){
 
-247 
+246 
 hv®s
  = 
 	`ü—‹Hv®s
@@ -8259,15 +20133,15 @@ DEFAULT_H_VAL
 END_GAME
 );
 
-249  &
+248  &
 hv®s
 ;
 
-250 
+249 
 	}
 }
 
-257 
+256 
 	$g’”©eRªdomS¹_syÁh
 (
 »p_t
@@ -8277,17 +20151,17 @@ hv®s
 side
 ){
 
-258 
+257 
 	`š™Hv®s
 ();
 
-259 *(
+258 *(
 uid
 *)
 »p
 =1;
 
-264 if(
+263 if(
 debuglog
 )
 	`´štHv®s
@@ -8295,17 +20169,17 @@ debuglog
 hv®s
 );
 
-266 
+265 
 	}
 }
 
-270 
+269 
 	$e¡im©eT»eSize_syÁh
 (
 Œ“Size
 ){
 
-271  
+270  
 	`pow
 (
 	`g‘NumOfChd»n_syÁh
@@ -8313,11 +20187,11 @@ hv®s
 Œ“Size
 );
 
-272 
+271 
 	}
 }
 
-276 
+275 
 	$makeMove_syÁh
 (
 »p_t
@@ -8329,17 +20203,17 @@ side
 move
 ){
 
-277 
+276 
 	`as£¹
 (
 move
 >0);
 
-278 *
+277 *
 side
  = 1^*side;
 
-279 
+278 
 uid
  
 id
@@ -8347,7 +20221,7 @@ id
 »p
 ;
 
-280 
+279 
 uid
  
 ´ed
@@ -8355,11 +20229,11 @@ uid
 succ
 ;
 
-281 
+280 
 d•th
 ;
 
-282 
+281 
 	`d•thIndexOf
 (
 id
@@ -8371,7 +20245,7 @@ d•th
 succ
 );
 
-283 
+282 
 uid
  
 v®
@@ -8387,7 +20261,7 @@ b
 move
 ;
 
-284 *(
+283 *(
 uid
 *)
 »p
@@ -8395,11 +20269,11 @@ uid
 v®
 ;
 
-285 
+284 
 	}
 }
 
-287 
+286 
 »p_t
  
 	$şÚeR•_syÁh
@@ -8409,7 +20283,7 @@ v®
 Üig
 ){
 
-288 
+287 
 uid
 * 
 »t
@@ -8417,7 +20291,7 @@ uid
 	`m®loc
 ((uid));
 
-289 *
+288 *
 »t
  = *(
 uid
@@ -8425,15 +20299,15 @@ uid
 Üig
 ;
 
-290  
+289  
 »t
 ;
 
-291 
+290 
 	}
 }
 
-293 
+292 
 	$g‘GameStus_syÁh
 (
 »p_t
@@ -8441,7 +20315,7 @@ uid
 »p
 ){
 
-294 
+293 
 »suÉ
  = 
 	`­¶yHeuri¡ics_syÁh
@@ -8455,7 +20329,7 @@ NULL
 max
 ,0);
 
-295 if(
+294 if(
 »suÉ
  =ğ
 MAX_WINS
@@ -8463,11 +20337,11 @@ MAX_WINS
 MIN_WINS
 ) {
 
-296  
+295  
 »suÉ
 ;
 
-298 
+297 
 uid
  
 ü•
@@ -8475,7 +20349,7 @@ uid
 »p
 ;
 
-299 if(
+298 if(
 ü•
  > 
 hv®s
@@ -8483,29 +20357,29 @@ hv®s
 ’dGameId
 ){
 
-300 
+299 
 uid
  
 wšD‘”mše
 ;
 
-301 if(
+300 if(
 RAND_LEAVS
 ){
 
-302 
+301 
 wšD‘”mše
  = 
 	`¿nd
 ();
 
-304 
+303 
 wšD‘”mše
  = 
 ü•
 ;
 
-306 
+305 
 v®
  = (
 wšD‘”mše
@@ -8515,7 +20389,7 @@ MAX_WINS
 MIN_WINS
 ;
 
-307 
+306 
 	`addH
 (
 hv®s
@@ -8525,19 +20399,19 @@ hv®s
 v®
 );
 
-308  
+307  
 v®
 ;
 
-311  
+310  
 INCOMPLETE
 ;
 
-312 
+311 
 	}
 }
 
-315 
+314 
 	$isV®idChd_syÁh
 (
 »p_t
@@ -8549,15 +20423,15 @@ side
 move
 ){
 
-317  
+316  
 Œue
 ;
 
-318 
+317 
 	}
 }
 
-326 
+325 
 	$­¶yHeuri¡ics_syÁh
 (
 heuri¡ics_t
@@ -8573,7 +20447,7 @@ side
 budg‘
 ){
 
-327 
+326 
 uid
  cÚ¡ 
 ü•
@@ -8581,11 +20455,11 @@ uid
 »p
 ;
 
-328 
+327 
 hV®
 =0.0;
 
-329 
+328 
 hV®
  = 
 	`g‘H
@@ -8593,7 +20467,7 @@ hV®
 ü•
 );
 
-330 if(
+329 if(
 debuglog
 )
 	`´štf
@@ -8603,15 +20477,15 @@ debuglog
 hV®
 );
 
-331  
+330  
 hV®
 ;
 
-388 
+387 
 	}
 }
 
-394 
+393 
 	$d•thIndexOf
 (cÚ¡ 
 uid
@@ -8625,27 +20499,27 @@ d•th
 suffix
 ){
 
-396 if(
+395 if(
 id
 ==1){
 
-397 *
+396 *
 ´efix
 =0;
 
-398 *
+397 *
 suffix
 =0;
 
-399 *
+398 *
 d•th
 =0;
 
-402 
+401 
 d•thS—rch
  = 0;
 
-403 
+402 
 uid
  
 accum
@@ -8653,19 +20527,19 @@ accum
 ´ev
 =1;
 
-405 
+404 
 id
  > 
 accum
 ){
 
-406 
+405 
 ´ev
  = 
 accum
 ;
 
-407 
+406 
 accum
  +ğ
 	`pow
@@ -8675,13 +20549,13 @@ b
 d•thS—rch
 ));
 
-409 *
+408 *
 d•th
  = 
 d•thS—rch
 ;
 
-410 *
+409 *
 ´efix
  = (
 id
@@ -8689,7 +20563,7 @@ id
 ´ev
 )-1;
 
-411 *
+410 *
 suffix
 ğ(
 accum
@@ -8697,27 +20571,27 @@ accum
 id
 );
 
-412 
+411 
 	}
 }
 
-417 
+416 
 »p_t
  
 	$®loÿ‹_syÁh
 (){
 
-418  
+417  
 	`m®loc
 ((
 uid
 ));
 
-419 
+418 
 	}
 }
 
-421 
+420 
 	$de¡ruùR•_syÁh
 (
 »p_t
@@ -8725,7 +20599,7 @@ uid
 »p
 ){
 
-422 
+421 
 	`ä“
 ((
 uid
@@ -8733,11 +20607,11 @@ uid
 »p
 );
 
-423 
+422 
 	}
 }
 
-431 
+430 
 	$´štHv®s
 (
 Hv®s
@@ -8745,15 +20619,15 @@ Hv®s
 hv®s
 ){
 
-432 
+431 
 i
 =0;
 
-433 
+432 
 	`´štf
 ("*********Dump 0f Hvals**********\n");
 
-434 
+433 
 	`´štf
 ("Size: %d,ƒndGameId:%d \n",
 hv®s
@@ -8763,7 +20637,7 @@ size
 ’dGameId
 );
 
-435 
+434 
 i
 =0;i<
 hv®s
@@ -8771,7 +20645,7 @@ hv®s
 size
 ;i++){
 
-436 
+435 
 	`´štf
 ("%d=%.2f\n",
 hv®s
@@ -8783,17 +20657,17 @@ i
 v®s
 [i]);
 
-438 
+437 
 	`´štf
 ("*********Dump 0f Hvals**********\n");
 
-439 
+438 
 	`fæush
 (
 ¡dout
 );
 
-440 
+439 
 	}
 }
 
@@ -8961,199 +20835,371 @@ cİy_syÁh
 de¡
 );
 
-	@uct.c
+	@tmpBFBIteration.c
 
-11 
-	~"commÚ.h
-"
+1 
+	$bfbI‹¿tiÚ
+(
+ty³_sy¡em
+ *
+ts
+, 
+C
+, 
+CT
+, 
+heuri¡ics_t
+ 
+heuri¡ic
+, 
+budg‘
+, 
+backupOp
+, 
+side
+, 
+th»shŞd
+, 
+pŞicy
+) {
 
-12 
-	~"domaš.h
-"
+2 
+i
+;
 
-15 
-DOM
-* 
+5 
+ty³Id
+ = 
+	`£ËùTy³
+(
+ts
+, 
+CT
+, 
+side
+, 
+pŞicy
+);
+
+7 ià(
+ty³Id
+ == -1)
+
+10 
+ty³
+ *
+t
+ = 
+ts
+->
+ty³s
+[
+ty³Id
+];
+
+12 
+Œ“Node
+ *
+node
+ = 
+ts
+->
+	`£ËùFromTy³
+(
+t
+, 
+C
+);
+
+14 
+»t
+;
+
+15 
+gameOv”
+ = 0;
+
+16 ià((
+»t
+ = 
 _DOM
+->
+	`g‘GameStus
+(
+node
+->
+»p
+)è!ğ
+INCOMPLETE
+) {
+
+17 
+gameOv”
+ = 1;
+
+23 ià((
+heuri¡ic
+ =ğ
+_DOM
+->
+hFunùiÚs
+.
+h3
+è|| (heuri¡iø=ğ_DOM->hFunùiÚs.
+h4
+è|| (heuri¡iø=ğ_DOM->hFunùiÚs.
+h5
+))
+
+24 
+»t
+ /ğ
+MAX_WINS
 ;
 
-16 
-debuglog
+26 
+»t
+ = 
+	`heuri¡ic
+(
+node
+->
+»p
+,‚ode->
+side
+, 
+budg‘
+);
+
+29 
+t
+->
+vis™s
+++;
+
+30 ià(
+backupOp
+ =ğ
+AVERAGE
+) {
+
+31 
+t
+->
+scÜeSum
+ =->scÜeSum + 
+»t
 ;
 
-17 
-logI‹¿tiÚ
+32 } ià(
+backupOp
+ =ğ
+MINMAX
+) {
+
+33 ià(
+t
+->
+vis™s
+ == 1)
+
+34 
+t
+->
+scÜeSum
+ = 
+»t
 ;
 
-18 
-log_this_™”©iÚ
+36 
+scÜe
+ = 
+t
+->
+scÜeSum
+ / ()Ñ->
+vis™s
+ - 1);
+
+37 ià((
+side
+ =ğ
+max
+ && 
+»t
+ > 
+scÜe
+è|| (sid=ğ
+mš
+ &&„et < score))
+
+38 
+t
+->
+scÜeSum
+ = 
+»t
+ *->
+vis™s
 ;
 
-21 
-	gdÙFÜm©
+43 
+Œ“Node
+ *
+bp
+ = 
+node
+;
+
+44 
+aboveTy³
  = 
 çl£
 ;
 
-22 
-	gid
- = 0;
-
-23 
-	gmm_CouÁ”
+45 
+bpM—n
 ;
 
-26 
-	snode
- {
-
-27 
-	mscÜeSum
-;
-
-28 
-	mn
-;
-
-29 
-	mid
-;
-
-30 
-»p_t
- 
-	m»p
-;
-
-31 
-	mside
-;
-
-32 
-node
-** 
-	mchd»n
-;
-
-35 } 
-	tŒ“Node
-;
-
-39 
-	$ä“T»e
-(
-Œ“Node
-* 
-node
-) {
-
-40 
-i
-;
-
-41 
-i
- = 1; i < 
-_DOM
-->
-	`g‘NumOfChd»n
-(); i++) {
-
-42 ià(
-node
-->
-chd»n
-[
-i
-]) {
-
-43 
-	`ä“T»e
-(
-node
-->
-chd»n
-[
-i
-]);
-
-44 
-node
-->
-chd»n
-[
-i
-] = 
+46 
+bp
+ !ğ
 NULL
-;
+) {
 
 47 
-	`ä“
-(
-node
+bp
 ->
-chd»n
-);
+n
+++;
 
-48 
-	`ä“
-(
-node
-);
-
-49 
-	}
-}
-
-52 
-	$£ËùMove
-(
-Œ“Node
-* 
-node
-, 
-C
+49 ià(
+backupOp
+ =ğ
+AVERAGE
 ) {
 
-53 
-i
-;
-
-54 
-qh©
-;
-
-55 
-scÜe
-;
-
-56 
-numBe¡Moves
- = 0;
-
-57 
-be¡ScÜe
-;
-
-58 
-be¡Moves
-[
-_DOM
+50 
+bp
 ->
-	`g‘NumOfChd»n
-()];
+scÜeSum
+ = bp->scÜeSum + 
+»t
+;
 
-63 
-muÉl›r
- = (
+52 ià(
+ts
+->
+Çme
+ =ğ
+VTS
+) {
+
+53 ià(!
+aboveTy³
+) {
+
+54 
+bp
+->
+ty³dN
+++;
+
+55 
+bp
+->
+ty³dScÜeSum
+ = bp->ty³dScÜeSum + 
+»t
+;
+
+56 
+bpM—n
+ = 
+bp
+->
+ty³dScÜeSum
+ / ()(bp->typedScoreSum);
+
+57 
+bp
+->
+sd
+ = (()(bp->
+ty³dN
+ - 2è/ ()(bp->ty³dN - 1)è* bp->sd + (
+»t
+ - 
+bpM—n
+) * (ret - bpMean) / (()bp->typedN);
+
+59 ià(
+bp
+ =ğ((
+ty³_vts
+ *)
+t
+)->
+roÙ
+)
+
+60 
+aboveTy³
+ = 
+Œue
+;
+
+63 } ià(
+backupOp
+ =ğ
+MINMAX
+) {
+
+65 ià(
+bp
+->
+n
+ == 1)
+
+66 
+bp
+->
+scÜeSum
+ = 
+»t
+;
+
+67 ià(
+gameOv”
+ =ğ1 && 
+bp
+ =ğ
 node
+)
+
+68 
+bp
+->
+scÜeSum
+ = bp->scÜeSum + 
+»t
+;
+
+70 
+be¡ScÜe
+ = (
+bp
 ->
 side
  =ğ
 max
-) ? 1 : -1;
+è? 
+MIN_WINS
+ : 
+MAX_WINS
+;
 
-65 
+71 
 i
  = 1; i < 
 _DOM
@@ -9161,7 +21207,7 @@ _DOM
 	`g‘NumOfChd»n
 (); i++) {
 
-66 if(!
+72 ià(!
 _DOM
 ->
 	`isV®idChd
@@ -9175,39 +21221,195 @@ side
 i
 ))
 
-69 ià(
-node
-->
-chd»n
-[
-i
-] =ğ
-NULL
-)
-
-70  
-i
-;
-
 74 
-qh©
- = 
+	`g’”©eChd
+(
 node
-->
-chd»n
-[
+, 
 i
-]->
-scÜeSum
- / (êode->chd»n[i]->
-n
-;
+);
 
 75 
-scÜe
+ts
+->
+	`assignToTy³
+Ñs, 
+node
+->
+chd»n
+[
+i
+], 
+ty³Id
+, 
+th»shŞd
+, 
+pŞicy
+);
+
+76 
+numOfChd»n
+++;
+
+80 
+Œ“Node
+ **
+·th
+;
+
+81 ià(
+ts
+->
+Çme
+ =ğ
+VTS
+) {
+
+82 
+·th
  = 
-qh©
- + (
+	`ÿÎoc
+(
+node
+->
+d•th
+ - ((
+ty³_vts
+ *)
+t
+)->
+roÙ
+->d•th, (
+Œ“Node
+ *));
+
+83 ((
+ty³_vts
+ *)
+t
+)->
+size
+ = (Ñy³_vt *é)->siz+ 
+numOfChd»n
+;
+
+86 
+i
+ = 0;
+
+87 
+bp
+ = 
+node
+;
+
+88 
+bp
+ !ğ
+NULL
+) {
+
+89 
+bp
+->
+subŒ“Size
+ = bp->subŒ“Siz+ 
+numOfChd»n
+;
+
+90 
+bp
+ = bp->
+·»Á
+;
+
+92 ià(
+ts
+->
+Çme
+ =ğ
+VTS
+) {
+
+93 ià(
+bp
+ =ğ((
+ty³_vts
+ *)
+t
+)->
+roÙ
+)
+
+94 
+i
+ = -1;
+
+95 ià(
+i
+ != -1)
+
+96 
+·th
+[
+i
+++] = 
+bp
+;
+
+100 ià(
+ts
+->
+Çme
+ =ğ
+VTS
+) {
+
+101 
+	`ty³Signifiÿnû
+(
+ts
+, (
+ty³_vts
+ *)
+t
+, 
+·th
+);
+
+102 
+	`ä“
+(
+·th
+);
+
+	@type.c
+
+1 
+	~"ty³.h
+"
+
+2 
+	#SIMPLE_REGRET_UCT
+ 1
+
+	)
+
+9 
+	$uùEx¶Ü©iÚ
+(
+muÉl›r
+, 
+C
+, 
+Œ“Node
+* 
+node
+, 
+i
+){
+
+10  (
 muÉl›r
  * 
 C
@@ -9225,7 +21427,179 @@ chd»n
 i
 ]->n);
 
-79 
+11 
+	}
+}
+
+15 
+	$uùEx¶Ü©iÚSim¶eReg»t
+(
+muÉl›r
+, 
+C
+, 
+Œ“Node
+* 
+node
+, 
+i
+){
+
+16  
+	`sq¹
+((
+muÉl›r
+ * 
+C
+è* sq¹(
+node
+->
+n
+)/(êode->
+chd»n
+[
+i
+]->n);
+
+17 
+	}
+}
+
+21 
+	$£ËùMove
+(
+Œ“Node
+* 
+node
+, 
+C
+) {
+
+22 
+i
+;
+
+23 
+qh©
+;
+
+24 
+scÜe
+;
+
+25 
+numBe¡Moves
+ = 0;
+
+26 
+be¡ScÜe
+;
+
+27 
+be¡Moves
+[
+_DOM
+->
+	`g‘NumOfChd»n
+()];
+
+31 
+muÉl›r
+ = (
+node
+->
+side
+ =ğ
+max
+) ? 1 : -1;
+
+32 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+33 ià(!
+_DOM
+->
+	`isV®idChd
+(
+node
+->
+»p
+,‚ode->
+side
+, 
+i
+))
+
+36 ià(
+node
+->
+chd»n
+[
+i
+]->
+n
+ == 0)
+
+37  
+i
+;
+
+40 
+qh©
+ = 
+node
+->
+chd»n
+[
+i
+]->
+scÜeSum
+ / (êode->chd»n[i]->
+n
+;
+
+41 ià(
+SIMPLE_REGRET_UCT
+){
+
+42 
+scÜe
+ = 
+qh©
+ + 
+	`uùEx¶Ü©iÚSim¶eReg»t
+(
+muÉl›r
+,
+C
+,
+node
+,
+i
+);
+
+44 
+scÜe
+ = 
+qh©
+ + 
+	`uùEx¶Ü©iÚ
+(
+muÉl›r
+,
+C
+,
+node
+,
+i
+);
+
+48 
 scÜe
  = (
 node
@@ -9235,7 +21609,1845 @@ side
 mš
 ) ? -score : score;
 
-80 if(
+50 ià((
+numBe¡Moves
+ =ğ0è|| (
+scÜe
+ > 
+be¡ScÜe
+)) {
+
+51 
+be¡Moves
+[0] = 
+i
+;
+
+52 
+be¡ScÜe
+ = 
+scÜe
+;
+
+53 
+numBe¡Moves
+ = 1;
+
+55 ià(
+scÜe
+ =ğ
+be¡ScÜe
+)
+
+56 
+be¡Moves
+[
+numBe¡Moves
+++] = 
+i
+;
+
+58  
+be¡Moves
+[0];
+
+59 
+	}
+}
+
+62 *
+	$š™_ty³_sy¡em
+(
+t
+, 
+»p_t
+ 
+»p
+, 
+side
+) {
+
+63 
+ty³_sy¡em
+ *
+ts
+ = 
+	`ÿÎoc
+(1, (type_system));
+
+65 
+t
+) {
+
+66 
+MM_ORACLE
+:
+
+67 
+ts
+->
+Çme
+ = 
+MM_ORACLE
+;
+
+68 
+ts
+->
+assignToTy³
+ = 
+assignToTy³_mmO¿şe
+;
+
+69 
+ts
+->
+£ËùFromTy³
+ = 
+£ËùFromTy³_mmO¿şe
+;
+
+70 
+ts
+->
+de¡roy
+ = 
+de¡roy_mmO¿şe
+;
+
+72 
+ts
+->
+numTy³s
+ = 
+MAX_WINS
+ * 2 + 1;
+
+73 
+ts
+->
+ty³s
+ = 
+	`ÿÎoc
+Ñs->
+numTy³s
+, (
+ty³_mmO¿şe
+ *));
+
+75 
+i
+;
+
+76 
+i
+ = 0; i < 
+ts
+->
+numTy³s
+; i++) {
+
+77 
+ts
+->
+ty³s
+[
+i
+] = 
+	`ÿÎoc
+(1, (
+ty³_mmO¿şe
+));
+
+78 ((
+ty³_mmO¿şe
+ *)
+ts
+->
+ty³s
+[
+i
+])->
+em±y
+ = -1;
+
+81 
+ts
+->
+exŒa
+ = 
+	`ÿÎoc
+(1, ());
+
+82 *(*)(
+ts
+->
+exŒa
+èğ
+	`İ’
+(
+ORACLE_PATH
+, 
+O_CREAT
+ | 
+O_TRUNC
+ | 
+O_RDWR
+, 
+S_IRWXU
+);
+
+83 
+	`¡ÜeMšimax
+(*(*)(
+ts
+->
+exŒa
+), 
+»p
+, 0, 
+ORACLE_DEPTH
+, 
+side
+, 
+ORACLE_H
+, 0);
+
+86 
+STS
+:
+
+87 
+ts
+->
+Çme
+ = 
+STS
+;
+
+88 
+ts
+->
+assignToTy³
+ = 
+assignToTy³_¡s
+;
+
+89 
+ts
+->
+£ËùFromTy³
+ = 
+£ËùFromTy³_¡s
+;
+
+90 
+ts
+->
+de¡roy
+ = 
+de¡roy_¡s
+;
+
+91 
+ts
+->
+numTy³s
+ = 1;
+
+92 
+ts
+->
+ty³s
+ = 
+	`ÿÎoc
+Ñs->
+numTy³s
+, (
+ty³_¡s
+ *));
+
+93 
+ts
+->
+ty³s
+[0] = 
+	`ÿÎoc
+(1, (
+ty³_¡s
+));
+
+96 
+VTS
+:
+
+97 
+ts
+->
+Çme
+ = 
+VTS
+;
+
+98 
+ts
+->
+assignToTy³
+ = 
+assignToTy³_vts
+;
+
+99 
+ts
+->
+£ËùFromTy³
+ = 
+£ËùFromTy³_vts
+;
+
+100 
+ts
+->
+de¡roy
+ = 
+de¡roy_vts
+;
+
+102 
+ts
+->
+numTy³s
+ = 1;
+
+103 
+ts
+->
+ty³s
+ = 
+	`ÿÎoc
+Ñs->
+numTy³s
+, (
+ty³_vts
+ *));
+
+104 
+ts
+->
+ty³s
+[0] = 
+	`ÿÎoc
+(1, (
+ty³_vts
+));
+
+107  
+ts
+;
+
+108 
+	}
+}
+
+	@type.h
+
+1 #iâdeà
+TYPE_H
+
+
+2 
+	#TYPE_H
+
+
+	)
+
+3 
+	~"commÚ.h
+"
+
+4 
+	~"domaš.h
+"
+
+6 
+	#ORACLE_DEPTH
+ 12
+
+	)
+
+7 
+	#ORACLE_PATH
+ "MMV®ues.txt"
+
+	)
+
+9 
+	#ORACLE_H
+ 
+_DOM
+->
+hFunùiÚs
+.
+h2
+
+
+	)
+
+11 
+	#ORACLE_MISSING_H
+(
+x
+,
+y
+è
+_DOM
+->
+hFunùiÚs
+.
+	`h2
+(x, y, 1)
+
+	)
+
+13 
+DOM
+* 
+_DOM
+;
+
+16 
+	snode
+ {
+
+17 
+	mscÜeSum
+;
+
+18 
+	mty³dScÜeSum
+;
+
+19 
+	msd
+;
+
+20 
+	mn
+;
+
+21 
+	mty³dN
+;
+
+22 
+	mid
+;
+
+23 
+	md•th
+;
+
+24 
+	msubŒ“Size
+;
+
+25 
+	mty³dSubŒ“Size
+;
+
+26 
+»p_t
+ 
+	m»p
+;
+
+27 
+	mside
+;
+
+28 
+	mty³Defš”
+;
+
+29 
+	mmšmax
+;
+
+30 
+node
+ *
+	m·»Á
+;
+
+31 
+node
+** 
+	mchd»n
+;
+
+34 
+	mmšimaxScÜeSum
+;
+
+35 
+	mmšimax_n
+;
+
+36 } 
+	tŒ“Node
+;
+
+40 
+	mscÜeSum
+;
+
+41 
+	mvis™s
+;
+
+42 
+	mbœth
+;
+
+43 
+	mmšmax
+;
+
+44 } 
+	tty³
+;
+
+48 
+	mscÜeSum
+;
+
+49 
+	mvis™s
+;
+
+50 
+	mbœth
+;
+
+51 
+	mmšmax
+;
+
+54 
+Œ“Node
+ **
+	mİ’Li¡
+;
+
+55 
+	mÿ·c™y
+;
+
+56 
+	m
+;
+
+57 
+	mem±y
+;
+
+58 
+	msize
+;
+
+59 } 
+	tty³_mmO¿şe
+;
+
+63 
+	mscÜeSum
+;
+
+64 
+	mvis™s
+;
+
+65 
+	mbœth
+;
+
+66 
+	mmšmax
+;
+
+68 
+Œ“Node
+ *
+	mroÙ
+;
+
+69 } 
+	tty³_¡s
+;
+
+73 
+	mscÜeSum
+;
+
+74 
+	mvis™s
+;
+
+75 
+	mbœth
+;
+
+76 
+	mmšmax
+;
+
+79 
+Œ“Node
+ *
+	mroÙ
+;
+
+80 } 
+	tty³_vts
+;
+
+82 (*
+	tassignToTy³_func
+)(*
+	tvoid_ts
+, 
+	tŒ“Node
+ *
+	tnode
+, 
+	tçth”Ty³
+, 
+	tth»shŞd
+, 
+	tpŞicy
+);
+
+83 
+Œ“Node
+ *(*
+	t£ËùFromTy³_func
+)(*
+	tvoid_t
+, 
+	tC
+);
+
+84 (*
+	tde¡roy_func
+)(*
+	tvoid_ts
+);
+
+87 
+Çme
+;
+
+88 
+ty³
+ **
+ty³s
+;
+
+89 
+numTy³s
+;
+
+90 *
+exŒa
+;
+
+91 
+vis™s
+;
+
+93 
+assignToTy³_func
+ 
+assignToTy³
+;
+
+94 
+£ËùFromTy³_func
+ 
+£ËùFromTy³
+;
+
+95 
+de¡roy_func
+ 
+de¡roy
+;
+
+96 } 
+	tty³_sy¡em
+;
+
+99 *
+	`š™_ty³_sy¡em
+(
+t
+, 
+»p_t
+ 
+»p
+, 
+side
+);
+
+100 
+	`de¡royTy³Sy¡em
+(*
+void_ts
+);
+
+101 
+	`£ËùMove
+(
+Œ“Node
+* 
+node
+, 
+C
+);
+
+104 
+	`ty³Signifiÿnû
+(
+ty³_sy¡em
+ *
+ts
+, 
+ty³_vts
+ *
+ty³
+, 
+Œ“Node
+ **
+·th
+);
+
+105 
+	`assignToTy³_vts
+(*
+void_ts
+, 
+Œ“Node
+ *
+node
+, 
+çth”Ty³
+, 
+th»shŞd
+, 
+pŞicy
+);
+
+106 
+Œ“Node
+ *
+	`£ËùFromTy³_vts
+(*
+void_t
+, 
+C
+);
+
+107 
+	`de¡roy_vts
+(*
+void_ts
+);
+
+110 
+	`assignToTy³_¡s
+(*
+void_ts
+, 
+Œ“Node
+ *
+node
+, 
+çth”Ty³
+, 
+th»shŞd
+, 
+pŞicy
+);
+
+111 
+Œ“Node
+ *
+	`£ËùFromTy³_¡s
+(*
+void_t
+, 
+C
+);
+
+112 
+	`de¡roy_¡s
+(*
+void_ts
+);
+
+115 
+	`¡ÜeMšimax
+(
+fd
+, 
+»p_t
+ 
+»p
+, 
+£¬chD•th
+, 
+d•th
+, 
+side
+, 
+heuri¡ics_t
+ 
+heuri¡ic
+, 
+budg‘
+);
+
+116 
+	`assignToTy³_mmO¿şe
+(*
+void_ts
+, 
+Œ“Node
+ *
+node
+, 
+çth”Ty³
+, 
+th»shŞd
+, 
+pŞicy
+);
+
+117 
+Œ“Node
+ *
+	`£ËùFromTy³_mmO¿şe
+(*
+void_t
+, 
+C
+);
+
+118 
+	`de¡roy_mmO¿şe
+(*
+void_ts
+);
+
+	@type_reachability.c
+
+1 
+	~"ty³_»achab™y.h
+"
+
+7 
+	$´obV®ue
+(
+difã»nû
+, 
+be¡Sd
+, 
+mySd
+,
+bŞzmªCÚ¡ªt
+){
+
+8 if(
+difã»nû
+ > 0 || 
+	`çbs
+(difference) <0.0001){
+
+13 
+ba£
+ = 2.71828;
+
+14 
+d–T
+ = 
+	`sq¹
+(2*(
+	`pow
+(
+mySd
+,2)+pow(
+be¡Sd
+,2)));
+
+15 
+c
+ = 
+	`pow
+(
+ba£
+,
+bŞzmªCÚ¡ªt
+ *(-
+difã»nû
+/
+d–T
+));
+
+17  
+c
+;
+
+18 
+	}
+}
+
+27 
+bŞzmª_¬gs
+ 
+	$mšDiff
+(
+Œ“Node
+* 
+n
+){
+
+28 
+Œ“Node
+* 
+·»Á
+ = 
+n
+->parent;
+
+29 
+side
+ = 
+n
+->side;
+
+30 
+be¡
+ = (
+side
+ =ğ
+max
+)? -
+INF
+ : INF;
+
+31 
+be¡Sd
+;
+
+32 
+i
+;
+
+33 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+34 
+Œ“Node
+* 
+chd
+ = 
+·»Á
+->
+chd»n
+[
+i
+];
+
+35 ià(!
+chd
+)
+
+37 
+chdV®ue
+ = 
+chd
+->
+scÜeSum
+/chd->
+n
+;
+
+38 ià((
+side
+==
+max
+ && 
+chdV®ue
+ > 
+be¡
+) ||
+
+39 (
+side
+==
+mš
+ && 
+chdV®ue
+ < 
+be¡
+)) {
+
+40 
+be¡
+ = 
+chdV®ue
+;
+
+41 
+be¡Sd
+ = 
+chd
+->
+sd
+;
+
+44 
+nv®ue
+ = 
+n
+->
+scÜeSum
+/n->n;
+
+45 
+d–
+ = (
+nv®ue
+ - 
+be¡
+è* ((
+side
+ =ğ
+max
+)?1:-1);
+
+46 
+bŞzmª_¬gs
+ 
+¬gs
+ = {
+d–
+, 
+be¡Sd
+, 
+n
+->
+sd
+};
+
+48  
+¬gs
+;
+
+49 
+	}
+}
+
+56 
+	$ÿlcuÏ‹Ty³R—chab™y
+(
+ty³
+* 
+t
+,
+bŞzmªCÚ¡ªt
+ ){
+
+57 
+c
+ =1.0;
+
+58 
+Œ“Node
+* 
+n
+ = ((
+ty³_¡s
+*)
+t
+)->
+roÙ
+;
+
+59 
+n
+->
+·»Á
+ !ğ
+NULL
+){
+
+60 
+bŞzmª_¬gs
+ 
+¬gs
+ =
+	`mšDiff
+(
+n
+);
+
+61 
+c
+*ğ
+	`´obV®ue
+(
+¬gs
+.
+difã»nû
+,‡rgs.
+be¡Sd
+,‡rgs.
+mySd
+,
+bŞzmªCÚ¡ªt
+);
+
+62 
+n
+ =‚->
+·»Á
+;
+
+64  
+c
+;
+
+65 
+	}
+}
+
+70 
+	$couÁLev–Node
+(
+Œ“Node
+* 
+n
+){
+
+71 
+Ëv–
+ = 0;
+
+72 
+n
+->
+·»Á
+ !ğ
+NULL
+){
+
+73 
+Ëv–
+++;
+
+74 
+n
+ =‚->
+·»Á
+;
+
+76  
+Ëv–
+;
+
+78 
+	}
+}
+
+83 
+	$couÁLev–
+(
+ty³
+* 
+t
+){
+
+84  
+	`couÁLev–Node
+(((
+ty³_¡s
+*)
+t
+)->
+roÙ
+);
+
+85 
+	}
+}
+
+92 
+	$ÿlcuÏ‹SideOfTy³
+(
+ty³
+* 
+t
+){
+
+93 
+Œ“Node
+* 
+n
+ = ((
+ty³_¡s
+*)
+t
+)->
+roÙ
+;
+
+94  
+n
+->
+side
+;
+
+95 
+	}
+}
+
+101 
+	$mšmaxLev–
+(
+Œ“Node
+* 
+n
+){
+
+102 
+n
+->
+·»Á
+ !ğ
+NULL
+){
+
+103 if(
+	`mšDiff
+(
+n
+).
+difã»nû
+<0){
+
+106 
+n
+ =‚->
+·»Á
+;
+
+108  
+	`couÁLev–Node
+(
+n
+);
+
+109 
+	}
+}
+
+113 
+	$av”ageV®ueOfAÎTy³s
+(
+ty³_sy¡em
+* 
+ts
+)
+
+115 
+i
+;
+
+116 
+r
+ = 0;
+
+117 
+n
+=0;
+
+118 
+i
+ = 0; i < 
+ts
+->
+numTy³s
+; i++) {
+
+119 if(((
+ty³_¡s
+*)
+ts
+->
+ty³s
+[
+i
+])->
+vis™s
+>0){
+
+120 
+r
++=(
+ts
+->
+ty³s
+[
+i
+]->
+scÜeSum
+/((
+ty³_¡s
+*és->ty³s[i])->
+vis™s
+);
+
+121 
+n
+++;
+
+124  
+n
+>0?(
+r
+/n):1.0;
+
+125 
+	}
+}
+
+130 
+	$ÿlcQh©Ba£dOnMšimax
+(
+ty³_sy¡em
+ *
+ts
+, 
+i
+)
+
+132  
+ts
+->
+ty³s
+[
+i
+]->
+scÜeSum
+ / ()((
+ty³_¡s
+*és->ty³s[i])->
+vis™s
+;
+
+133 
+	}
+}
+
+	@type_reachability.h
+
+1 
+	~"commÚ.h
+"
+
+2 
+	~"ty³.h
+"
+
+4 
+	sbŞzmª_¬gs_s
+ {
+
+5 
+	mdifã»nû
+;
+
+6 
+	mbe¡Sd
+;
+
+7 
+	mmySd
+;
+
+8 } 
+	tbŞzmª_¬gs
+;
+
+10 
+´obV®ue
+(
+difã»nû
+, , ,);
+
+11 
+bŞzmª_¬gs
+ 
+mšDiff
+(
+Œ“Node
+* 
+n
+);
+
+12 
+ÿlcuÏ‹Ty³R—chab™y
+(
+ty³
+* 
+t
+,);
+
+13 
+couÁLev–Node
+(
+Œ“Node
+* 
+n
+);
+
+14 
+couÁLev–
+(
+ty³
+* 
+t
+);
+
+15 
+ÿlcuÏ‹SideOfTy³
+(
+ty³
+* 
+t
+);
+
+16 
+mšmaxLev–
+(
+Œ“Node
+* 
+n
+);
+
+17 
+av”ageV®ueOfAÎTy³s
+(
+ty³_sy¡em
+* 
+ts
+);
+
+18 
+ÿlcQh©Ba£dOnMšimax
+(
+ty³_sy¡em
+ *
+ts
+, 
+i
+);
+
+	@uct.c
+
+6 
+	~"commÚ.h
+"
+
+7 
+	~"domaš.h
+"
+
+8 
+	#SIMPLE_REGRET_UCT
+ 1
+
+9 
+
+	)
+
+10 
+DOM
+* 
+_DOM
+;
+
+11 
+debuglog
+;
+
+12 
+logI‹¿tiÚ
+;
+
+13 
+log_this_™”©iÚ
+;
+
+16 
+	gdÙFÜm©
+ = 
+çl£
+;
+
+17 
+	gid
+ = 0;
+
+18 
+	gmm_CouÁ”
+;
+
+21 
+	snode
+ {
+
+22 
+	mscÜeSum
+;
+
+23 
+	mn
+;
+
+24 
+	mid
+;
+
+25 
+»p_t
+ 
+	m»p
+;
+
+26 
+	mside
+;
+
+27 
+node
+** 
+	mchd»n
+;
+
+30 } 
+	tŒ“Node
+;
+
+34 
+	$ä“T»e
+(
+Œ“Node
+* 
+node
+) {
+
+35 
+i
+;
+
+36 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+37 ià(
+node
+->
+chd»n
+[
+i
+]) {
+
+38 
+	`ä“T»e
+(
+node
+->
+chd»n
+[
+i
+]);
+
+39 
+node
+->
+chd»n
+[
+i
+] = 
+NULL
+;
+
+42 
+_DOM
+->
+	`de¡ruùR•
+(
+node
+->
+»p
+);
+
+43 
+	`ä“
+(
+node
+->
+chd»n
+);
+
+44 
+	`ä“
+(
+node
+);
+
+45 
+	}
+}
+
+49 
+	$uùEx¶Ü©iÚ
+(
+muÉl›r
+, 
+C
+, 
+Œ“Node
+* 
+node
+, 
+i
+){
+
+50  (
+muÉl›r
+ * 
+C
+è* 
+	`sq¹
+(
+	`log
+(
+node
+->
+n
+è/ (êode->
+chd»n
+[
+i
+]->n);
+
+51 
+	}
+}
+
+55 
+	$uùEx¶Ü©iÚSim¶eReg»t
+(
+muÉl›r
+, 
+C
+, 
+Œ“Node
+* 
+node
+, 
+i
+){
+
+56  
+	`sq¹
+((
+muÉl›r
+ * 
+C
+è* sq¹(
+node
+->
+n
+)/(êode->
+chd»n
+[
+i
+]->n);
+
+57 
+	}
+}
+
+60 
+	$£ËùMove
+(
+Œ“Node
+* 
+node
+, 
+C
+, 
+isSim¶eReg»t
+) {
+
+61 
+i
+;
+
+62 
+qh©
+;
+
+63 
+scÜe
+;
+
+64 
+numBe¡Moves
+ = 0;
+
+65 
+be¡ScÜe
+;
+
+66 
+be¡Moves
+[
+_DOM
+->
+	`g‘NumOfChd»n
+()];
+
+71 
+muÉl›r
+ = (
+node
+->
+side
+ =ğ
+max
+) ? 1 : -1;
+
+73 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+74 if(!
+_DOM
+->
+	`isV®idChd
+(
+node
+->
+»p
+,‚ode->
+side
+, 
+i
+))
+
+77 ià(
+node
+->
+chd»n
+[
+i
+] =ğ
+NULL
+)
+
+78  
+i
+;
+
+82 
+qh©
+ = 
+node
+->
+chd»n
+[
+i
+]->
+scÜeSum
+ / (êode->chd»n[i]->
+n
+;
+
+83 ià(
+isSim¶eReg»t
+){
+
+84 
+scÜe
+ = 
+qh©
+ + 
+	`uùEx¶Ü©iÚSim¶eReg»t
+(
+muÉl›r
+,
+C
+,
+node
+,
+i
+);
+
+86 
+scÜe
+ = 
+qh©
+ + 
+	`uùEx¶Ü©iÚ
+(
+muÉl›r
+,
+C
+,
+node
+,
+i
+);
+
+90 
+scÜe
+ = (
+node
+->
+side
+ =ğ
+mš
+) ? -score : score;
+
+91 if(
 debuglog
 )
 	`´štf
@@ -9255,7 +23467,7 @@ scÜeSum
 scÜe
 );
 
-82 ià((
+93 ià((
 numBe¡Moves
  =ğ0è|| (
 scÜe
@@ -9263,29 +23475,29 @@ scÜe
 be¡ScÜe
 )) {
 
-83 
+94 
 be¡Moves
 [0] = 
 i
 ;
 
-84 
+95 
 be¡ScÜe
  = 
 scÜe
 ;
 
-85 
+96 
 numBe¡Moves
  = 1;
 
-87 ià(
+98 ià(
 scÜe
  =ğ
 be¡ScÜe
 )
 
-88 
+99 
 be¡Moves
 [
 numBe¡Moves
@@ -9293,31 +23505,31 @@ numBe¡Moves
 i
 ;
 
-91 
+102 
 cho£nBe¡Move
  = 
 be¡Moves
 [0];
 
-93 if(
+104 if(
 logI‹¿tiÚ
 ){
 
-94 
+105 
 	`´štf
 ("%f: ",
 be¡ScÜe
 );
 
-97  
+108  
 cho£nBe¡Move
 ;
 
-98 
+109 
 	}
 }
 
-102 
+113 
 	$uùRecur£
 (
 Œ“Node
@@ -9333,29 +23545,31 @@ heuri¡ic
 budg‘
 , 
 backupOp
+ , 
+isRoÙ
 ) {
 
-103 
+114 
 »t
 ;
 
-104 
+115 
 move
 ;
 
-105 
+116 
 i
 ;
 
-106 
+117 
 be¡ScÜe
 ;
 
-107 
+118 
 scÜe
 ;
 
-108 
+119 
 	`as£¹
 (
 node
@@ -9363,7 +23577,7 @@ node
 NULL
 );
 
-109 ià((
+120 ià((
 »t
  = 
 _DOM
@@ -9377,7 +23591,7 @@ node
 INCOMPLETE
 ) {
 
-115 ià((
+126 ià((
 heuri¡ic
  =ğ
 _DOM
@@ -9391,13 +23605,13 @@ h4
 h5
 ))
 
-116 
+127 
 »t
  /ğ
 MAX_WINS
 ;
 
-117 ià((
+128 ià((
 dÙFÜm©
 è&& (
 node
@@ -9405,50 +23619,12 @@ node
 n
  == 0))
 
-118 
+129 
 	`´štf
 ("n%d [cŞÜ=\"»d\"];", 
 node
 ->
 id
-);
-
-121 (
-node
-->
-n
-)++;
-
-122 
-node
-->
-scÜeSum
- +ğ
-»t
-;
-
-124  
-»t
-;
-
-126 ià(
-node
-->
-n
- == 0) {
-
-129 
-»t
- = 
-	`heuri¡ic
-(
-node
-->
-»p
- ,‚ode->
-side
-, 
-budg‘
 );
 
 131 (
@@ -9469,7 +23645,45 @@ scÜeSum
 »t
 ;
 
+135 ià(
+node
+->
+n
+ == 0) {
+
 138 
+»t
+ = 
+	`heuri¡ic
+(
+node
+->
+»p
+ ,‚ode->
+side
+, 
+budg‘
+);
+
+140 (
+node
+->
+n
+)++;
+
+141 
+node
+->
+scÜeSum
+ +ğ
+»t
+;
+
+142  
+»t
+;
+
+147 
 move
  = 
 	`£ËùMove
@@ -9477,9 +23691,15 @@ move
 node
 , 
 C
+, 
+SIMPLE_REGRET_UCT
+?
+isRoÙ
+:
+çl£
 );
 
-141 ià(
+149 ià(
 node
 ->
 chd»n
@@ -9489,11 +23709,11 @@ move
 NULL
 ) {
 
-142 
+150 
 mm_CouÁ”
 ++;
 
-143 
+151 
 node
 ->
 chd»n
@@ -9505,7 +23725,7 @@ move
 	`ÿÎoc
 (1, (treeNode));
 
-144 
+152 
 node
 ->
 chd»n
@@ -9521,7 +23741,7 @@ _DOM
 	`g‘NumOfChd»n
 (), (treeNode*));
 
-145 
+153 
 node
 ->
 chd»n
@@ -9535,7 +23755,7 @@ _DOM
 	`şÚeR•
 (node->rep);
 
-146 
+154 
 node
 ->
 chd»n
@@ -9545,11 +23765,11 @@ move
 side
  =‚ode->side;
 
-147 ià(
+155 ià(
 dÙFÜm©
 ) {
 
-148 
+156 
 node
 ->
 chd»n
@@ -9559,7 +23779,7 @@ move
 id
  = ++id;
 
-149 
+157 
 	`´štf
 ("n%d ->‚%d;\n", 
 node
@@ -9567,7 +23787,7 @@ node
 id
 , id);
 
-153 
+161 
 _DOM
 ->
 	`makeMove
@@ -9583,7 +23803,7 @@ move
 side
 ), move);
 
-154 if(
+162 if(
 debuglog
 )
 	`´štf
@@ -9591,7 +23811,7 @@ debuglog
 move
 );
 
-158 
+166 
 »t
  = 
 	`uùRecur£
@@ -9609,21 +23829,23 @@ heuri¡ic
 budg‘
 , 
 backupOp
+,
+çl£
 );
 
-161 ià(
+169 ià(
 backupOp
  =ğ
 AVERAGE
 ) {
 
-162 (
+170 (
 node
 ->
 n
 )++;
 
-163 
+171 
 node
 ->
 scÜeSum
@@ -9631,19 +23853,19 @@ scÜeSum
 »t
 ;
 
-165 ià(
+173 ià(
 backupOp
  =ğ
 MINMAX
 ) {
 
-166 (
+174 (
 node
 ->
 n
 )++;
 
-167 
+175 
 be¡ScÜe
  = (
 node
@@ -9657,7 +23879,7 @@ MIN_WINS
 MAX_WINS
 ;
 
-169 
+177 
 i
  = 1; i < 
 _DOM
@@ -9665,7 +23887,7 @@ _DOM
 	`g‘NumOfChd»n
 (); i++) {
 
-170 ià(
+178 ià(
 node
 ->
 chd»n
@@ -9673,7 +23895,7 @@ chd»n
 i
 ]) {
 
-171 
+179 
 scÜe
  = 
 node
@@ -9687,7 +23909,7 @@ scÜeSum
 n
 ;
 
-172 iàĞ((
+180 iàĞ((
 node
 ->
 side
@@ -9699,7 +23921,7 @@ scÜe
 be¡ScÜe
 ))
 
-173 || ((
+181 || ((
 node
 ->
 side
@@ -9711,13 +23933,13 @@ scÜe
 be¡ScÜe
 )))
 
-174 
+182 
 be¡ScÜe
  = 
 scÜe
 ;
 
-178 
+186 
 node
 ->
 scÜeSum
@@ -9727,23 +23949,23 @@ n
 be¡ScÜe
 ;
 
-181 
+189 
 	`puts
 ("Invalid back-up operator!");
 
-182 
+190 
 	`ex™
 (1);
 
-185  
+193  
 »t
 ;
 
-186 
+194 
 	}
 }
 
-192 
+200 
 	$makeUCTMove
 (
 »p_t
@@ -9757,7 +23979,7 @@ numI‹¿tiÚs
 C
 ,
 
-193 
+201 
 heuri¡ics_t
  
 heuri¡ic
@@ -9765,7 +23987,7 @@ heuri¡ic
 budg‘
 ,
 
-194 * 
+202 * 
 be¡Moves
 , * 
 numBe¡Moves
@@ -9773,41 +23995,41 @@ numBe¡Moves
 backupOp
 ) {
 
-195 
+203 
 i
 ;
 
-196 
+204 
 v®
 ;
 
-197 
+205 
 be¡Move
  = 
 NULL_MOVE
 ;
 
-198 
+206 
 be¡ScÜe
 ;
 
-199 
+207 
 Œ“Node
 * 
 roÙNode
 ;
 
-200 *
+208 *
 numBe¡Moves
  = 0;
 
-201 if(
+209 if(
 debuglog
 )
 	`puts
 ("UCT");
 
-203 
+211 
 roÙNode
  = (
 Œ“Node
@@ -9815,7 +24037,7 @@ roÙNode
 	`ÿÎoc
 (1, (treeNode));
 
-204 
+212 
 roÙNode
 ->
 »p
@@ -9825,13 +24047,13 @@ _DOM
 	`şÚeR•
 (rep);
 
-205 
+213 
 roÙNode
 ->
 side
  = *side;
 
-206 
+214 
 roÙNode
 ->
 chd»n
@@ -9845,51 +24067,13 @@ _DOM
 	`g‘NumOfChd»n
 (), (treeNode*));
 
-209 
+217 
 i
  = 0; i < 
 numI‹¿tiÚs
 ; i++){
 
-210 if(
-debuglog
-)
-	`´štf
-("UCT:I‹¿tiÚ: %d\n",
-i
-);
-
-211 if(
-i
-==
-log_this_™”©iÚ
-){
-
-212 
-debuglog
-=
-Œue
-;
-
-213 
-logI‹¿tiÚ
-=
-Œue
-;
-
-216 
-debuglog
-=
-çl£
-;
-
-217 
-logI‹¿tiÚ
-=
-çl£
-;
-
-219 
+218 
 	`uùRecur£
 (
 roÙNode
@@ -9901,9 +24085,11 @@ heuri¡ic
 budg‘
 , 
 backupOp
+, 
+Œue
 );
 
-224 
+223 
 i
  = 1; i < 
 _DOM
@@ -9911,7 +24097,7 @@ _DOM
 	`g‘NumOfChd»n
 (); i++) {
 
-225 ià(!
+224 ià(!
 _DOM
 ->
 	`isV®idChd
@@ -9923,7 +24109,7 @@ side
 i
 ))
 
-228 ià(!
+227 ià(!
 roÙNode
 ->
 chd»n
@@ -9931,7 +24117,7 @@ chd»n
 i
 ])
 
-232 
+231 
 v®
  = 
 roÙNode
@@ -9945,7 +24131,7 @@ scÜeSum
 n
 ;
 
-236 
+235 
 v®
  = (*
 side
@@ -9953,7 +24139,7 @@ side
 mš
 ) ? -val : val;
 
-239 ià((*
+238 ià((*
 numBe¡Moves
  =ğ0è|| (
 v®
@@ -9961,29 +24147,29 @@ v®
 be¡ScÜe
 )) {
 
-240 
+239 
 be¡Moves
 [0] = 
 i
 ;
 
-241 
+240 
 be¡ScÜe
  = 
 v®
 ;
 
-242 *
+241 *
 numBe¡Moves
  = 1;
 
-244 ià(
+243 ià(
 v®
  =ğ
 be¡ScÜe
 )
 
-245 
+244 
 be¡Moves
 [(*
 numBe¡Moves
@@ -9991,11 +24177,11 @@ numBe¡Moves
 i
 ;
 
-247 ià(
+246 ià(
 v”bo£
 )
 
-248 
+247 
 	`´štf
 ("Mov# %d -- V®u%f, CouÁ %d\n", 
 i
@@ -10013,13 +24199,13 @@ chd»n
 n
 );
 
-252 
+251 
 	`as£¹
 (*
 numBe¡Moves
  != 0);
 
-253 
+252 
 be¡Move
  = 
 be¡Moves
@@ -10029,7 +24215,7 @@ be¡Moves
 numBe¡Moves
 ];
 
-254 
+253 
 _DOM
 ->
 	`makeMove
@@ -10041,11 +24227,11 @@ side
 be¡Move
 );
 
-256 ià(
+255 ià(
 v”bo£
 ) {
 
-257 
+256 
 	`´štf
 ("V®uoàroÙ‚ode: %f\n", 
 roÙNode
@@ -10055,27 +24241,27 @@ scÜeSum
 n
 );
 
-258 
+257 
 	`´štf
 ("Be¡ move: %d\n", 
 be¡Move
 );
 
-262 
+261 
 	`ä“T»e
 (
 roÙNode
 );
 
-264  
+263  
 be¡Move
 ;
 
-265 
+264 
 	}
 }
 
-269 
+268 
 	$g’UCTT»e
 (
 »p_t
@@ -10095,49 +24281,49 @@ heuri¡ic
 budg‘
 ) {
 
-270 
+269 
 Œ“Node
 * 
 roÙNode
 ;
 
-271 
+270 
 i
 ;
 
-273 
+272 
 	`puts
 ("digraph uct {");
 
-274 
+273 
 	`puts
 ("root =‚1;");
 
-275 
+274 
 	`puts
 ("node [shape=\"point\"];");
 
-276 
+275 
 	`puts
 ("edge [arrowhead=\"none\"];");
 
-277 
+276 
 	`puts
 ("n1 [shape=\"box\", style=\"filled\", color=\"blue\", height=0.2, width=0.2,†abel=\"\"];");
 
-280 
+279 
 dÙFÜm©
  = 
 Œue
 ;
 
-281 
+280 
 	`as£¹
 (
 id
  == 0);
 
-284 
+283 
 roÙNode
  =(
 Œ“Node
@@ -10145,7 +24331,7 @@ roÙNode
 	`ÿÎoc
 (1, (treeNode));
 
-285 
+284 
 roÙNode
 ->
 »p
@@ -10155,19 +24341,19 @@ _DOM
 	`şÚeR•
 (rep);
 
-286 
+285 
 roÙNode
 ->
 side
  = side;
 
-287 
+286 
 roÙNode
 ->
 id
  = ++id;
 
-289 
+288 
 roÙNode
 ->
 chd»n
@@ -10181,13 +24367,13 @@ _DOM
 	`g‘NumOfChd»n
 (), (treeNode*));
 
-292 
+291 
 i
  = 0; i < 
 numI‹¿tiÚs
 ; i++)
 
-293 
+292 
 	`uùRecur£
 (
 roÙNode
@@ -10199,29 +24385,31 @@ heuri¡ic
 budg‘
 , 
 AVERAGE
+, 
+Œue
 );
 
-295 
+294 
 dÙFÜm©
  = 
 çl£
 ;
 
-297 
+296 
 	`´štf
 ("}\n");
 
-300 
+299 
 	`ä“T»e
 (
 roÙNode
 );
 
-303 
+302 
 	}
 }
 
-307 
+306 
 	$mšmaxUCT
 (
 Œ“Node
@@ -10229,19 +24417,19 @@ roÙNode
 node
 ) {
 
-308 
+307 
 i
 ;
 
-309 
+308 
 v®
 ;
 
-310 
+309 
 be¡ScÜe
 ;
 
-313 
+312 
 	`as£¹
 (
 node
@@ -10249,7 +24437,7 @@ node
 NULL
 );
 
-316 
+315 
 be¡ScÜe
  = (
 node
@@ -10263,7 +24451,7 @@ MIN_WINS
 MAX_WINS
 ;
 
-319 ià((
+318 ià((
 v®
  = 
 _DOM
@@ -10277,17 +24465,17 @@ node
 INCOMPLETE
 )
 
-320  
+319  
 v®
 ;
 
-323 ià(
+322 ià(
 node
 ->
 n
  == 1) {
 
-324 
+323 
 	`as£¹
 ((
 node
@@ -10299,13 +24487,13 @@ MIN_WINS
 MAX_WINS
 ));
 
-325  
+324  
 node
 ->
 scÜeSum
 ;
 
-329 
+328 
 i
  = 1; i < 
 _DOM
@@ -10313,7 +24501,7 @@ _DOM
 	`g‘NumOfChd»n
 (); i++) {
 
-330 ià(
+329 ià(
 node
 ->
 chd»n
@@ -10321,7 +24509,7 @@ chd»n
 i
 ]) {
 
-331 
+330 
 v®
  = 
 	`mšmaxUCT
@@ -10333,7 +24521,7 @@ chd»n
 i
 ]);
 
-332 ià((
+331 ià((
 node
 ->
 side
@@ -10345,13 +24533,13 @@ v®
 be¡ScÜe
 ))
 
-333 
+332 
 be¡ScÜe
  = 
 v®
 ;
 
-334 ià((
+333 ià((
 node
 ->
 side
@@ -10363,21 +24551,21 @@ v®
 be¡ScÜe
 ))
 
-335 
+334 
 be¡ScÜe
  = 
 v®
 ;
 
-339  
+338  
 be¡ScÜe
 ;
 
-340 
+339 
 	}
 }
 
-344 
+343 
 	$makeMšmaxOnUCTMove
 (
 »p_t
@@ -10391,51 +24579,51 @@ numI‹¿tiÚs
 C
 ,
 
-345 
+344 
 heuri¡ics_t
  
 heuri¡ic
 ,
 
-346 
+345 
 budg‘
 ,
 
-347 * 
+346 * 
 be¡Moves
 , * 
 numBe¡Moves
 ) {
 
-348 
+347 
 i
 ;
 
-349 
+348 
 v®
 ;
 
-350 
+349 
 be¡Move
  = 
 NULL_MOVE
 ;
 
-351 
+350 
 be¡ScÜe
 ;
 
-352 
+351 
 Œ“Node
 * 
 roÙNode
 ;
 
-354 *
+353 *
 numBe¡Moves
  = 0;
 
-357 
+356 
 roÙNode
  = (
 Œ“Node
@@ -10443,7 +24631,7 @@ roÙNode
 	`ÿÎoc
 (1, (treeNode));
 
-358 
+357 
 roÙNode
 ->
 »p
@@ -10453,13 +24641,13 @@ _DOM
 	`şÚeR•
 (rep);
 
-359 
+358 
 roÙNode
 ->
 side
  = *side;
 
-360 
+359 
 roÙNode
 ->
 chd»n
@@ -10473,13 +24661,13 @@ _DOM
 	`g‘NumOfChd»n
 (), (treeNode*));
 
-363 
+362 
 i
  = 0; i < 
 numI‹¿tiÚs
 ; i++)
 
-364 
+363 
 	`uùRecur£
 (
 roÙNode
@@ -10491,9 +24679,11 @@ heuri¡ic
 budg‘
 , 
 AVERAGE
+,
+Œue
 );
 
-367 
+366 
 i
  = 1; i < 
 _DOM
@@ -10501,7 +24691,7 @@ _DOM
 	`g‘NumOfChd»n
 (); i++) {
 
-368 ià(
+367 ià(
 roÙNode
 ->
 chd»n
@@ -10509,7 +24699,7 @@ chd»n
 i
 ]) {
 
-369 
+368 
 v®
  = 
 	`mšmaxUCT
@@ -10521,7 +24711,7 @@ chd»n
 i
 ]);
 
-373 
+372 
 v®
  = (*
 side
@@ -10529,7 +24719,7 @@ side
 mš
 ) ? -val : val;
 
-376 ià((*
+375 ià((*
 numBe¡Moves
  =ğ0è|| (
 v®
@@ -10537,29 +24727,29 @@ v®
 be¡ScÜe
 )) {
 
-377 
+376 
 be¡Moves
 [0] = 
 i
 ;
 
-378 
+377 
 be¡ScÜe
  = 
 v®
 ;
 
-379 *
+378 *
 numBe¡Moves
  = 1;
 
-381 ià(
+380 ià(
 v®
  =ğ
 be¡ScÜe
 )
 
-382 
+381 
 be¡Moves
 [(*
 numBe¡Moves
@@ -10567,11 +24757,11 @@ numBe¡Moves
 i
 ;
 
-384 ià(
+383 ià(
 v”bo£
 )
 
-385 
+384 
 	`´štf
 ("Mov# %d -- V®u%f\n", 
 i
@@ -10583,13 +24773,13 @@ mš
 v®
  : val));
 
-390 
+389 
 	`as£¹
 (*
 numBe¡Moves
  != 0);
 
-392 
+391 
 be¡Move
  = 
 be¡Moves
@@ -10599,7 +24789,7 @@ be¡Moves
 numBe¡Moves
 ];
 
-393 
+392 
 _DOM
 ->
 	`makeMove
@@ -10611,41 +24801,41 @@ side
 be¡Move
 );
 
-395 ià(
+394 ià(
 v”bo£
 )
 
-396 
+395 
 	`´štf
 ("Be¡ move: %d\n", 
 be¡Move
 );
 
-399 
+398 
 	`ä“T»e
 (
 roÙNode
 );
 
-401  
+400  
 be¡Move
 ;
 
-402 
+401 
 	}
 }
 
-404 
+403 
 	$´štUùSts
 (){
 
-405 
+404 
 	`´štf
 ("** TÙ® UCT‚ode %d**\n",
 mm_CouÁ”
 );
 
-406 
+405 
 	}
 }
 
@@ -10880,6 +25070,1104 @@ v®2
 ;
 
 64 
+	}
+}
+
+	@vts.c
+
+1 
+	~"ty³.h
+"
+
+3 
+	$£ËùMove_vts
+(
+Œ“Node
+* 
+node
+, 
+C
+) {
+
+4 
+i
+;
+
+5 
+qh©
+;
+
+6 
+scÜe
+;
+
+7 
+numBe¡Moves
+ = 0;
+
+8 
+be¡ScÜe
+;
+
+9 
+be¡Moves
+[
+_DOM
+->
+	`g‘NumOfChd»n
+()];
+
+14 
+muÉl›r
+ = (
+node
+->
+side
+ =ğ
+max
+) ? 1 : -1;
+
+16 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+17 ià(!
+_DOM
+->
+	`isV®idChd
+(
+node
+->
+»p
+,‚ode->
+side
+, 
+i
+è||‚ode->
+chd»n
+[i]->
+ty³Defš”
+ =ğ
+Œue
+)
+
+21 ià(
+node
+->
+chd»n
+[
+i
+]->
+ty³dN
+ == 0)
+
+22  
+i
+;
+
+26 
+qh©
+ = 
+node
+->
+chd»n
+[
+i
+]->
+ty³dScÜeSum
+ / (êode->chd»n[i]->
+ty³dN
+;
+
+27 
+scÜe
+ = 
+qh©
+ + (
+muÉl›r
+ * 
+C
+è* 
+	`sq¹
+(
+	`log
+(
+node
+->
+ty³dN
+è/ (êode->
+chd»n
+[
+i
+]->typedN);
+
+31 
+scÜe
+ = (
+node
+->
+side
+ =ğ
+mš
+) ? -score : score;
+
+34 ià((
+numBe¡Moves
+ =ğ0è|| (
+scÜe
+ > 
+be¡ScÜe
+)) {
+
+35 
+be¡Moves
+[0] = 
+i
+;
+
+36 
+be¡ScÜe
+ = 
+scÜe
+;
+
+37 
+numBe¡Moves
+ = 1;
+
+39 ià(
+scÜe
+ =ğ
+be¡ScÜe
+)
+
+40 
+be¡Moves
+[
+numBe¡Moves
+++] = 
+i
+;
+
+43  
+be¡Moves
+[0];
+
+44 
+	}
+}
+
+46 
+Œ“Node
+ *
+	$£ËùFromTy³_vts
+(*
+void_t
+, 
+C
+) {
+
+47 
+ty³_vts
+ *
+t
+ = (ty³_vt *)
+void_t
+;
+
+48 
+Œ“Node
+ *
+node
+ = 
+t
+->
+roÙ
+;
+
+51 
+_DOM
+->
+	`g‘GameStus
+(
+node
+->
+»p
+è=ğ
+INCOMPLETE
+ &&‚ode->
+ty³dN
+ > 0)
+
+52 
+node
+ =‚ode->
+chd»n
+[
+	`£ËùMove_vts
+Òode, 
+C
+)];
+
+54  
+node
+;
+
+55 
+	}
+}
+
+57 
+	$assignToTy³_vts
+(*
+void_ts
+, 
+Œ“Node
+ *
+node
+, 
+çth”Ty³
+, 
+th»shŞd
+, 
+pŞicy
+) {
+
+58 
+ty³_sy¡em
+ *
+ts
+ = (ty³_sy¡em *)
+void_ts
+;
+
+59 
+i
+;
+
+61 ià(
+çth”Ty³
+ == -1) {
+
+62 ((
+ty³_vts
+ *)
+ts
+->
+ty³s
+[0])->
+roÙ
+ = 
+node
+;
+
+63 ((
+ty³_vts
+ *)
+ts
+->
+ty³s
+[0])->
+bœth
+ =s->
+vis™s
+;
+
+64 
+node
+->
+ty³Defš”
+ = 
+Œue
+;
+
+66 
+ty³_vts
+ *
+t
+ = (ty³_vt *)
+ts
+->
+ty³s
+[
+çth”Ty³
+];
+
+67 
+t
+->
+roÙ
+->
+ty³Defš”
+ = 
+çl£
+;
+
+70 ià(
+t
+->
+roÙ
+->
+ty³dSubŒ“Size
+ > 
+th»shŞd
+) {
+
+74 
+Œ“Node
+ *
+ÃwF©h”
+ = 
+node
+;
+
+75 
+ÃwF©h”
+->
+·»Á
+ !ğ
+t
+->
+roÙ
+)
+
+76 
+ÃwF©h”
+ =‚ewF©h”->
+·»Á
+;
+
+78 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+79 ià(!
+_DOM
+->
+	`isV®idChd
+(
+t
+->
+roÙ
+->
+»p
+,->roÙ->
+side
+, 
+i
+è||->roÙ->
+chd»n
+[i] =ğ
+ÃwF©h”
+ ||->roÙ->chd»n[i]->
+ty³Defš”
+ =ğ
+Œue
+)
+
+82 
+ts
+->
+numTy³s
+++;
+
+83 
+ts
+->
+ty³s
+ = 
+	`»®loc
+Ñs->ty³s,s->
+numTy³s
+ * (
+ty³_vts
+ *));
+
+85 
+ts
+->
+ty³s
+[ts->
+numTy³s
+ - 1] = 
+	`ÿÎoc
+(1, (
+ty³_vts
+));
+
+86 ((
+ty³_vts
+ *)
+ts
+->
+ty³s
+[ts->
+numTy³s
+ - 1])->
+roÙ
+ = 
+t
+->roÙ->
+chd»n
+[
+i
+];
+
+87 ((
+ty³_vts
+ *)
+ts
+->
+ty³s
+[ts->
+numTy³s
+ - 1])->
+bœth
+ =s->
+vis™s
+;
+
+88 ((
+ty³_vts
+ *)
+ts
+->
+ty³s
+[ts->
+numTy³s
+ - 1])->
+scÜeSum
+ = 
+t
+->
+roÙ
+->
+chd»n
+[
+i
+]->
+ty³dScÜeSum
+;
+
+89 ((
+ty³_vts
+ *)
+ts
+->
+ty³s
+[ts->
+numTy³s
+ - 1])->
+mšmax
+ = 
+t
+->
+roÙ
+->
+chd»n
+[
+i
+]->minmax;
+
+91 ià(
+pŞicy
+ =ğ
+DELETE_VMAB
+)
+
+92 
+ts
+->
+ty³s
+[ts->
+numTy³s
+ - 1]->
+vis™s
+ = 0;
+
+94 
+ts
+->
+ty³s
+[ts->
+numTy³s
+ - 1]->
+vis™s
+ = 
+t
+->
+roÙ
+->
+chd»n
+[
+i
+]->
+ty³dN
+;
+
+97 
+t
+->
+roÙ
+ = 
+ÃwF©h”
+;
+
+98 ià(
+pŞicy
+ =ğ
+DELETE_VMAB
+)
+
+99 
+t
+->
+vis™s
+ = 0;
+
+101 
+t
+->
+vis™s
+ = 
+ÃwF©h”
+->
+ty³dN
+;
+
+103 
+t
+->
+bœth
+ = 
+ts
+->
+vis™s
+;
+
+104 
+t
+->
+scÜeSum
+ = 
+ÃwF©h”
+->
+ty³dScÜeSum
+;
+
+105 
+t
+->
+mšmax
+ = 
+ÃwF©h”
+->minmax;
+
+108 
+	}
+}
+
+110 
+	$de¡roy_vts
+(*
+void_ts
+) {
+
+111 
+i
+;
+
+112 
+ty³_sy¡em
+ *
+ts
+ = (ty³_sy¡em *)
+void_ts
+;
+
+114 
+i
+ = 0; i < 
+ts
+->
+numTy³s
+; i++)
+
+115 
+	`ä“
+(
+ts
+->
+ty³s
+[
+i
+]);
+
+117 
+	`ä“
+(
+ts
+->
+ty³s
+);
+
+118 
+	}
+}
+
+120 
+	$ty³Signifiÿnû
+(
+ty³_sy¡em
+ *
+ts
+, 
+ty³_vts
+ *
+ty³
+, 
+Œ“Node
+ **
+·th
+) {
+
+121 
+·thL’gth
+ = 
+·th
+[0]->
+d•th
+ - 
+ty³
+->
+roÙ
+->depth;
+
+122 
+i
+;
+
+123 
+nodeM—n
+;
+
+124 
+Œ“Node
+ *
+node
+;
+
+125 
+z
+;
+
+127 
+shiáedTy³M—n
+;
+
+129 
+i
+ = 
+·thL’gth
+ - 1; i >= 0; i--) {
+
+130 
+node
+ = 
+·th
+[
+i
+];
+
+133 ià(
+node
+->
+ty³dN
+ < 30)
+
+136 
+nodeM—n
+ = 
+node
+->
+ty³dScÜeSum
+ / (êode->
+ty³dN
+;
+
+139 
+shiáedTy³M—n
+ = (
+ty³
+->
+roÙ
+->
+ty³dScÜeSum
+ - 
+node
+->ty³dScÜeSumè/ ()Ñy³->roÙ->
+ty³dN
+ -‚ode->typedN);
+
+141 
+z
+ = (
+nodeM—n
+ - 
+shiáedTy³M—n
+è/ (
+	`sq¹
+(
+node
+->
+sd
+ /‚ode->
+ty³dN
+));
+
+143 ià(
+z
+ > 2.33) {
+
+144 
+ts
+->
+numTy³s
+++;
+
+145 
+ts
+->
+ty³s
+ = 
+	`»®loc
+Ñs->ty³s,s->
+numTy³s
+ * (
+ty³_vts
+ *));
+
+148 
+ts
+->
+ty³s
+[ts->
+numTy³s
+ - 1] = 
+	`ÿÎoc
+(1, (
+ty³_vts
+));
+
+149 ((
+ty³_vts
+ *)
+ts
+->
+ty³s
+[ts->
+numTy³s
+ - 1])->
+roÙ
+ = 
+node
+;
+
+150 
+node
+->
+ty³Defš”
+ = 
+Œue
+;
+
+151 ((
+ty³_vts
+ *)
+ts
+->
+ty³s
+[ts->
+numTy³s
+ - 1])->
+bœth
+ =s->
+vis™s
+;
+
+152 ((
+ty³_vts
+ *)
+ts
+->
+ty³s
+[ts->
+numTy³s
+ - 1])->
+scÜeSum
+ = 
+node
+->
+ty³dScÜeSum
+;
+
+153 ((
+ty³_vts
+ *)
+ts
+->
+ty³s
+[ts->
+numTy³s
+ - 1])->
+vis™s
+ = 
+node
+->
+ty³dN
+;
+
+156 
+Œ“Node
+ *
+bp
+ = 
+node
+->
+·»Á
+;
+
+157 
+bpM—n
+;
+
+158 
+ÃwTy³SumOfSqu¬es
+ = 
+node
+->
+sd
+ * (node->
+ty³dN
+ - 1è+‚ode->ty³dN * 
+nodeM—n
+ *‚odeMean;
+
+159 
+nodeSumOfSqu¬es
+;
+
+160 
+upd©edSumOfSqu¬es
+;
+
+161 
+upd©edN
+;
+
+162 
+upd©edScÜeSum
+;
+
+163 
+upd©edM—n
+;
+
+164 
+be¡ScÜe
+;
+
+165 
+bp
+ !ğ
+ty³
+->
+roÙ
+->
+·»Á
+) {
+
+167 
+bpM—n
+ = 
+bp
+->
+ty³dScÜeSum
+ / ()(bp->
+ty³dN
+);
+
+168 
+nodeSumOfSqu¬es
+ = 
+bp
+->
+sd
+ * (bp->
+ty³dN
+ - 1è+ bp->ty³dN * 
+bpM—n
+ * bpMean;
+
+170 
+upd©edSumOfSqu¬es
+ = 
+nodeSumOfSqu¬es
+ - 
+ÃwTy³SumOfSqu¬es
+;
+
+172 
+upd©edN
+ = 
+bp
+->
+ty³dN
+ - 
+node
+->typedN;
+
+173 
+upd©edScÜeSum
+ = 
+bp
+->
+ty³dScÜeSum
+ - 
+node
+->typedScoreSum;
+
+174 
+upd©edM—n
+ = 
+upd©edScÜeSum
+ / ()
+upd©edN
+;
+
+176 
+bp
+->
+sd
+ = (
+upd©edSumOfSqu¬es
+ - 
+upd©edN
+ * 
+upd©edM—n
+ * updatedMean) / ()(updatedN - 1);
+
+177 
+bp
+->
+ty³dN
+ = 
+upd©edN
+;
+
+178 
+bp
+->
+ty³dScÜeSum
+ = 
+upd©edScÜeSum
+;
+
+180 
+i
+ = 1; i < 
+_DOM
+->
+	`g‘NumOfChd»n
+(); i++) {
+
+181 ià(
+_DOM
+->
+	`isV®idChd
+(
+bp
+->
+»p
+, bp->
+side
+, 
+i
+è&& bp->
+ty³Defš”
+ =ğ
+çl£
+) {
+
+182 ià((
+bp
+->
+side
+ =ğ
+max
+ && bp->
+chd»n
+[
+i
+]->
+mšmax
+ > 
+be¡ScÜe
+è|| (bp->sid=ğ
+mš
+ && bp->children[i]->minmax < bestScore))
+
+183 
+be¡ScÜe
+ = 
+bp
+->
+mšmax
+;
+
+186 
+bp
+->
+mšmax
+ = 
+be¡ScÜe
+;
+
+188 
+bp
+ = bp->
+·»Á
+;
+
+192 
+ty³
+->
+vis™s
+ =y³->
+roÙ
+->
+ty³dN
+;
+
+193 
+ty³
+->
+scÜeSum
+ =y³->
+roÙ
+->
+ty³dScÜeSum
+;
+
+197 
 	}
 }
 
@@ -11205,6 +26493,22 @@ ZOP_¡©e
 	}
 }
 
+82 
+	$h1_zİ
+(
+»p_t
+ 
+»p
+, 
+side
+ , 
+move
+){
+
+84 
+	}
+}
+
 	@zop.h
 
 1 #iâdeà
@@ -11221,17 +26525,17 @@ __CHECKERS__H
 	~"domaš.h
 "
 
-5 
+18 
 g‘NumOfChd»n_zİ
 ();
 
-6 
+19 
 e¡im©edT»eSize_zİ
 (
 Œ“Size
 );
 
-7 
+20 
 isV®idChd_zİ
 (
 »p_t
@@ -11243,7 +26547,7 @@ side
 move
 );
 
-8 
+21 
 g‘GameStus_zİ
 (
 »p_t
@@ -11251,7 +26555,7 @@ g‘GameStus_zİ
 »p
 );
 
-9 
+22 
 makeMove_zİ
 (
 »p_t
@@ -11263,7 +26567,7 @@ side
 move
 );
 
-10 
+23 
 »p_t
  
 şÚeR•_zİ
@@ -11271,7 +26575,7 @@ move
 Üig
 );
 
-11 
+24 
 ­¶yHeuri¡ics_zİ
 (
 heuri¡ics_t
@@ -11287,7 +26591,7 @@ side
 budg‘
 );
 
-12 
+25 
 de¡ruùR•_zİ
  (
 »p_t
@@ -11295,13 +26599,13 @@ de¡ruùR•_zİ
 »p
 );
 
-13 
+26 
 »p_t
  
 ®loÿ‹_zİ
 ();
 
-14 
+27 
 g’”©eRªdomS¹_zİ
 (
 »p_t
@@ -11311,7 +26615,7 @@ g’”©eRªdomS¹_zİ
 side
 );
 
-15 
+28 
 cİy_zİ
  (
 »p_t
@@ -11320,6 +26624,12 @@ cİy_zİ
  ,»p_ˆ
 de¡
 );
+
+30 
+h1_zİ
+(
+»p_t
+ , , );
 
 	@/usr/include/assert.h
 
@@ -37678,9 +52988,14 @@ __END_DECLS
 .
 1
 /usr/include
-39
-592
+52
+795
+bfb.c
+bfb_changing_to_minmax_reward.c
+bfb_db19e2354fdbebbb74f29a828b514dee8332af71.c
 board.c
+c4.c
+c4.h
 chess.cpp
 chess.h
 common.h
@@ -37688,16 +53003,24 @@ domain.c
 domain.h
 genericGames.c
 heuristic.c
-heuristic.h
+justincase_bfb.c
 mancala.c
 mancala.h
 minmax.c
 move.c
+oracleTypeSystem.c
 random.c
+sts.c
 synth.c
 synth.h
+tmpBFBIteration.c
+type.c
+type.h
+type_reachability.c
+type_reachability.h
 uct.c
 util.c
+vts.c
 zop.c
 zop.h
 /usr/include/assert.h
