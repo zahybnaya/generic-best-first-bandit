@@ -499,7 +499,7 @@ int main(int argc, char* argv[]) {
 		double *ciFoldingVals = calloc(6, sizeof(double));
 		double *mmFoldingVals = calloc(6, sizeof(double));
 		
-		printf("MM_Move, MM_Move_Val, UCT_Move, UCT_Move_Val, UCT_Opt_Val, CI_Parent_Win, CI_Move, CI_Move_Val, CI_Opt_Val, MMF_Move, MMF_Move_Val, MMF_Opt_Val\n");
+		printf("GS_Move, GS_Move_Val, UCT_Move, UCT_Move_Val, UCT_GS_Move_Val, CI_Move, CI_Move_Val, CI_GS_Move_Val, MMF_Move, MMF_Move_Val, MMF_GS_Val\n");
 		
 		for (s = 0; s < numGames; s++) {
 		  //Make minmax move to depth 16

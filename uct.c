@@ -1,7 +1,7 @@
 /**
  *
  * UCT implementationa
- *
+ * Scoresum of node - sum of rewards / CI keeps "real score sum "  
  * */
 #include "common.h"
 #include "domain.h"
@@ -312,6 +312,7 @@ int makeUCTMove(rep_t rep, int *side, int numIterations, double C,
 			continue;
 		
 		val = rootNode->children[i]->scoreSum / (double)rootNode->children[i]->n;
+		printf("UCT:%d:%f/%d\n",i,rootNode->children[i]->scoreSum,rootNode->children[i]->n);
 		if (_DOM->dom_name == SAILING)
 		  val += actionCost_sailing(rootNode->rep, i);
 		// If this was min's move, negate the utility value (this makes things a little cleaner
@@ -347,6 +348,20 @@ int makeUCTMove(rep_t rep, int *side, int numIterations, double C,
 	freeTree(rootNode);
 
 	return bestMove;
+}
+
+
+/*
+ *  Creates the root of the tree
+ * */
+treeNode* createRootNode(int* side, rep_t rep){
+	// Create the root node of the UCT tree; populate the board and side on move fields
+	treeNode* rootNode;
+	rootNode = (treeNode*)calloc(1, sizeof(treeNode));
+	rootNode->rep = _DOM->cloneRep(rep);
+	rootNode->side = *side;
+	rootNode->children = (treeNode**)calloc(_DOM->getNumOfChildren(), sizeof(treeNode*));
+	return rootNode;
 }
 
 
@@ -428,9 +443,74 @@ typedef struct vci {
 	double ci; //length of confidence interval.
 } vci;
 
-static int parentCIWin = 0;
-static int parentCITotal = 0;
 
+static vci *vciMinmaxUCT(treeNode* node, int ci_threshold, int* parentCIWin,int* parentCITotal, double* avgDepth, int* minDepth,int* treeDepth) {
+	assert(node != NULL);
+	vci *currentVCI = NULL,*bestChild=NULL;
+	int i;
+	//Terminals returns CI=0
+	if (_DOM->getGameStatus(node->rep) != INCOMPLETE) {
+		vci *bestVCI = (vci*)calloc(1, sizeof(vci));
+		bestVCI->score = _DOM->getGameStatus(node->rep);
+		bestVCI->ci = 0;
+		if(node->depth>*treeDepth){
+			*treeDepth = node->depth;
+		}
+		return bestVCI;
+	}
+	//below threshold return CI=INF(ignored)
+//	if (node->n < ci_threshold) {
+//		vci *bestVCI = (vci*)calloc(1, sizeof(vci));
+//		bestVCI->score = node->scoreSum / (double)node->n;
+//		bestVCI->ci = INF;
+//		if(node->depth>*treeDepth){
+//			*treeDepth = node->depth;
+//		}
+//		return bestVCI;
+//	}
+	// Calculate the CI length and score of node
+	double variance = 0; 
+	double nodeci =0;
+	if (node->n > 1){
+	       	variance = node->M2 / (double)(node->n - 1);
+		nodeci = 2 * z975 * sqrt(variance / (double)node->n);
+	}
+	double bestChildScore = node->side==max? MIN_WINS : MAX_WINS;
+	for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+		if (node->children[i]) { // only descend if child exists
+			currentVCI = vciMinmaxUCT(node->children[i], ci_threshold,parentCIWin,parentCITotal,avgDepth,minDepth,treeDepth); 
+			if ((((node->side == max) && (currentVCI->score >= bestChildScore )) || ((node->side == min) && (currentVCI->score <=bestChildScore )))
+					&& currentVCI->ci < nodeci) { 
+				bestChild = currentVCI;
+				bestChildScore = currentVCI->score ;
+			} else {
+				free(currentVCI);
+			}
+		}
+	}
+	if(node->depth>*treeDepth){
+		*treeDepth = node->depth;
+	}
+	(*parentCITotal)++;
+	if (bestChild){
+		(*parentCIWin)++;
+		*avgDepth= ((*avgDepth * (*parentCIWin-1)) + node->depth) /(*parentCIWin);
+		if(*minDepth>node->depth){
+			*minDepth = node->depth;
+		}
+		if(node->n>ci_threshold){
+			bestChild->ci=0;
+		}
+		return bestChild;
+	}
+	vci *bestVCI = (vci*)calloc(1, sizeof(vci));
+	bestVCI->score = node->scoreSum / (double)node->n;
+	bestVCI->ci = nodeci;
+	return bestVCI;
+}
+
+/**
+ *
 static vci *vciMinmaxUCT(treeNode* node, int ci_threshold) {
   // Should never be reaching a non-existent node
   assert(node != NULL);
@@ -477,7 +557,7 @@ static vci *vciMinmaxUCT(treeNode* node, int ci_threshold) {
   double ci = 2 * z975 * sqrt(variance / (double)node->n);
   
   // If it is lower than the one of the best child, trust the current value instead of the child's value
-  parentCITotal++;
+  parentCITotal++; //Bug here
   if (ci < bestVCI->ci) {
     parentCIWin++;
     bestVCI->score = node->scoreSum / (double)node->n;
@@ -486,6 +566,7 @@ static vci *vciMinmaxUCT(treeNode* node, int ci_threshold) {
   
   return bestVCI;
 }
+**/
 
 /* Runs specified number of iteration of UCT. Then, runs minimax on the resulting UCT tree and returns the best move */
 int makeMinmaxOnUCTMove(rep_t rep, int *side, int numIterations, double C,
@@ -495,7 +576,8 @@ int makeMinmaxOnUCTMove(rep_t rep, int *side, int numIterations, double C,
 	int i;
 	double val;
 	int bestMove = NULL_MOVE;
-	double bestScore;
+	double bestScore,avgDepth=0;
+	int parentCIWin=0,parentCITotal=0,minDepth=-INF,treeDepth=0;
 	treeNode* rootNode;
 	
 	*numBestMoves = 0; // reset size of set of best moves
@@ -516,7 +598,7 @@ int makeMinmaxOnUCTMove(rep_t rep, int *side, int numIterations, double C,
 			if (ci_threshold <= 0) {
 			  val = minmaxUCT(rootNode->children[i]);
 			} else {
-			  vci *VCI = vciMinmaxUCT(rootNode->children[i], ci_threshold); // do a minmax backup of the subtree rooted at this child
+			  vci *VCI = vciMinmaxUCT(rootNode->children[i], ci_threshold,&parentCIWin,&parentCITotal,&avgDepth,&minDepth,&treeDepth); // 
 			  val = VCI->score;
 			  free(VCI);
 			}

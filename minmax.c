@@ -55,6 +55,7 @@ static double alphaBeta(rep_t rep, int searchDepth, int depth, int side, double 
       if (dotFormat)
 	printf("n%d -> n%d;\n", currentNodeId, ++id);
       val2 = alphaBeta(dummyRep , searchDepth+1, depth, side, val1, beta, heuristic, budget, id); // compute minimax value of this child
+      _DOM->destructRep(dummyRep);
       val1 = (val2 > val1) ? val2 : val1; // we have tightened our alpha bound
       if (val1 >= beta) // we have a beta-cutoff 
 	return beta;
@@ -72,6 +73,7 @@ static double alphaBeta(rep_t rep, int searchDepth, int depth, int side, double 
       if (dotFormat)
 	printf("n%d -> n%d;\n", currentNodeId, ++id);
       val2 = alphaBeta(dummyRep, searchDepth+1, depth, side, alpha, val1, heuristic, budget, id); // compute minimax value of this child
+      _DOM->destructRep(dummyRep);
       val1 = (val2 < val1) ? val2 : val1; // we have tightened our beta bound
       if (val1 <= alpha) // we have an alpha-cutoff
 	return alpha;
@@ -109,7 +111,7 @@ int makeMinmaxMove(rep_t rep, int* side, int depth, heuristics_t heuristic, int 
     // Compute MM-(k-1) value of i^th child (since the children are already at depth 1 from the root node,
     // and we do a search from each child)
     val = alphaBeta(dummyRep , 1, depth, *side, MIN_WINS, MAX_WINS, heuristic, budget, id);
-    
+    _DOM->destructRep(dummyRep);
     // If this was min's move, negate the utility value (this makes things a little cleaner
     // as we can then always take the max of the children, since min(s1,s2,...) = -max(-s1,-s2,...))    
     scores[i] = (origSide == min) ? -val : val;

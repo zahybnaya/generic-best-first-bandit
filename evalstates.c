@@ -22,6 +22,7 @@ void printMsg(){
 	puts(" -t ci minimal threshold ");
 	puts(" -i number of iterations ") ;
 	puts(" -s seed ") ;
+	puts(" -h heuristic ") ;
 	puts(" -gs gold standard level ") ;
 }
 int main(int argc, char* argv[]){
@@ -34,18 +35,18 @@ int main(int argc, char* argv[]){
 	int numGames = 10;
 	int bestMoves[_DOM->getNumOfChildren()];
 	int numIterations = 5000;
-	heuristics_t heuristic[] =  {_DOM->hFunctions.h3, _DOM->hFunctions.h3}; // the heuristics used by the max and min playersa 
+	heuristics_t heuristic =  _DOM->hFunctions.h3;
 	int budget[2] = {1,1};
 	int noisyMM = false;
 	double C[2] = {2.5,2.5};
-	int gs_level = 12;
+	int gs_level = 12,hfunc=3;
 	double termPercentage;
 	int ci_threshold = 30;
 	int randomTieBreaks = false; // determine whether the MM player will break ties randomly
 	unsigned int seed = 0;
  	/** parameters */
 	for (arg=0;arg<argc;arg++){
-		if (strcmp(argv[arg],"-h")==0){
+		if (strcmp(argv[arg],"?")==0){
 			printMsg();
 			return -1;
 		} else if (strcmp(argv[arg],"-g")==0){
@@ -58,6 +59,28 @@ int main(int argc, char* argv[]){
 			seed = (unsigned int)atoi(argv[++arg]);
 		} else if (strcmp(argv[arg],"-gs")==0){
 			gs_level = atoi(argv[++arg]);
+		} else if (strcmp(argv[arg],"-h")==0){
+			hfunc=atoi(argv[++arg]);
+			switch(hfunc){
+			       	case 1:
+					heuristic =  _DOM->hFunctions.h1;
+				       	break;
+			       	case 2:
+					heuristic =  _DOM->hFunctions.h2;
+					break;
+				case 3:
+					heuristic =  _DOM->hFunctions.h3;
+					break;
+				case 4:
+					heuristic =  _DOM->hFunctions.h4;
+					break;
+				case 5:
+					heuristic =  _DOM->hFunctions.h5;
+					break;
+				case 6:
+					heuristic =  _DOM->hFunctions.h6;
+					break;
+			}
 		}
 
 	}
@@ -67,36 +90,23 @@ int main(int argc, char* argv[]){
 	double *ciFoldingVals = (double*)calloc(_DOM->getNumOfChildren(), sizeof(double));
 	double *mmFoldingVals = (double*)calloc(_DOM->getNumOfChildren(), sizeof(double));
 	
-	printf("Seed, Instance, GS_level,  CI_Threshold, iterations, GS_Move, GS_Move_Val, UCT_Move, UCT_Move_Val, UCT_GS_Move_Val, Parental_Percantage , Average_depth, CI_Move, CI_Move_Val, CI_GS_Move_Val, MMF_Move, MMF_Move_Val, MMF_GS_Val\n");
+	printf("Seed, Instance, GS_level,  CI_Threshold, iterations, H , GS_Move, GS_Move_Val, UCT_Move, UCT_Move_Val, UCT_GS_Move_Val, Parental_Percantage , Average_depth, Min_Depth, Tree_Depth, CI_Move, CI_Move_Val, CI_GS_Move_Val, MMF_Move, MMF_Move_Val, MMF_GS_Val\n");
 
 	for (s = 0; s < numGames; s++) {
 		srandom(seed+s);
 		testState = _DOM->allocate();
 		_DOM->generateRandomStart(testState,&side);
-		printf("%d, %d, %d, %d, %d, ",seed+s, s, gs_level,ci_threshold, numIterations);
+		//Seed, Instance, GS_level,  CI_Threshold, iterations,h
+		printf("%d, %d, %d, %d, %d, h%d, ",seed+s, s, gs_level,ci_threshold, numIterations,hfunc);
 		//Make minmax move to depth 16
 		srandom(seed);
 		side = max;
-		int mmMove = makeMinmaxMove(testState, &side, gs_level , heuristic[side], budget[side], randomTieBreaks, noisyMM, bestMoves, &numBestMoves, &termPercentage, mmVals);
+		int mmMove = makeMinmaxMove(testState, &side, gs_level , heuristic, budget[side], randomTieBreaks, noisyMM, bestMoves, &numBestMoves, &termPercentage, mmVals);
 		int goldStandard = maxVal(mmVals,_DOM->getNumOfChildren());
+		//GS_Move, GS_Move_Val,
 		printf("%d, %f, ", goldStandard , mmVals[goldStandard]);
 		side = max;
-		foldTree(testState, &side, numIterations, C[side], heuristic[side], budget[side], ci_threshold, mmVals);
-		//srandom(seed);
-		//side = max;
-		////Make classic uct move (avg backprop)
-		//int uctMove = makeUCTMove(testState, &side, numIterations, C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, AVERAGE, INF, uctVals);
-		//printf("%d, %f, %f ", uctMove, uctVals[uctMove], uctVals[mmMove]);
-		////Make confidence folding uct move (avg backprop)
-		//srandom(seed);
-		//side = max;
-		//int ciFoldingMove = makeMinmaxOnUCTMove(testState,&side,numIterations,C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, ci_threshold, ciFoldingVals);
-		//printf("%d, %f,%f, ", ciFoldingMove, ciFoldingVals[ciFoldingMove], ciFoldingVals[mmMove]);
-		////Make minmax folding uct move (avg backprop)
-		//srandom(seed);
-		//side = max;
-		//int mmFoldingMove = makeMinmaxOnUCTMove(testState, &side, numIterations, C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, -1, mmFoldingVals);
-		//printf("%d, %f, %f", mmFoldingMove, mmFoldingVals[mmFoldingMove], mmFoldingVals[mmMove]);
+		foldTree(testState, &side, numIterations, C[side], heuristic, budget[side], ci_threshold, mmVals);
 		printf("\n");
 		_DOM->destructRep(testState);
 	}
@@ -140,7 +150,7 @@ void foldTree(rep_t rep, int *side, int numIterations, double C,
 		int budget,
 		int ci_threshold, 
 	    	double gs_values[]) {
-	int i,parentCIWin=0,parentCITotal=0;
+	int i,parentCIWin=0,parentCITotal=0,minDepth=INF,treeDepth=0;
 	double avgDepth=0;
 	srandom(0);
 	treeNode* tree = buildUCTTree(rep,side,numIterations,C,heuristic,budget);
@@ -151,9 +161,8 @@ void foldTree(rep_t rep, int *side, int numIterations, double C,
 	for (i = 1; i < _DOM->getNumOfChildren(); i++) {
 		if (tree->children[i]) { // if this child was explored
 			uct_vals[i-1]= tree->children[i]->scoreSum/tree->children[i]->n;
-			//printf("FOLD:%d:%f/%d\n",i,tree->children[i]->scoreSum,tree->children[i]->n);
 			uct_mm_vals[i-1]= minmaxUCT(tree->children[i]);
-			vci *VCI = vciMinmaxUCT(tree->children[i], ci_threshold,&parentCIWin,&parentCITotal,&avgDepth); // do a minmax backup of the subtree rooted at this child
+			vci *VCI = vciMinmaxUCT(tree->children[i], ci_threshold,&parentCIWin,&parentCITotal,&avgDepth,&minDepth,&treeDepth); // do a minmax backup this child
 			uct_ci_vals[i-1] = VCI->score;
 			free(VCI);
 			// negamax
@@ -167,33 +176,22 @@ void foldTree(rep_t rep, int *side, int numIterations, double C,
 			uct_vals[i-1]=uct_mm_vals[i-1]=uct_ci_vals[i-1] = -1*INF;
 		}
 	}
-
 	int bestMoveOfUct = maxVal(uct_vals,_DOM->getNumOfChildren());
 	int bestMoveOfUct_mm = maxVal(uct_mm_vals,_DOM->getNumOfChildren());
 	int bestMoveOfUct_ci = maxVal(uct_ci_vals,_DOM->getNumOfChildren());
 	int goldStandard = maxVal(gs_values,_DOM->getNumOfChildren());
-	/* printouts :UCT_Move, UCT_Move_Val, UCT_GS_Move_Val, Parental_Percantage , CI_Move, CI_Move_Val, CI_GS_Move_Val, MMF_Move, MMF_Move_Val, MMF_GS_Val\n");*/
+
+	//UCT_Move, UCT_Move_Val, UCT_GS_Move_Val, 
 	printf("%d, %f , %f, ",bestMoveOfUct, uct_vals[bestMoveOfUct], uct_vals[goldStandard]); 
-	printf("%f ," ,parentCIWin / (double)parentCITotal);
-	printf("%f ," ,avgDepth);
+	//Parental_Percantage , Average_depth, Min_Depth, Tree_Depth
+	printf("%f , %f, %d, %d, " ,parentCIWin / (double)parentCITotal, avgDepth, minDepth, treeDepth);
+	//CI_Move, CI_Move_Val, CI_GS_Move_Val, 
 	printf("%d, %f , %f, ",bestMoveOfUct_ci, uct_ci_vals[bestMoveOfUct_ci], uct_ci_vals[goldStandard]); 
+	//MMF_Move, MMF_Move_Val, MMF_GS_Val\n");
 	printf("%d, %f , %f",bestMoveOfUct_mm, uct_mm_vals[bestMoveOfUct_mm], uct_mm_vals[goldStandard]); 
 	parentCIWin = 0;
 	parentCITotal = 0;
-	// Clean up when done
 	freeTree(tree);
-	//int bestMoves[_DOM->getNumOfChildren()],numBestMoves;
-	//double *uctVals = (double*)calloc(_DOM->getNumOfChildren(), sizeof(double));
-	//*side = orignalSide;
-	//srandom(0);
-	//int uctMove = makeUCTMove(rep, side, numIterations, C,heuristic, budget, bestMoves, &numBestMoves, AVERAGE, INF, uctVals);
-	////printf("%d %d\n",uctMove,bestMoveOfUct);
-	////assert(uctMove == bestMoveOfUct);
-	//for (i=0;i<_DOM->getNumOfChildren();i++){
-	//	printf("%d:UCT:%f FOLD_TREE:%f\n",i,uctVals[i],uct_vals[i]);
-	//	assert(abs(uctVals[i]-uct_vals[i])<0.001 || uct_vals[i]== -INF);
-	//}
-	//free(uctVals);
 }
 
 
