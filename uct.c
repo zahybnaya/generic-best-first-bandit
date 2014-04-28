@@ -146,7 +146,7 @@ void updateStatistics(treeNode *node, double sample) {
 }
 
 /* Recursively constructs the UCT search tree */
-static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int budget, int backupOp , int isRoot, int ci_threshold) {
+static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int budget, int backupOp , int isRoot, int ci_threshold, int* parentCIWin, int* 						parentCITotal, double* avgDepth, int* minDepth, int* treeDepth) {
 	double ret;
 	int move;
 	int i;
@@ -172,6 +172,7 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 		
 		// Update node score / count and return
 		updateStatistics(node, ret);
+		node->ci = 0;
 		return ret;
 	}
 	else if (node->n == 0) { // not a terminal node
@@ -208,10 +209,13 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 		// is what is stored in the child node
 		_DOM->makeMove(node->children[move]->rep, &(node->children[move]->side), move);
 		if(debuglog)printf("Created a node for move %d\n",move);
+		
+		if (node->depth > *treeDepth)
+			*treeDepth = node->depth;
 	}
 
 	// Descend recursively
-	ret = uctRecurse(node->children[move], C, heuristic, budget, backupOp, false, ci_threshold);
+	ret = uctRecurse(node->children[move], C, heuristic, budget, backupOp, false, ci_threshold, parentCIWin, parentCITotal, avgDepth, minDepth, treeDepth);
 
 	//In a stochastic domain
 	//Update ret to include the cost of getting to the child node from this parent.
@@ -248,9 +252,9 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 		double bestCI = INF;
 		
 		for (i = 1; i < _DOM->getNumOfChildren(); i++) {
-			if (node->children[i]) { // if child exists, is it the best scoring child?
+			if (node->children[i] && node->children[i]->n >= ci_threshold) { // if child exists, is it the best scoring child?
 				score = node->children[i]->scoreSum / (double)node->children[i]->n;
-				if (((node->side == max) && (score > bestScore)) || ((node->side == min) && (score < bestScore))) {
+				if (((node->side == max) && (score > bestScore)) || ((node->side == min) && (score < bestScore))){
 					bestScore = score;
 					bestCI = node->children[i]->ci;
 				}
@@ -261,12 +265,19 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 		double variance = node->M2 / (double)(node->n - 1);
 		node->ci = 2 * z975 * sqrt(variance / (double)node->n);
 		
+		(*parentCITotal)++;
 		if (bestCI < node->ci) {
 		  node->scoreSum = (node->n) * bestScore; // reset score to that of min/max of children
 		  node->ci = bestCI;
 		  updateStatistics(node, ret);
 		  node->scoreSum -= ret; //updateStatistics also adds the reward to the scoreSum which shouldn't happen in this case.
+		  
+		  *avgDepth = ((*avgDepth * (*parentCIWin-1)) + node->depth) /(*parentCIWin);
+		  if(*minDepth>node->depth)
+			*minDepth = node->depth;
+		  
 		} else {
+		  (*parentCIWin)++;
 		  node->scoreSum = node->realScoreSum; // reset score to average of current node
 		  updateStatistics(node, ret);
 		}
@@ -298,9 +309,11 @@ int makeUCTMove(rep_t rep, int *side, int numIterations, double C,
 	rootNode->children = (treeNode**)calloc(_DOM->getNumOfChildren(), sizeof(treeNode*));
 
 	// Run specified number of iterations of UCT
+	int parentCIWin=0,parentCITotal=0,minDepth=-INF,treeDepth=0;
+	double avgDepth=0;
 	for (i = 0; i < numIterations; i++){
 		//printf("ITERATION %d\n", i);
-		uctRecurse(rootNode, C, heuristic, budget, backupOp, true, ci_threshold);
+		uctRecurse(rootNode, C, heuristic, budget, backupOp, true, ci_threshold, &parentCIWin, &parentCITotal, &avgDepth, &minDepth, &treeDepth);
 	}
 
 	// Now look at the children 1-ply deep and determing the best one (break ties
@@ -387,9 +400,12 @@ void genUCTTree(rep_t rep, int side, int numIterations, double C, heuristics_t h
 	rootNode->id = ++id;
 	rootNode->children =(treeNode**) calloc(_DOM->getNumOfChildren(), sizeof(treeNode*));
 
+	int parentCIWin=0,parentCITotal=0,minDepth=-INF,treeDepth=0;
+	double avgDepth=0;
+	
 	// Run specified number of iterations of UCT (this outputs the search tree)
 	for (i = 0; i < numIterations; i++)
-		uctRecurse(rootNode, C, heuristic, budget, AVERAGE, true, INF);
+		uctRecurse(rootNode, C, heuristic, budget, AVERAGE, true, INF,&parentCIWin,&parentCITotal, &avgDepth, &minDepth,&treeDepth);
 
 	dotFormat = false;
 
@@ -448,6 +464,7 @@ static vci *vciMinmaxUCT(treeNode* node, int ci_threshold, int* parentCIWin,int*
 	assert(node != NULL);
 	vci *currentVCI = NULL,*bestChild=NULL;
 	int i;
+	
 	//Terminals returns CI=0
 	if (_DOM->getGameStatus(node->rep) != INCOMPLETE) {
 		vci *bestVCI = (vci*)calloc(1, sizeof(vci));
@@ -458,20 +475,22 @@ static vci *vciMinmaxUCT(treeNode* node, int ci_threshold, int* parentCIWin,int*
 		}
 		return bestVCI;
 	}
+	
 	//below threshold return CI=INF(ignored)
-//	if (node->n < ci_threshold) {
-//		vci *bestVCI = (vci*)calloc(1, sizeof(vci));
-//		bestVCI->score = node->scoreSum / (double)node->n;
-//		bestVCI->ci = INF;
-//		if(node->depth>*treeDepth){
-//			*treeDepth = node->depth;
-//		}
-//		return bestVCI;
-//	}
+	if (node->n < ci_threshold) {
+		vci *bestVCI = (vci*)calloc(1, sizeof(vci));
+		bestVCI->score = node->scoreSum / (double)node->n;
+		bestVCI->ci = INF;
+		if(node->depth>*treeDepth){
+			*treeDepth = node->depth;
+		}
+		return bestVCI;
+	}
+
 	// Calculate the CI length and score of node
 	double variance = 0; 
-	double nodeci =0;
-	if (node->n > 1){
+	double nodeci = 0;
+	if (node->n > 1) {
 	       	variance = node->M2 / (double)(node->n - 1);
 		nodeci = 2 * z975 * sqrt(variance / (double)node->n);
 	}
@@ -480,7 +499,7 @@ static vci *vciMinmaxUCT(treeNode* node, int ci_threshold, int* parentCIWin,int*
 		if (node->children[i]) { // only descend if child exists
 			currentVCI = vciMinmaxUCT(node->children[i], ci_threshold,parentCIWin,parentCITotal,avgDepth,minDepth,treeDepth); 
 			if ((((node->side == max) && (currentVCI->score >= bestChildScore )) || ((node->side == min) && (currentVCI->score <=bestChildScore )))
-					&& currentVCI->ci < nodeci) { 
+					&& currentVCI->ci < INF) { 
 				bestChild = currentVCI;
 				bestChildScore = currentVCI->score ;
 			} else {
@@ -498,9 +517,9 @@ static vci *vciMinmaxUCT(treeNode* node, int ci_threshold, int* parentCIWin,int*
 		if(*minDepth>node->depth){
 			*minDepth = node->depth;
 		}
-		if(node->n>ci_threshold){
-			bestChild->ci=0;
-		}
+		//if(node->n > ci_threshold){
+		//	bestChild->ci=0;
+		//}
 		return bestChild;
 	}
 	vci *bestVCI = (vci*)calloc(1, sizeof(vci));
@@ -508,65 +527,6 @@ static vci *vciMinmaxUCT(treeNode* node, int ci_threshold, int* parentCIWin,int*
 	bestVCI->ci = nodeci;
 	return bestVCI;
 }
-
-/**
- *
-static vci *vciMinmaxUCT(treeNode* node, int ci_threshold) {
-  // Should never be reaching a non-existent node
-  assert(node != NULL);
-  
-  vci *bestVCI = calloc(1, sizeof(vci));
-  bestVCI->score = (node->side == max) ? MIN_WINS : MAX_WINS;
-  
-  vci *currentVCI = 0;
-  
-  // Is this a leaf node?
-  if (node->n < ci_threshold) {
-    bestVCI->score = node->scoreSum / (double)node->n;
-    bestVCI->ci = INF;
-    return bestVCI;
-  }
-  
-  // Is this a terminal node?
-  if (_DOM->getGameStatus(node->rep) != INCOMPLETE) {
-    bestVCI->score = node->scoreSum / (double)node->n;
-    bestVCI->ci = 0;
-    return bestVCI;
-  }
-  
-  // Otherwise, we are at an internal node, so descend recursively
-  int i;
-  for (i = 1; i < _DOM->getNumOfChildren(); i++) {
-    if (node->children[i]) { // only descend if child exists
-      currentVCI = vciMinmaxUCT(node->children[i], ci_threshold); // compute minimax value of i^th child	
-      
-      if ((node->side == max) && (currentVCI->score > bestVCI->score)) { // maximizing level -- is this child score higher than the best so far?
-	bestVCI->score = currentVCI->score;
-	bestVCI->ci = currentVCI->ci;
-      } else if ((node->side == min) && (currentVCI->score < bestVCI->score)) { // minimizing level -- is this child score lower than the best so far?
-	bestVCI->score = currentVCI->score;
-	bestVCI->ci = currentVCI->ci;
-      }
-      
-      free(currentVCI);
-    }
-  }
-  
-  // Calculate the CI length for the current node.
-  double variance = node->M2 / (double)(node->n - 1);
-  double ci = 2 * z975 * sqrt(variance / (double)node->n);
-  
-  // If it is lower than the one of the best child, trust the current value instead of the child's value
-  parentCITotal++; //Bug here
-  if (ci < bestVCI->ci) {
-    parentCIWin++;
-    bestVCI->score = node->scoreSum / (double)node->n;
-    bestVCI->ci = ci;
-  }
-  
-  return bestVCI;
-}
-**/
 
 /* Runs specified number of iteration of UCT. Then, runs minimax on the resulting UCT tree and returns the best move */
 int makeMinmaxOnUCTMove(rep_t rep, int *side, int numIterations, double C,
@@ -590,8 +550,10 @@ int makeMinmaxOnUCTMove(rep_t rep, int *side, int numIterations, double C,
 
 	// Run specified number of iterations of UCT
 	for (i = 0; i < numIterations; i++)
-		uctRecurse(rootNode, C, heuristic, budget, AVERAGE, true, INF);
+		uctRecurse(rootNode, C, heuristic, budget, AVERAGE, true, INF, &parentCIWin,&parentCITotal,&avgDepth,&minDepth,&treeDepth);
 
+	parentCIWin=0,parentCITotal=0,minDepth=-INF,treeDepth=0;
+	
 	// Now minimax the tree we just built (we minimax starting from each child)
 	for (i = 1; i < _DOM->getNumOfChildren(); i++) {
 		if (rootNode->children[i]) { // if this child was explored
