@@ -17,6 +17,7 @@ for(h in names(splitByH)){
 			cat("\t#Iterations:",it,"\n")
 			cat("\tMMF:",nrow(d[d$GS_Move==d$MMF_Move,])/nrow(d),"\n")
 			cat("\tCI:",nrow(d[d$GS_Move==d$CI_Move,])/nrow(d),"\n")
+			cat("\tCIB:",nrow(d[d$GS_Move==d$CIB_Move,])/nrow(d),"\n")
 			cat("\tUCT:",nrow(d[d$GS_Move==d$UCT_Move,])/nrow(d),"\n")
 			cat("\tDifference from UCT:",nrow(d[d$GS_Move!=d$UCT_Move & d$CI_Move==d$GS_Move ,]),"\n")
 			cat("\tDifference from MMF:",nrow(d[d$GS_Move!=d$MMF_Move & d$CI_Move==d$GS_Move ,]),"\n")

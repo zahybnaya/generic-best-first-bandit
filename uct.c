@@ -5,6 +5,7 @@
  * */
 #include "common.h"
 #include "domain.h"
+#include "phi.c"
 #define SIMPLE_REGRET_UCT 0 //set to 1 to enable a different algorithm (see minimizing simple regret in MCTS)
 #define z975 1.96
 
@@ -61,6 +62,98 @@ static double uctExploration(double multiplier, double C, treeNode* node, int i)
 static double uctExplorationSimpleRegret(double multiplier, double C, treeNode* node, int i){
 	return 	sqrt((multiplier * C) * sqrt(node->n)/(double)node->children[i]->n); // add exploration component
 }
+/*
+ * probability that child i is greater than child j
+ * We assume that i and j are normally distributed so we perform the following:
+ * We define X = Xi - Xj 
+ * We return 1-P(X<=0)  which is 1-Phi(Xi-Xj/Sdi+sdj)
+ * */
+static double getProbForGreater(int i,int j, treeNode* node){
+	double xi = node->children[i]->scoreSum/node->children[i]->n;
+	double xj = node->children[j]->scoreSum/node->children[j]->n;
+	if ((xi == MIN_WINS && node->side == min) || (xi == MAX_WINS && node->side == max) ){
+		return 1;
+	}
+	if ((xj == MIN_WINS && node->side == min) || (xj == MAX_WINS && node->side == max) ){
+		return 0;
+	}
+	double sdi=0.5,sdj=0.5;
+	if(node->children[i]->n >1)
+		sdi = node->children[i]->M2/(double)(node->children[i]->n - 1);
+	if(node->children[j]->n >1)
+		sdj = node->children[j]->M2/(double)(node->children[j]->n - 1);
+	double s = (sdi+sdj);
+	s = s>0?s:0.1;
+	//printf("xi:%f, xj:%f, sdi:%f, sdj:%f \n",xi,xj,sdi,sdj);
+	assert(s>0);
+	double ret = phi((xi-xj)/s);
+	ret = node->side==max?ret:(1-ret);
+	//printf("side:%d phi(%f)=%f\n",node->side,(xi-xj)/s,ret);
+  return ret;
+}
+/*
+ * Returns the probability that i is the maximal child of node 
+ *
+ * */
+static double getProbForMaximialChild(int mi, treeNode* node) {
+	int i;
+	double answer = 1;
+	treeNode* child = node->children[mi];
+	if (!child)
+		return 0;
+	for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+	  if (i==mi||!node->children[i]) { 
+		  continue;
+	  }
+	  answer*=getProbForGreater(mi,i,node);
+	}
+	return answer;
+}
+
+/* Weighted Minimax*/
+static double weightedMM(treeNode* node,heuristics_t heuristic) {
+	int i;
+	double val;
+	double bestScore = 0;
+	char s[1512],b[256]; 
+	sprintf(s,"*side:%d visits:%d depth:%d ",node->side,node->n,node->depth);
+	if ((val = _DOM->getGameStatus(node->rep)) != INCOMPLETE){
+		if ((heuristic == _DOM->hFunctions.h3) || (heuristic == _DOM->hFunctions.h4) || (heuristic == _DOM->hFunctions.h5)) {
+			val = (val/MAX_WINS);
+		}
+		return val; // return something from the set {MIN_WINS, DRAW, MAX_WINS}
+	}
+	if (node->n == 1) {
+	  assert((node->scoreSum > MIN_WINS) && (node->scoreSum < MAX_WINS)); 
+	  return node->scoreSum; // the node was already evaluated when doing UCT, so just use that value
+	}
+	double ttlPp=0;
+	double rttlp=0;
+	for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+	  if (node->children[i]) { // only descend if child exists
+	    ttlPp+=getProbForMaximialChild(i,node); 
+	  }
+	}
+	assert(ttlPp>0);
+	for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+	  if (node->children[i]) { // only descend if child exists
+	    val = weightedMM(node->children[i], heuristic); 
+	    double uctVal = node->children[i]->scoreSum/node->children[i]->n;
+	    double uctProb = node->children[i]->n/(double)node->n;
+	    double prob = getProbForMaximialChild(i,node)/ttlPp;
+	    rttlp+=prob;
+	    bestScore+=prob*val;
+	    sprintf(b,"Child%d,v:%2.3f,uv:%2.3f,p:%2.3f,up:%2.3f,",i,val,uctVal,prob,uctProb);
+	    strcat(s,b);
+	  }
+	}
+	sprintf(b,"scr:%2.3f,scru:%2.3f,ttlp:%2.3f,one:%2.2f*\n",bestScore,node->scoreSum/(double)node->n,ttlPp,rttlp);
+	strcat(s,b);
+//	puts(s);
+
+	return bestScore;
+}
+
 
 /* Invoked by uctRecurse to decide which child of the current node should be expanded */
 static int selectMove(treeNode* node, double C, int isSimpleRegret) {
@@ -219,10 +312,8 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 
 	//In a stochastic domain
 	//Update ret to include the cost of getting to the child node from this parent.
-	//TODO make this domain independant
 	if (_DOM->dom_name == SAILING && isChanceNode_sailing(node->rep) == false)
 	  ret += actionCost_sailing(node->rep, move);
-	
 	// Update score and node counts and return the outcome of this episode
 	if (backupOp == AVERAGE) { // use averaging back-up
 		updateStatistics(node, ret);
@@ -239,10 +330,22 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 					bestScore = score;
 			}
 		}
-
 		node->scoreSum = (node->n) * bestScore; // reset score to that of min/max of children
-	}
-	else if (backupOp == CI) {
+	}else if (backupOp == WEIGHTED_MM) { 
+		updateStatistics(node,ret);
+		double ttlPp=0;
+		double nodeScore=0;
+		double nodeP,nodeVal;
+		for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+			if (node->children[i]) { // if child exists, is it the best scoring child?
+				nodeP=getProbForMaximialChild(i,node);
+				ttlPp+=nodeP;
+				nodeVal = node->children[i]->scoreSum / (double)node->children[i]->n;
+				nodeScore+=(nodeVal*nodeP);
+			}
+		}
+		node->scoreSum = (node->n) * (nodeScore/ttlPp); 
+	} else if (backupOp == CI) {
 		if (node->n < ci_threshold) {
 		  updateStatistics(node, ret);
 		  return ret;
