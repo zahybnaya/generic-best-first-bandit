@@ -35,6 +35,20 @@ typedef struct node {
 				   indexing/numbering */
 } treeNode;
 
+typedef struct _child{int index; double value; double SD;} child_data;
+
+static int comparChildData (const void* p1, const void* p2){
+	child_data* c1 =(child_data*)p1;
+	child_data* c2 =(child_data*)p2;
+	if(c1->value > c2->value){
+		return -1;
+	}
+	if(c1->value < c2->value){
+		return 1;
+	}
+	return 0;
+
+}
 /* Routine to free up UCT tree */
 static void freeTree(treeNode* node) {
 	int i;
@@ -238,11 +252,11 @@ void updateStatistics(treeNode *node, double sample) {
   node->M2 = M2;
 }
 
+
 /* Recursively constructs the UCT search tree */
 static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int budget, int backupOp , int isRoot, int ci_threshold, int* parentCIWin, int* 						parentCITotal, double* avgDepth, int* minDepth, int* treeDepth) {
 	double ret;
-	int move;
-	int i;
+	int move,i;
 	double bestScore;
 	double score;
 	assert(node != NULL); // should never be calling uctRecurse on a non-existent node
@@ -385,15 +399,58 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 		  updateStatistics(node, ret);
 		}
 	}
-	else if (backupOp == VARIANCE) {
+	else if (backupOp == VARIANCE_ALL) {
 		if (node->n < ci_threshold) {
 		  updateStatistics(node, ret);
 		  return ret;
 		}
-		
+		child_data children_data[_DOM->getNumOfChildren()];
+		int numOfBestChildren=0;
+		double nodeScore = node->scoreSum / (node->n),childSd ;
+		nodeScore=node->side==max?nodeScore:-nodeScore;
+		for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+			if (node->children[i] && node->children[i]->n >= ci_threshold) { // if child exists, is it the best scoring child?
+				score = node->children[i]->scoreSum / (double)node->children[i]->n;
+				score = node->side==max?score:-score;
+				childSd = node->children[i]->ci;
+				children_data[numOfBestChildren++] =(child_data){i, score, childSd};
+			}
+		}
+		qsort(children_data,numOfBestChildren,sizeof(child_data),comparChildData);
+		for(i=1;i<numOfBestChildren;i++){
+			assert(children_data[i].value<=children_data[i-1].value);
+		}
+		node->ci = sqrt(node->M2 / (double)(node->n - 1));
+		for (i=0;i<numOfBestChildren;i++){
+			(*parentCITotal)++;
+			if (children_data[i].value>nodeScore && children_data[i].SD < node->ci){
+				nodeScore=(node->n) * children_data[i].value; 
+				nodeScore=(node->side==max)?nodeScore:-nodeScore;//reversing
+				node->scoreSum = nodeScore;
+				node->ci = children_data[i].SD ;
+				updateStatistics(node, ret);
+				node->scoreSum -= ret; //updateStatistics also adds the reward to the scoreSum which shouldn't happen in this case.
+				(*parentCIWin)++;
+				*avgDepth = ((*avgDepth * (*parentCIWin-1)) + node->depth) /(*parentCIWin);
+				if(*minDepth > node->depth){
+					*minDepth = node->depth;
+				}
+				if(i>4)printf("child%d\n",i);
+				return ret;
+			}
+		}
+		node->scoreSum = node->realScoreSum; // reset score to average of current node
+		updateStatistics(node, ret);
+	}
+	else if (backupOp == VARIANCE) {
+		if (node->n < ci_threshold) {
+			updateStatistics(node, ret);
+			return ret;
+		}
+
 		bestScore = (node->side == max) ? MIN_WINS : MAX_WINS;
 		double bestSD = INF;
-		
+
 		for (i = 1; i < _DOM->getNumOfChildren(); i++) {
 			if (node->children[i] && node->children[i]->n >= ci_threshold) { // if child exists, is it the best scoring child?
 				score = node->children[i]->scoreSum / (double)node->children[i]->n;
