@@ -14,7 +14,7 @@ static void foldTree(rep_t rep, int *side, int numIterations, double C, heuristi
 	
 static int maxVal(const double vals[], int length);
 treeNode* buildUCTTree(rep_t rep, int *side, int numIterations, double C, heuristics_t heuristic, int budget, int backOp, int ci_threshold);
-void buildCITree(rep_t rep, int *side, int numIterations, double C, heuristics_t heuristic, int budge, int ci_threshold, int goldStandard);
+void buildTree(rep_t rep, int *side, int numIterations, double C, heuristics_t heuristic, int budge, int ci_threshold, int goldStandard, int backOp);
 
 void printMsg() {
 	puts(" Evaluates individual states." );
@@ -86,7 +86,10 @@ int main(int argc, char* argv[]) {
 
 	}
 	
-	printf("Seed, Instance, GS_level,  CI_Threshold, iterations, H , GS_Move, GS_Move_Val, CIB_Parental_Percantage , CIB_Average_depth, CIB_Min_Depth, CIB_Tree_Depth, CIB_Move, CIB_Move_Val, CIB_GS_Move_Val, UCT_Move, UCT_Move_Val, UCT_GS_Move_Val, Parental_Percantage , Average_depth, Min_Depth, Tree_Depth, CI_Move, CI_Move_Val, CI_GS_Move_Val, MMF_Move, MMF_Move_Val, MMF_GS_Val\n");
+	//printf("Seed, Instance, GS_level,  CI_Threshold, iterations, H , GS_Move, GS_Move_Val, CIB_Parental_Percantage , CIB_Average_depth, CIB_Min_Depth, CIB_Tree_Depth, CIB_Move, CIB_Move_Val, CIB_GS_Move_Val, UCT_Move, UCT_Move_Val, UCT_GS_Move_Val, Parental_Percantage , Average_depth, Min_Depth, Tree_Depth, CI_Move, CI_Move_Val, CI_GS_Move_Val, MMF_Move, MMF_Move_Val, MMF_GS_Val\n");
+	
+	//Header for tree building algorithms
+	printf("Seed, Instance, GS_level,  CI_Threshold, Iterations, H , GS_Move, GS_Move_Val, CIB_Parental_Percantage , CIB_Average_depth, CIB_Min_Depth, CIB_Tree_Depth, CIB_Move, CIB_Move_Val, CIB_GS_Move_Val, MMB_Move, MMB_Move_Val, MMB_GS_Move_Val, UCT_Move, UCT_Move_Val, UCT_GS_Move_Val, VAR_Move, VAR_Move_Val, VAR_GS_Move_Val\n");
 
 	double *mmVals = calloc(_DOM->getNumOfChildren(), sizeof(double));
 	
@@ -94,7 +97,7 @@ int main(int argc, char* argv[]) {
 		srandom(seed+s);
 		testState = _DOM->allocate();
 		_DOM->generateRandomStart(testState,&side);
-		//Seed, Instance, GS_level,  CI_Threshold, iterations,h
+		//Seed, Instance, GS_level,  CI_Threshold, iterations, h
 		printf("%d, %d, %d, %d, %d, h%d, ", seed+s, s, gs_level, ci_threshold, numIterations, hfunc);
 		//Make minmax move to depth 16
 		srandom(seed);
@@ -105,10 +108,19 @@ int main(int argc, char* argv[]) {
 		printf("%d, %f, ", goldStandard , mmVals[goldStandard]);
 		
 		side = max;
-		buildCITree(testState, &side, numIterations, C[side], heuristic, budget[side], ci_threshold, goldStandard);
+		buildTree(testState, &side, numIterations, C[side], heuristic, budget[side], ci_threshold, goldStandard, CI);
 		
 		side = max;
-		foldTree(testState, &side, numIterations, C[side], heuristic, budget[side], ci_threshold, goldStandard);
+		buildTree(testState, &side, numIterations, C[side], heuristic, budget[side], ci_threshold, goldStandard, MINMAX);
+		
+		side = max;
+		buildTree(testState, &side, numIterations, C[side], heuristic, budget[side], ci_threshold, goldStandard, AVERAGE);
+		
+		side = max;
+		buildTree(testState, &side, numIterations, C[side], heuristic, budget[side], ci_threshold, goldStandard, VARIANCE);
+		
+		//side = max;
+		//foldTree(testState, &side, numIterations, C[side], heuristic, budget[side], ci_threshold, goldStandard);
 		
 		printf("\n");
 		_DOM->destructRep(testState);
@@ -118,29 +130,30 @@ int main(int argc, char* argv[]) {
 	return 0;
 }
 
-void buildCITree(rep_t rep, int *side, int numIterations, double C, heuristics_t heuristic, int budget, int ci_threshold, int goldStandard) {
+void buildTree(rep_t rep, int *side, int numIterations, double C, heuristics_t heuristic, int budget, int ci_threshold, int goldStandard, int backOp) {
 		int i;
-		double cib_vals[_DOM->getNumOfChildren()];
+		double vals[_DOM->getNumOfChildren()];
 		
 		srandom(0);
-		treeNode* tree = buildUCTTree(rep, side, numIterations, C, heuristic, budget, CI, ci_threshold);
+		treeNode* tree = buildUCTTree(rep, side, numIterations, C, heuristic, budget, backOp, ci_threshold);
 		
 		for (i = 1; i < _DOM->getNumOfChildren(); i++) {
 			if (tree->children[i]) { // if this child was explored
-				cib_vals[i-1]= tree->children[i]->scoreSum / (double)tree->children[i]->n;
+				vals[i-1]= tree->children[i]->scoreSum / (double)tree->children[i]->n;
+			
 				if (*side == min)
-					cib_vals[i-1]= -cib_vals[i-1];
+					 vals[i-1]= -vals[i-1];
 			} else {
 				assert(i>0);
-				cib_vals[i-1] = -1 * INF;
+				vals[i-1] = -1 * INF;
 			}
 		}
 		
 		freeTree(tree);
-		int bestMoveOfCIB = maxVal(cib_vals, _DOM->getNumOfChildren());
 		
-		//CIB_Move, CIB_Move_Val, CIB_GS_Move_Val, 
-		printf("%d, %f, %f, ", bestMoveOfCIB, cib_vals[bestMoveOfCIB], cib_vals[goldStandard]); 
+		int bestMove = maxVal(vals, _DOM->getNumOfChildren());
+
+		printf("%d, %f, %f, ", bestMove, vals[bestMove], vals[goldStandard]); 
 }
 
 /**
@@ -150,7 +163,7 @@ treeNode* buildUCTTree(rep_t rep, int *side, int numIterations, double C,
 		heuristics_t heuristic,
 		int budget, int backOp, int ci_threshold) {
 	int i;
-	int parentCIWin=0,parentCITotal=0,minDepth=-INF,treeDepth=0;
+	int parentCIWin=0,parentCITotal=0,minDepth=INF,treeDepth=0;
 	double avgDepth=0;
 	
 	treeNode* rootNode = createRootNode(side,rep);
@@ -199,6 +212,7 @@ void foldTree(rep_t rep, int *side, int numIterations, double C,
 			vci *VCI = vciMinmaxUCT(tree->children[i], ci_threshold,&parentCIWin,&parentCITotal,&avgDepth,&minDepth,&treeDepth); // do a minmax backup this child
 			uct_ci_vals[i-1] = VCI->score;
 			free(VCI);
+			
 			// negamax
 			if (*side == min){
 				uct_vals[i-1]= -uct_vals[i-1];
