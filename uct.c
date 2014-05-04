@@ -364,7 +364,7 @@ int makeUCTMove(rep_t rep, int *side, int numIterations, double C,
 			continue;
 		
 		val = rootNode->children[i]->scoreSum / (double)rootNode->children[i]->n;
-		printf("UCT:%d:%f/%d\n",i,rootNode->children[i]->scoreSum,rootNode->children[i]->n);
+		//printf("UCT:%d:%f/%d\n",i,rootNode->children[i]->scoreSum,rootNode->children[i]->n);
 		if (_DOM->dom_name == SAILING)
 		  val += actionCost_sailing(rootNode->rep, i);
 		// If this was min's move, negate the utility value (this makes things a little cleaner
@@ -634,9 +634,9 @@ int makeMinmaxOnUCTMove(rep_t rep, int *side, int numIterations, double C,
 	if (verbose)
 		printf("Best move: %d\n", bestMove);
 	
-	if (ci_threshold > 0) {
+	/*if (ci_threshold > 0) {
 	  printf(",%f ," ,parentCIWin / (double)parentCITotal);
-	}
+	}*/
 	
 	parentCIWin = 0;
 	parentCITotal = 0;

@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
 		const char* playerStrings[] = {"max", "min"};
 		const char* hStrings[] = {"heuristic 1", "heuristic 2", "playouts", "random leaf values", "coarsened h1", "finer playouts"};
 		char heurString[][30] = {"heuristic 1", "heuristic 1"};
-		const char* backupOpStrings[] = {"average", "minimax", "confidence"};
+		const char* backupOpStrings[] = {"average", "minimax", "confidence", "variance"};
 		double bolzmanConstant = -2.44, probWeight = 0.5;
 		double gameScore[2]; //The socre of each player for a specific game. Currently used for sailing only.
 		double totalScore[2]; //The socre of each player for all games. Currently used for sailing only.
@@ -670,7 +670,9 @@ int main(int argc, char* argv[]) {
 		printBfbStats();
 		free(algDescription[0]);
 		free(algDescription[1]);
-		free(weathers);
+		
+		if (_DOM->dom_name == SAILING)
+		  free(weathers);
 		
 		return 0;
 }
