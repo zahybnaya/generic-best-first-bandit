@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
 		const char* playerStrings[] = {"max", "min"};
 		const char* hStrings[] = {"heuristic 1", "heuristic 2", "playouts", "random leaf values", "coarsened h1", "finer playouts"};
 		char heurString[][30] = {"heuristic 1", "heuristic 1"};
-		const char* backupOpStrings[] = {"average", "minimax", "confidence"};
+		const char* backupOpStrings[] = {"average", "minimax", "confidence", "variance"};
 		double bolzmanConstant = -2.44, probWeight = 0.5;
 		double gameScore[2]; //The socre of each player for a specific game. Currently used for sailing only.
 		double totalScore[2]; //The socre of each player for all games. Currently used for sailing only.
@@ -490,47 +490,6 @@ int main(int argc, char* argv[]) {
 		  }
 		}
 		
-		/*****************************************************************************************/
-		//Test section, cooment all to get back the original code where games are played to completion.	
-		int s;
-		side = max;
-		double *mmVals = calloc(6, sizeof(double));
-		double *uctVals = calloc(6, sizeof(double));
-		double *ciFoldingVals = calloc(6, sizeof(double));
-		double *mmFoldingVals = calloc(6, sizeof(double));
-		
-		printf("GS_Move, GS_Move_Val, UCT_Move, UCT_Move_Val, UCT_GS_Move_Val, CI_Move, CI_Move_Val, CI_GS_Move_Val, MMF_Move, MMF_Move_Val, MMF_GS_Val\n");
-		
-		for (s = 0; s < numGames; s++) {
-		  //Make minmax move to depth 16
-		  int mmMove = makeMinmaxMove(testStates[s], &side, 8, heuristic[side], budget[side], randomTieBreaks, noisyMM, bestMoves, &numBestMoves, &termPercentage, mmVals);
-		  
-		  printf("%d, %f, ", mmMove, mmVals[mmMove]);
-		  
-		  //Make classic uct move (avg backprop)
-		  int uctMove = makeUCTMove(testStates[s], &side, numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, AVERAGE, INF, uctVals);
-		  
-		  printf("%d, %f, %f ", uctMove, uctVals[uctMove], uctVals[mmMove]);
-		  
-		  //Make confidence folding uct move (avg backprop)
-		  int ciFoldingMove = makeMinmaxOnUCTMove(testStates[s], &side, numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, ci_threshold[side], ciFoldingVals);
-		  
-		  printf("%d, %f, %f, ", ciFoldingMove, ciFoldingVals[ciFoldingMove], ciFoldingVals[mmMove]);
-		  
-		  //Make minmax folding uct move (avg backprop)
-		  int mmFoldingMove = makeMinmaxOnUCTMove(testStates[s], &side, numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, -1, mmFoldingVals);
-		  
-		  printf("%d, %f, %f", mmFoldingMove, mmFoldingVals[mmFoldingMove], mmFoldingVals[mmMove]);
-		  
-		  printf("\n");
-		}
-		
-		
-		
-		return 0;
-		/*****************************************************************************************/
-		
-		
 		/* Loops until end of games*/
 		while (1) {
 				if (usingRandomStartBoard) {
@@ -561,16 +520,16 @@ int main(int argc, char* argv[]) {
 								start = startTiming();
 								switch(player[side]){
 										case UCT:
-												moveMade = makeUCTMove(state, &side, numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, backupOp[side],ci_threshold[side],0);
+												moveMade = makeUCTMove(state, &side, numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, backupOp[side],ci_threshold[side], 0);
 												break;
 										case MINMAX:
-												moveMade = makeMinmaxMove(state, &side,depth[side],heuristic[side],budget[side],randomTieBreaks,noisyMM,bestMoves,&numBestMoves, &termPercentage,0);
+												moveMade = makeMinmaxMove(state, &side,depth[side],heuristic[side],budget[side],randomTieBreaks,noisyMM,bestMoves,&numBestMoves, &termPercentage, 0);
 												break;
 										case BFB:
 												moveMade = makeBFBMove(state, &side, type_system[side], numIterations[side], C[side], CT[side], heuristic[side], budget[side], bestMoves, &numBestMoves, backupOp[side], threshold[side], policy[side]);			
 												break;
 										case MINMAX_ON_UCT:
-												  moveMade = makeMinmaxOnUCTMove(state, &side, numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, ci_threshold[side],0);	
+												  moveMade = makeMinmaxOnUCTMove(state, &side, numIterations[side], C[side], heuristic[side], budget[side], bestMoves, &numBestMoves, ci_threshold[side], 0);	
 												break;
 										default:
 												puts("Unknown algorithm\n");
@@ -711,7 +670,9 @@ int main(int argc, char* argv[]) {
 		printBfbStats();
 		free(algDescription[0]);
 		free(algDescription[1]);
-		free(weathers);
+		
+		if (_DOM->dom_name == SAILING)
+		  free(weathers);
 		
 		return 0;
 }

@@ -375,12 +375,51 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 		  updateStatistics(node, ret);
 		  node->scoreSum -= ret; //updateStatistics also adds the reward to the scoreSum which shouldn't happen in this case.
 		  
+		  (*parentCIWin)++;
 		  *avgDepth = ((*avgDepth * (*parentCIWin-1)) + node->depth) /(*parentCIWin);
-		  if(*minDepth>node->depth)
+		  if(*minDepth > node->depth)
 			*minDepth = node->depth;
 		  
 		} else {
+		  node->scoreSum = node->realScoreSum; // reset score to average of current node
+		  updateStatistics(node, ret);
+		}
+	}
+	else if (backupOp == VARIANCE) {
+		if (node->n < ci_threshold) {
+		  updateStatistics(node, ret);
+		  return ret;
+		}
+		
+		bestScore = (node->side == max) ? MIN_WINS : MAX_WINS;
+		double bestSD = INF;
+		
+		for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+			if (node->children[i] && node->children[i]->n >= ci_threshold) { // if child exists, is it the best scoring child?
+				score = node->children[i]->scoreSum / (double)node->children[i]->n;
+				if (((node->side == max) && (score > bestScore)) || ((node->side == min) && (score < bestScore))){
+					bestScore = score;
+					bestSD = node->children[i]->ci;
+				}
+			}
+		}
+
+		// Calculate the standard deviation of the current node.
+		node->ci = sqrt(node->M2 / (double)(node->n - 1));
+		
+		(*parentCITotal)++;
+		if (bestSD < node->ci) {
+		  node->scoreSum = (node->n) * bestScore; // reset score to that of min/max of children
+		  node->ci = bestSD;
+		  updateStatistics(node, ret);
+		  node->scoreSum -= ret; //updateStatistics also adds the reward to the scoreSum which shouldn't happen in this case.
+		  
 		  (*parentCIWin)++;
+		  *avgDepth = ((*avgDepth * (*parentCIWin-1)) + node->depth) /(*parentCIWin);
+		  if(*minDepth > node->depth)
+			*minDepth = node->depth;
+		  
+		} else {
 		  node->scoreSum = node->realScoreSum; // reset score to average of current node
 		  updateStatistics(node, ret);
 		}
@@ -412,7 +451,7 @@ int makeUCTMove(rep_t rep, int *side, int numIterations, double C,
 	rootNode->children = (treeNode**)calloc(_DOM->getNumOfChildren(), sizeof(treeNode*));
 
 	// Run specified number of iterations of UCT
-	int parentCIWin=0,parentCITotal=0,minDepth=-INF,treeDepth=0;
+	int parentCIWin=0,parentCITotal=0,minDepth=INF,treeDepth=0;
 	double avgDepth=0;
 	for (i = 0; i < numIterations; i++){
 		//printf("ITERATION %d\n", i);
@@ -428,7 +467,7 @@ int makeUCTMove(rep_t rep, int *side, int numIterations, double C,
 			continue;
 		
 		val = rootNode->children[i]->scoreSum / (double)rootNode->children[i]->n;
-		printf("UCT:%d:%f/%d\n",i,rootNode->children[i]->scoreSum,rootNode->children[i]->n);
+		//printf("UCT:%d:%f/%d\n",i,rootNode->children[i]->scoreSum,rootNode->children[i]->n);
 		if (_DOM->dom_name == SAILING)
 		  val += actionCost_sailing(rootNode->rep, i);
 		// If this was min's move, negate the utility value (this makes things a little cleaner
@@ -503,7 +542,7 @@ void genUCTTree(rep_t rep, int side, int numIterations, double C, heuristics_t h
 	rootNode->id = ++id;
 	rootNode->children =(treeNode**) calloc(_DOM->getNumOfChildren(), sizeof(treeNode*));
 
-	int parentCIWin=0,parentCITotal=0,minDepth=-INF,treeDepth=0;
+	int parentCIWin=0,parentCITotal=0,minDepth=INF,treeDepth=0;
 	double avgDepth=0;
 	
 	// Run specified number of iterations of UCT (this outputs the search tree)
@@ -640,7 +679,7 @@ int makeMinmaxOnUCTMove(rep_t rep, int *side, int numIterations, double C,
 	double val;
 	int bestMove = NULL_MOVE;
 	double bestScore,avgDepth=0;
-	int parentCIWin=0,parentCITotal=0,minDepth=-INF,treeDepth=0;
+	int parentCIWin=0,parentCITotal=0,minDepth=INF,treeDepth=0;
 	treeNode* rootNode;
 	
 	*numBestMoves = 0; // reset size of set of best moves
@@ -655,7 +694,7 @@ int makeMinmaxOnUCTMove(rep_t rep, int *side, int numIterations, double C,
 	for (i = 0; i < numIterations; i++)
 		uctRecurse(rootNode, C, heuristic, budget, AVERAGE, true, INF, &parentCIWin,&parentCITotal,&avgDepth,&minDepth,&treeDepth);
 
-	parentCIWin=0,parentCITotal=0,minDepth=-INF,treeDepth=0;
+	parentCIWin=0,parentCITotal=0,minDepth=INF,treeDepth=0;
 	
 	// Now minimax the tree we just built (we minimax starting from each child)
 	for (i = 1; i < _DOM->getNumOfChildren(); i++) {
@@ -698,9 +737,9 @@ int makeMinmaxOnUCTMove(rep_t rep, int *side, int numIterations, double C,
 	if (verbose)
 		printf("Best move: %d\n", bestMove);
 	
-	if (ci_threshold > 0) {
+	/*if (ci_threshold > 0) {
 	  printf(",%f ," ,parentCIWin / (double)parentCITotal);
-	}
+	}*/
 	
 	parentCIWin = 0;
 	parentCITotal = 0;

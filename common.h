@@ -43,6 +43,7 @@
 #define AVERAGE 0
 #define CI 2
 #define WEIGHTED_MM 3
+#define VARIANCE 3
 // Note that MINMAX is already defined above as 1, so we'll just use that
 
 // Game parameters
