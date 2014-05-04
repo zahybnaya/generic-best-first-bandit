@@ -104,13 +104,13 @@ int main(int argc, char* argv[]) {
 		testState = _DOM->allocate();
 		_DOM->generateRandomStart(testState,&side);
 		//Seed, Instance, GS_level,  CI_Threshold, iterations, h
-		printf("%d, %d, %d, %d, %d, h%d, ", seed+s, s, gs_level, ci_threshold, numIterations, hfunc);
+		printf("%d, %d, %d, %d, %d, h%d", seed+s, s, gs_level, ci_threshold, numIterations, hfunc);
 		//Make minmax move to depth 16
 		side = max;
 		makeMinmaxMove(testState, &side, gs_level , heuristic, budget[side], randomTieBreaks, noisyMM, bestMoves, &numBestMoves, &termPercentage, mmVals);
 		int goldStandard = maxVal(mmVals, _DOM->getNumOfChildren());
 		//GS_Move, GS_Move_Val,
-		printf("%d, %f, ", goldStandard , mmVals[goldStandard]);
+		printf(" , %d, %f, ", goldStandard , mmVals[goldStandard]);
 		side = max;
 		buildTree(testState, &side, numIterations, C[side], heuristic, budget[side], ci_threshold, goldStandard, CI);
 		side = max;
@@ -146,7 +146,7 @@ void buildTree(rep_t rep, int *side, int numIterations, double C, heuristics_t h
 		
 		freeTree(tree);
 		int bestMove = maxVal(vals, _DOM->getNumOfChildren());
-		printf("%d, %f, %f, ", bestMove, vals[bestMove], vals[goldStandard]); 
+		printf(", %d, %f, %f ", bestMove, vals[bestMove], vals[goldStandard]); 
 }
 
 /**

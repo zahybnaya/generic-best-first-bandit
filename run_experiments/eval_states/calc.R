@@ -1,7 +1,7 @@
 #R script for generiting data
 # make sure there are no repeating head lines in states.csv
 
-d=read.csv('tmp.csv', stringsAsFactors=FALSE)
+d=read.csv('states.csv', stringsAsFactors=FALSE)
 
 splitByH=split(d,d$H)
 for(h in names(splitByH)){
