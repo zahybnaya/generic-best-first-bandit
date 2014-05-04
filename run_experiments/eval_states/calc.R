@@ -1,7 +1,7 @@
 #R script for generiting data
 # make sure there are no repeating head lines in states.csv
 
-d=read.csv('states_ci_build_1000games.csv', stringsAsFactors=FALSE)
+d=read.csv('tmp.csv', stringsAsFactors=FALSE)
 
 splitByH=split(d,d$H)
 for(h in names(splitByH)){
@@ -17,7 +17,9 @@ for(h in names(splitByH)){
 			cat("\t#Iterations:",it,"\n")
 			cat("\tMMF:",nrow(d[d$GS_Move==d$MMF_Move,])/nrow(d),"\n")
 			cat("\tCI:",nrow(d[d$GS_Move==d$CI_Move,])/nrow(d),"\n")
+			cat("\tVAR:",nrow(d[d$GS_Move==d$VAR_Move,])/nrow(d),"\n")
 			cat("\tMMB:",nrow(d[d$GS_Move==d$MMB_Move,])/nrow(d),"\n")
+			cat("\tWMM:",nrow(d[d$GS_Move==d$WMM_Move,])/nrow(d),"\n")
 			cat("\tCIB:",nrow(d[d$GS_Move==d$CIB_Move,])/nrow(d),"\n")
 			cat("\tUCT:",nrow(d[d$GS_Move==d$UCT_Move,])/nrow(d),"\n")
 			#cat("\tDifference from UCT:",nrow(d[d$GS_Move!=d$UCT_Move & d$CIB_Move==d$GS_Move ,]),"\n")
