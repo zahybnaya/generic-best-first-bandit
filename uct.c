@@ -252,7 +252,6 @@ void updateStatistics(treeNode *node, double sample) {
   node->M2 = M2;
 }
 
-
 /* Recursively constructs the UCT search tree */
 static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int budget, int backupOp , int isRoot, int ci_threshold, int* parentCIWin, int* 						parentCITotal, double* avgDepth, int* minDepth, int* treeDepth) {
 	double ret;
@@ -328,7 +327,28 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 	//Update ret to include the cost of getting to the child node from this parent.
 	if (_DOM->dom_name == SAILING && isChanceNode_sailing(node->rep) == false)
 	  ret += actionCost_sailing(node->rep, move);
+	
 	// Update score and node counts and return the outcome of this episode
+	if (_DOM->dom_name == SAILING && isChanceNode_sailing(node->rep) == true && backupOp != AVERAGE) {
+	  //in chance nodes we need to average all children, and only need to recalculate if we're not using average backpropagation
+	  updateStatistics(node, ret);
+	  
+	  if (node->n < ci_threshold)
+	    return ret;
+	  
+	  node->scoreSum = 0;
+	  node->ci = 0;
+	  for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+	    if (node->children[i]) {
+	      node->scoreSum += node->children[i]->scoreSum;
+	      node->ci += pow(node->children[i]->ci, 2);
+	    }
+	  }
+	  node->ci = sqrt(node->ci);
+	  
+	  return ret;
+	}
+	
 	if (backupOp == AVERAGE) { // use averaging back-up
 		updateStatistics(node, ret);
 	}

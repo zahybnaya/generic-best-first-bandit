@@ -79,7 +79,7 @@ static double computeQsa(double ****V, int *rep, int a) {
   
   return qsa;
 }
-
+/**
 static void print_mat (double ****V1, double ****V2) {
   int x, y, w, t;
   for (x = 0; x < SAILING_BOARD_SIZE; x++) {
@@ -92,7 +92,7 @@ static void print_mat (double ****V1, double ****V2) {
       }
   }
 }
-
+*/
 double ****value_iteration() {
   double ****V1 = init_state_space_value_matrix();
   double ****V2 = init_state_space_value_matrix();
