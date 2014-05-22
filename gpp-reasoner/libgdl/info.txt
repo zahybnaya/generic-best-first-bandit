@@ -1,0 +1,39 @@
+libGDL and gdltest release information
+--------------------------------------
+
+0. Intro
+This is the logic reasoner / GDL abstraction layer we created at the base for our player "informafiosi"  in the  "General Game Playing"-Course of the winter term 2008. Maybe it can be useful for you. The reasoner is specially made for the games described by the Game Description Language (GDL) standard, for more info see http://games.stanford.edu/ and http://www.general-game-playing.de.
+
+It shall compile in Linux; project files for Eclipse Ganymede are in the source tree, but it shall not be to complicated to generate your own custom Makefile. The only dependency (apart from Linux + g++ compiler) is the boost library. I removed all multithreading code to make it more platform independent. There are some fancy Stack-Based strings which are known to not compile in windows but maybe it is not too hard to port it.
+
+1. Usage
+The player is not included but some sample code in "gdltest". The most important functions for writing your own player are the following:
+
+1.1 Generating a GDL instance
+First generate a KIF instance by loading in a file (KIF::parseFile) or putting in the rules you get from the server 
+
+// ... somehow fetch a string with all the rules from your game http server ...
+if (KIF::isBraced(rules)) rules = KIF::stripBraces (rules);
+KIF kif;
+kif.parse(rules);
+GDL gdl
+gdl.initFromKIF (kif)
+
+1.2. Working with the game
+Use the functions GDL::getInitState, GDL::getRoles, GDL::getRoleCount, GDL::getPossibleMoves, GDL::getNextSate, GDL::points and maybe GDL::expand (if you want a full expand about all possible move combinations)
+
+
+2. Optimizations
+There are some optimizations which you can activate before initializing the GDL instance. You can scan for successor-relations with GDL::setOptimizing and enable a rule compression by GDL::setCompressing. Note that you have to decompress all strings before answering the gameserver if you use compression. But if you enable compression, you'll save some memory and gain some speed improvements.
+
+3. License:
+All code is released under GNU Lesser General Public License v3.
+
+
+Thanks to the Team:
+Norbert Manthey
+David Müller
+
+Dresden, 21th april 2009
+Feel free to contact me:
+Norbert Schultz (norbert.schultz (at) mail.inf.tu-dresden.de)
