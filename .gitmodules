@@ -1,0 +1,3 @@
+[submodule "pachi"]
+	path = pachi
+	url = http://repo.or.cz/r/pachi.git
