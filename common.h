@@ -41,11 +41,12 @@
 
 // UCT back-up operator choices
 #define AVERAGE 0
+// Note that MINMAX is already defined above as 1, so we'll just use that
 #define CI 2
 #define WEIGHTED_MM 3
 #define VARIANCE 4
 #define VARIANCE_ALL 5
-// Note that MINMAX is already defined above as 1, so we'll just use that
+#define SIZE 6
 
 // Game parameters
 #define NUM_PITS 6 // affects branching factor

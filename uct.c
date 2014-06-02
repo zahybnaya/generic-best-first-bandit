@@ -5,50 +5,13 @@
  * */
 #include "common.h"
 #include "domain.h"
-#include "phi.c"
-#define SIMPLE_REGRET_UCT 0 //set to 1 to enable a different algorithm (see minimizing simple regret in MCTS)
-#define z975 1.96
-
-extern DOM* _DOM; 
-extern int debuglog;
-extern int logIteration;
-extern int log_this_iteration;
+#include "uct.h"
 
 // File scope globals
 static short dotFormat = false; // determines if search tree is printed out
 static int id = 0; // used to determine next node id to assign
 static int mm_Counter; // for counting nodes
 
-/* This is a node in the UCT tree. */
-typedef struct node {
-	double scoreSum; // stores the value of this node times n. didnt change the name in order not to break old code.
-	int n; // tracks the visit count
-	double M2; // variance of rewards == M2 / (n -1)
-	double ci; //confidence interval in the score
-	double realScoreSum; // this is the sum of total rewards gone through this node.
-	int id; // used for graph visualization purposes
-	rep_t rep; // generic representation of the state
-	int side; // side on move at this board position
-	int depth;
-	struct node** children; /* pointers to the children of this node -- note that index 0 remains
-				   unused (which is reserved for the store), so we have consistent move
-				   indexing/numbering */
-} treeNode;
-
-typedef struct _child{int index; double value; double SD;} child_data;
-
-static int comparChildData (const void* p1, const void* p2){
-	child_data* c1 =(child_data*)p1;
-	child_data* c2 =(child_data*)p2;
-	if(c1->value > c2->value){
-		return -1;
-	}
-	if(c1->value < c2->value){
-		return 1;
-	}
-	return 0;
-
-}
 /* Routine to free up UCT tree */
 static void freeTree(treeNode* node) {
 	int i;
@@ -76,98 +39,6 @@ static double uctExploration(double multiplier, double C, treeNode* node, int i)
 static double uctExplorationSimpleRegret(double multiplier, double C, treeNode* node, int i){
 	return 	sqrt((multiplier * C) * sqrt(node->n)/(double)node->children[i]->n); // add exploration component
 }
-/*
- * probability that child i is greater than child j
- * We assume that i and j are normally distributed so we perform the following:
- * We define X = Xi - Xj 
- * We return 1-P(X<=0)  which is 1-Phi(Xi-Xj/Sdi+sdj)
- * */
-static double getProbForGreater(int i,int j, treeNode* node){
-	double xi = node->children[i]->scoreSum/node->children[i]->n;
-	double xj = node->children[j]->scoreSum/node->children[j]->n;
-	if ((xi == MIN_WINS && node->side == min) || (xi == MAX_WINS && node->side == max) ){
-		return 1;
-	}
-	if ((xj == MIN_WINS && node->side == min) || (xj == MAX_WINS && node->side == max) ){
-		return 0;
-	}
-	double sdi=0.5,sdj=0.5;
-	if(node->children[i]->n >1)
-		sdi = node->children[i]->M2/(double)(node->children[i]->n - 1);
-	if(node->children[j]->n >1)
-		sdj = node->children[j]->M2/(double)(node->children[j]->n - 1);
-	double s = (sdi+sdj);
-	s = s>0?s:0.1;
-	//printf("xi:%f, xj:%f, sdi:%f, sdj:%f \n",xi,xj,sdi,sdj);
-	assert(s>0);
-	double ret = phi((xi-xj)/s);
-	ret = node->side==max?ret:(1-ret);
-	//printf("side:%d phi(%f)=%f\n",node->side,(xi-xj)/s,ret);
-  return ret;
-}
-/*
- * Returns the probability that i is the maximal child of node 
- *
- * */
-static double getProbForMaximialChild(int mi, treeNode* node) {
-	int i;
-	double answer = 1;
-	treeNode* child = node->children[mi];
-	if (!child)
-		return 0;
-	for (i = 1; i < _DOM->getNumOfChildren(); i++) {
-	  if (i==mi||!node->children[i]) { 
-		  continue;
-	  }
-	  answer*=getProbForGreater(mi,i,node);
-	}
-	return answer;
-}
-
-/* Weighted Minimax*/
-static double weightedMM(treeNode* node,heuristics_t heuristic) {
-	int i;
-	double val;
-	double bestScore = 0;
-	char s[1512],b[256]; 
-	sprintf(s,"*side:%d visits:%d depth:%d ",node->side,node->n,node->depth);
-	if ((val = _DOM->getGameStatus(node->rep)) != INCOMPLETE){
-		if ((heuristic == _DOM->hFunctions.h3) || (heuristic == _DOM->hFunctions.h4) || (heuristic == _DOM->hFunctions.h5)) {
-			val = (val/MAX_WINS);
-		}
-		return val; // return something from the set {MIN_WINS, DRAW, MAX_WINS}
-	}
-	if (node->n == 1) {
-	  assert((node->scoreSum > MIN_WINS) && (node->scoreSum < MAX_WINS)); 
-	  return node->scoreSum; // the node was already evaluated when doing UCT, so just use that value
-	}
-	double ttlPp=0;
-	double rttlp=0;
-	for (i = 1; i < _DOM->getNumOfChildren(); i++) {
-	  if (node->children[i]) { // only descend if child exists
-	    ttlPp+=getProbForMaximialChild(i,node); 
-	  }
-	}
-	assert(ttlPp>0);
-	for (i = 1; i < _DOM->getNumOfChildren(); i++) {
-	  if (node->children[i]) { // only descend if child exists
-	    val = weightedMM(node->children[i], heuristic); 
-	    double uctVal = node->children[i]->scoreSum/node->children[i]->n;
-	    double uctProb = node->children[i]->n/(double)node->n;
-	    double prob = getProbForMaximialChild(i,node)/ttlPp;
-	    rttlp+=prob;
-	    bestScore+=prob*val;
-	    sprintf(b,"Child%d,v:%2.3f,uv:%2.3f,p:%2.3f,up:%2.3f,",i,val,uctVal,prob,uctProb);
-	    strcat(s,b);
-	  }
-	}
-	sprintf(b,"scr:%2.3f,scru:%2.3f,ttlp:%2.3f,one:%2.2f*\n",bestScore,node->scoreSum/(double)node->n,ttlPp,rttlp);
-	strcat(s,b);
-//	puts(s);
-
-	return bestScore;
-}
-
 
 /* Invoked by uctRecurse to decide which child of the current node should be expanded */
 static int selectMove(treeNode* node, double C, int isSimpleRegret) {
@@ -256,8 +127,7 @@ void updateStatistics(treeNode *node, double sample) {
 static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int budget, int backupOp , int isRoot, int ci_threshold, int* parentCIWin, int* 						parentCITotal, double* avgDepth, int* minDepth, int* treeDepth) {
 	double ret;
 	int move,i;
-	double bestScore;
-	double score;
+
 	assert(node != NULL); // should never be calling uctRecurse on a non-existent node
 	if ((ret = _DOM->getGameStatus(node->rep))!= INCOMPLETE) {
 		fflush(stdout);
@@ -349,158 +219,20 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 	  return ret;
 	}
 	
-	if (backupOp == AVERAGE) { // use averaging back-up
+	if (backupOp == AVERAGE) // use averaging back-up
 		updateStatistics(node, ret);
-	}
-	else if (backupOp == MINMAX) { // use minimaxing back-up
-		(node->n)++;
-		bestScore = (node->side == max) ? MIN_WINS : MAX_WINS;
-		
-		for (i = 1; i < _DOM->getNumOfChildren(); i++) {
-			if (node->children[i]) { // if child exists, is it the best scoring child?
-				score = node->children[i]->scoreSum / (double)node->children[i]->n;
-				if (   ((node->side == max) && (score > bestScore))
-						|| ((node->side == min) && (score < bestScore)))
-					bestScore = score;
-			}
-		}
-		node->scoreSum = (node->n) * bestScore; // reset score to that of min/max of children
-	}else if (backupOp == WEIGHTED_MM) { 
-		updateStatistics(node,ret);
-		double ttlPp=0;
-		double nodeScore=0;
-		double nodeP,nodeVal;
-		for (i = 1; i < _DOM->getNumOfChildren(); i++) {
-			if (node->children[i]) { // if child exists, is it the best scoring child?
-				nodeP=getProbForMaximialChild(i,node);
-				ttlPp+=nodeP;
-				nodeVal = node->children[i]->scoreSum / (double)node->children[i]->n;
-				nodeScore+=(nodeVal*nodeP);
-			}
-		}
-		node->scoreSum = (node->n) * (nodeScore/ttlPp); 
-	} else if (backupOp == CI) {
-		if (node->n < ci_threshold) {
-		  updateStatistics(node, ret);
-		  return ret;
-		}
-		
-		bestScore = (node->side == max) ? MIN_WINS : MAX_WINS;
-		double bestCI = INF;
-		
-		for (i = 1; i < _DOM->getNumOfChildren(); i++) {
-			if (node->children[i] && node->children[i]->n >= ci_threshold) { // if child exists, is it the best scoring child?
-				score = node->children[i]->scoreSum / (double)node->children[i]->n;
-				if (((node->side == max) && (score > bestScore)) || ((node->side == min) && (score < bestScore))){
-					bestScore = score;
-					bestCI = node->children[i]->ci;
-				}
-			}
-		}
-
-		// Calculate the CI length for the current node.
-		double variance = node->M2 / (double)(node->n - 1);
-		node->ci = 2 * z975 * sqrt(variance / (double)node->n);
-		
-		(*parentCITotal)++;
-		if (bestCI < node->ci) {
-		  node->scoreSum = (node->n) * bestScore; // reset score to that of min/max of children
-		  node->ci = bestCI;
-		  updateStatistics(node, ret);
-		  node->scoreSum -= ret; //updateStatistics also adds the reward to the scoreSum which shouldn't happen in this case.
-		  
-		  (*parentCIWin)++;
-		  *avgDepth = ((*avgDepth * (*parentCIWin-1)) + node->depth) /(*parentCIWin);
-		  if(*minDepth > node->depth)
-			*minDepth = node->depth;
-		  
-		} else {
-		  node->scoreSum = node->realScoreSum; // reset score to average of current node
-		  updateStatistics(node, ret);
-		}
-	}
-	else if (backupOp == VARIANCE_ALL) {
-		if (node->n < ci_threshold) {
-		  updateStatistics(node, ret);
-		  return ret;
-		}
-		child_data children_data[_DOM->getNumOfChildren()];
-		int numOfBestChildren=0;
-		double nodeScore = node->scoreSum / (node->n),childSd ;
-		nodeScore=node->side==max?nodeScore:-nodeScore;
-		for (i = 1; i < _DOM->getNumOfChildren(); i++) {
-			if (node->children[i] && node->children[i]->n >= ci_threshold) { // if child exists, is it the best scoring child?
-				score = node->children[i]->scoreSum / (double)node->children[i]->n;
-				score = node->side==max?score:-score;
-				childSd = node->children[i]->ci;
-				children_data[numOfBestChildren++] =(child_data){i, score, childSd};
-			}
-		}
-		qsort(children_data,numOfBestChildren,sizeof(child_data),comparChildData);
-		for(i=1;i<numOfBestChildren;i++){
-			assert(children_data[i].value<=children_data[i-1].value);
-		}
-		node->ci = sqrt(node->M2 / (double)(node->n - 1));
-		for (i=0;i<numOfBestChildren;i++){
-			(*parentCITotal)++;
-			if (children_data[i].value>nodeScore && children_data[i].SD < node->ci){
-				nodeScore=(node->n) * children_data[i].value; 
-				nodeScore=(node->side==max)?nodeScore:-nodeScore;//reversing
-				node->scoreSum = nodeScore;
-				node->ci = children_data[i].SD ;
-				updateStatistics(node, ret);
-				node->scoreSum -= ret; //updateStatistics also adds the reward to the scoreSum which shouldn't happen in this case.
-				(*parentCIWin)++;
-				*avgDepth = ((*avgDepth * (*parentCIWin-1)) + node->depth) /(*parentCIWin);
-				if(*minDepth > node->depth){
-					*minDepth = node->depth;
-				}
-				if(i>4)printf("child%d\n",i);
-				return ret;
-			}
-		}
-		node->scoreSum = node->realScoreSum; // reset score to average of current node
-		updateStatistics(node, ret);
-	}
-	else if (backupOp == VARIANCE) {
-		if (node->n < ci_threshold) {
-			updateStatistics(node, ret);
-			return ret;
-		}
-
-		bestScore = (node->side == max) ? MIN_WINS : MAX_WINS;
-		double bestSD = INF;
-
-		for (i = 1; i < _DOM->getNumOfChildren(); i++) {
-			if (node->children[i] && node->children[i]->n >= ci_threshold) { // if child exists, is it the best scoring child?
-				score = node->children[i]->scoreSum / (double)node->children[i]->n;
-				if (((node->side == max) && (score > bestScore)) || ((node->side == min) && (score < bestScore))){
-					bestScore = score;
-					bestSD = node->children[i]->ci;
-				}
-			}
-		}
-
-		// Calculate the standard deviation of the current node.
-		node->ci = sqrt(node->M2 / (double)(node->n - 1));
-		
-		(*parentCITotal)++;
-		if (bestSD < node->ci) {
-		  node->scoreSum = (node->n) * bestScore; // reset score to that of min/max of children
-		  node->ci = bestSD;
-		  updateStatistics(node, ret);
-		  node->scoreSum -= ret; //updateStatistics also adds the reward to the scoreSum which shouldn't happen in this case.
-		  
-		  (*parentCIWin)++;
-		  *avgDepth = ((*avgDepth * (*parentCIWin-1)) + node->depth) /(*parentCIWin);
-		  if(*minDepth > node->depth)
-			*minDepth = node->depth;
-		  
-		} else {
-		  node->scoreSum = node->realScoreSum; // reset score to average of current node
-		  updateStatistics(node, ret);
-		}
-	}
+	else if (backupOp == MINMAX) // use minimaxing back-up
+		minmax_backup(node);
+	else if (backupOp == WEIGHTED_MM)
+		weighted_mm_backup(node, ret);
+	else if (backupOp == CI)
+		ci_backup(node, ret, ci_threshold);
+	else if (backupOp == VARIANCE_ALL)
+		variance_all_backup(node, ret, ci_threshold);
+	else if (backupOp == VARIANCE)
+		variance_backup(node, ret, ci_threshold);
+	else if (backupOp == SIZE)
+		size_backup(node, ret, ci_threshold);
 	else { // shouldn't happen
 		puts("Invalid back-up operator!");
 		exit(1);
