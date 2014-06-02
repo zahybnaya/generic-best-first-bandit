@@ -16,51 +16,10 @@ static int comparChildData (const void* p1, const void* p2){
 }
 
 void size_backup(treeNode *node, double ret, int ci_threshold) {
-		if (node->n < ci_threshold) {
+		if (node->n < ci_threshold)
 		  updateStatistics(node, ret);
-		  return;
-		}
-		
-		int i;
-		double score;
-		
-		child_data children_data[_DOM->getNumOfChildren()];
-		int numOfBestChildren=0;
-		double nodeScore = node->scoreSum / (node->n),childSd ;
-		nodeScore=node->side==max?nodeScore:-nodeScore;
-		for (i = 1; i < _DOM->getNumOfChildren(); i++) {
-			if (node->children[i] && node->children[i]->n >= ci_threshold) { // if child exists, is it the best scoring child?
-				score = node->children[i]->scoreSum / (double)node->children[i]->n;
-				score = node->side==max?score:-score;
-				childSd = node->children[i]->ci;
-				children_data[numOfBestChildren++] =(child_data){i, score, childSd};
-			}
-		}
-		qsort(children_data,numOfBestChildren,sizeof(child_data),comparChildData);
-		for(i=1;i<numOfBestChildren;i++){
-			assert(children_data[i].value<=children_data[i-1].value);
-		}
-		node->ci = sqrt(node->M2 / (double)(node->n - 1));
-		for (i=0;i<numOfBestChildren;i++){
-			//(*parentCITotal)++;
-			if (children_data[i].value>nodeScore && children_data[i].SD < node->ci){
-				nodeScore=(node->n) * children_data[i].value; 
-				nodeScore=(node->side==max)?nodeScore:-nodeScore;//reversing
-				node->scoreSum = nodeScore;
-				node->ci = children_data[i].SD ;
-				updateStatistics(node, ret);
-				node->scoreSum -= ret; //updateStatistics also adds the reward to the scoreSum which shouldn't happen in this case.
-				//(*parentCIWin)++;
-				//*avgDepth = ((*avgDepth * (*parentCIWin-1)) + node->depth) /(*parentCIWin);
-				//if(*minDepth > node->depth){
-				//	*minDepth = node->depth;
-				//}
-				//if(i>4)printf("child%d\n",i);
-				return;
-			}
-		}
-		node->scoreSum = node->realScoreSum; // reset score to average of current node
-		updateStatistics(node, ret);  
+		else
+		  minmax_backup(node);
 }
 
 
