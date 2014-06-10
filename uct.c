@@ -40,6 +40,14 @@ static double uctExplorationSimpleRegret(double multiplier, double C, treeNode* 
 	return 	sqrt((multiplier * C) * sqrt(node->n)/(double)node->children[i]->n); // add exploration component
 }
 
+double avgRewards(treeNode *node) {
+  return node->realScoreSum / (double)(node->n);
+}
+
+double assignedScore(treeNode *node) {
+  return node->scoreSum / (double)(node->n);
+}
+
 /* Invoked by uctRecurse to decide which child of the current node should be expanded */
 static int selectMove(treeNode* node, double C, int isSimpleRegret) {
 	int i;
@@ -64,7 +72,7 @@ static int selectMove(treeNode* node, double C, int isSimpleRegret) {
 
 		// Otherwise, compute this child's UCB1 index (will be used to pick best child if it transpires that all
 		// children have been visited at least once)
-		qhat = node->children[i]->scoreSum / (double)node->children[i]->n;  // exploitation component (this is the average utility)
+		qhat = assignedScore(node->children[i]);  // exploitation component (this is the average utility)
 		if (_DOM->dom_name == SAILING)
 		  qhat += actionCost_sailing(node->rep, i);
 		
@@ -110,7 +118,7 @@ void updateStatistics(treeNode *node, double sample) {
   
   int n = node->n;  
   double M2 = node->M2;
-  double mean = node->realScoreSum / (double)n;
+  double mean = avgRewards(node);
   double delta = sample - mean;
   
   n++;
@@ -240,6 +248,19 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 	return ret;
 }
 
+/*
+ *  Creates the root of the tree
+ * */
+static treeNode* createRootNode(int* side, rep_t rep) {
+	// Create the root node of the UCT tree; populate the board and side on move fields
+	treeNode* rootNode;
+	rootNode = (treeNode*)calloc(1, sizeof(treeNode));
+	rootNode->rep = _DOM->cloneRep(rep);
+	rootNode->side = *side;
+	rootNode->children = (treeNode**)calloc(_DOM->getNumOfChildren(), sizeof(treeNode*));
+	return rootNode;
+}
+
 /* Takes current board and side on move and runs numIterations of UCT with exploration
    bias of C. The outcome of the search is then used to make the best move (which is
    the value returned) */
@@ -252,12 +273,11 @@ int makeUCTMove(rep_t rep, int *side, int numIterations, double C,
 	double bestScore;
 	treeNode* rootNode;
 	*numBestMoves = 0; // reset size of set of best moves
-	if(debuglog)puts("UCT");
+	
+	if (debuglog) puts("UCT");
+	
 	// Create the root node of the UCT tree; populate the board and side on move fields
-	rootNode = (treeNode*)calloc(1, sizeof(treeNode));
-	rootNode->rep = _DOM->cloneRep(rep);
-	rootNode->side = *side;
-	rootNode->children = (treeNode**)calloc(_DOM->getNumOfChildren(), sizeof(treeNode*));
+	rootNode = createRootNode(side, rep);
 
 	// Run specified number of iterations of UCT
 	int parentCIWin=0,parentCITotal=0,minDepth=INF,treeDepth=0;
@@ -275,7 +295,7 @@ int makeUCTMove(rep_t rep, int *side, int numIterations, double C,
 		if (!rootNode->children[i]) // this node was not created since # iterations was too small
 			continue;
 		
-		val = rootNode->children[i]->scoreSum / (double)rootNode->children[i]->n;
+		val = assignedScore(rootNode->children[i]);
 		//printf("UCT:%d:%f/%d\n",i,rootNode->children[i]->scoreSum,rootNode->children[i]->n);
 		if (_DOM->dom_name == SAILING)
 		  val += actionCost_sailing(rootNode->rep, i);
@@ -314,21 +334,6 @@ int makeUCTMove(rep_t rep, int *side, int numIterations, double C,
 	return bestMove;
 }
 
-
-/*
- *  Creates the root of the tree
- * */
-treeNode* createRootNode(int* side, rep_t rep){
-	// Create the root node of the UCT tree; populate the board and side on move fields
-	treeNode* rootNode;
-	rootNode = (treeNode*)calloc(1, sizeof(treeNode));
-	rootNode->rep = _DOM->cloneRep(rep);
-	rootNode->side = *side;
-	rootNode->children = (treeNode**)calloc(_DOM->getNumOfChildren(), sizeof(treeNode*));
-	return rootNode;
-}
-
-
 /* Performs the specified UCT search, while generating the structure of the search tree in dot format */
 void genUCTTree(rep_t rep, int side, int numIterations, double C, heuristics_t heuristic, int budget) {
 	treeNode* rootNode;
@@ -345,11 +350,8 @@ void genUCTTree(rep_t rep, int side, int numIterations, double C, heuristics_t h
 	assert(id == 0);  // for now, we only generate one graph per run
 
 	// Create the root node of the UCT tree; populate the board and side on move fields
-	rootNode =(treeNode*) calloc(1, sizeof(treeNode));
-	rootNode->rep=_DOM->cloneRep(rep);
-	rootNode->side = side;
+	rootNode = createRootNode(&side, rep);
 	rootNode->id = ++id;
-	rootNode->children =(treeNode**) calloc(_DOM->getNumOfChildren(), sizeof(treeNode*));
 
 	int parentCIWin=0,parentCITotal=0,minDepth=INF,treeDepth=0;
 	double avgDepth=0;
@@ -430,7 +432,7 @@ static vci *vciMinmaxUCT(treeNode* node, int ci_threshold, int* parentCIWin,int*
 	//below threshold return CI=INF(ignored)
 	if (node->n < ci_threshold) {
 		vci *bestVCI = (vci*)calloc(1, sizeof(vci));
-		bestVCI->score = node->scoreSum / (double)node->n;
+		bestVCI->score = assignedScore(node);
 		bestVCI->ci = INF;
 		if(node->depth>*treeDepth){
 			*treeDepth = node->depth;
@@ -474,7 +476,7 @@ static vci *vciMinmaxUCT(treeNode* node, int ci_threshold, int* parentCIWin,int*
 		return bestChild;
 	}
 	vci *bestVCI = (vci*)calloc(1, sizeof(vci));
-	bestVCI->score = node->scoreSum / (double)node->n;
+	bestVCI->score = assignedScore(node);
 	bestVCI->ci = nodeci;
 	return bestVCI;
 }
@@ -494,11 +496,8 @@ int makeMinmaxOnUCTMove(rep_t rep, int *side, int numIterations, double C,
 	*numBestMoves = 0; // reset size of set of best moves
 
 	// Create the root node of the UCT tree; populate the board and side on move fields
-	rootNode = (treeNode*)calloc(1, sizeof(treeNode));
-	rootNode->rep = _DOM->cloneRep(rep);
-	rootNode->side = *side;
-	rootNode->children = (treeNode**)calloc(_DOM->getNumOfChildren(), sizeof(treeNode*));
-
+	rootNode = createRootNode(side, rep);
+	
 	// Run specified number of iterations of UCT
 	for (i = 0; i < numIterations; i++)
 		uctRecurse(rootNode, C, heuristic, budget, AVERAGE, true, INF, &parentCIWin,&parentCITotal,&avgDepth,&minDepth,&treeDepth);

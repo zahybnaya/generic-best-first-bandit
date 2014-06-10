@@ -33,3 +33,7 @@ void ci_backup(treeNode *node, double ret, int ci_threshold);
 void variance_all_backup(treeNode *node, double ret, int ci_threshold);
 void variance_backup(treeNode *node, double ret, int ci_threshold);
 void size_backup(treeNode *node, double ret, int ci_threshold);
+
+//Common function
+double avgRewards(treeNode *node);
+double assignedScore(treeNode *node);
