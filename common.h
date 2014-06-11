@@ -47,6 +47,7 @@
 #define VARIANCE 4
 #define VARIANCE_ALL 5
 #define SIZE 6
+#define CI_ALL 7
 
 // Game parameters
 #define NUM_PITS 6 // affects branching factor

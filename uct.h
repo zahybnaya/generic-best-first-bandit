@@ -30,10 +30,12 @@ void updateStatistics(treeNode *node, double sample);
 void minmax_backup(treeNode *node);
 void weighted_mm_backup(treeNode *node, double ret);
 void ci_backup(treeNode *node, double ret, int ci_threshold);
-void variance_all_backup(treeNode *node, double ret, int ci_threshold);
+void subset_backup(treeNode *node, double ret, int ci_threshold, double (confidenceMeasure)(treeNode *));
 void variance_backup(treeNode *node, double ret, int ci_threshold);
 void size_backup(treeNode *node, double ret, int ci_threshold);
 
 //Common function
 double avgRewards(treeNode *node);
 double assignedScore(treeNode *node);
+double variance(treeNode *node);
+double confidenceInterval(treeNode *node);

@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
 		const char* playerStrings[] = {"max", "min"};
 		const char* hStrings[] = {"heuristic 1", "heuristic 2", "playouts", "random leaf values", "coarsened h1", "finer playouts"};
 		char heurString[][30] = {"heuristic 1", "heuristic 1"};
-		const char* backupOpStrings[] = {"average", "minimax", "confidence","weighted_minimax", "variance", "variance_all", "size"};
+		const char* backupOpStrings[] = {"average", "minimax", "confidence","weighted_minimax", "variance", "variance_all", "size", "ci_all"};
 		double bolzmanConstant = -2.44, probWeight = 0.5;
 		double gameScore[2]; //The socre of each player for a specific game. Currently used for sailing only.
 		double totalScore[2]; //The socre of each player for all games. Currently used for sailing only.
