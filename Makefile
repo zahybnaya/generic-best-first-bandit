@@ -33,6 +33,9 @@ mancala: mancala.c mancala.h move.c board.c heuristic.c
 	ld -r tmpmancala.o tmpboard.o tmpmove.o  tmpheuristic.o tmprandom.o tmpmm.o -o mancala.o  
 	rm tmpmm.o tmpmove.o tmpboard.o tmprandom.o tmpmancala.o tmpheuristic.o
 
+ggp: ggp.h ggp.cpp ggp_unity.cpp
+	g++ ggp_unity.cpp -o ggp.o
+
 chess: chess.cpp chess.h normalNoise.c normalNoiseH.h domain.h mmuct.c common.h minmax.c mmuct.c heuristic.c move.c board.c util.c random.c mmuct_test.c uct.c domain.c synth.h synth.c mancala.h mmuct.h
 	g++ chess.cpp /media/data/Research/mmuct/gnuchess/gnuchess-6.0.1/src/engine/*.c* -o chess $(CFLAGS)
 
