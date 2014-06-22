@@ -652,7 +652,7 @@ int main(int argc, char* argv[]) {
 				printf("Min *superiority* rate: %f\n",(float)minSuper/(maxSuper+minSuper));
 				printf("------------------------------\n");
 		} else {
-				puts("domain, max_alg, min_alg ,num_of_games,num_of_draws,num_of_incomplete,max_win,min_win,total_win_games,max_time,min_time\n");
+				puts("domain, max_alg, min_alg ,num_of_games,num_of_draws,num_of_incomplete,max_win,min_win,total_max_win,total_min_win,max_time,min_time,score\n");
 				printf("%d,",_DOM->dom_name);
 				printf("%s,",algDescription[max]);
 				printf("%s,",algDescription[min]);
@@ -662,6 +662,7 @@ int main(int argc, char* argv[]) {
 				printf("%f,",(float)maxSuper/(maxSuper+minSuper));
 				printf("%f,",(float)minSuper/(maxSuper+minSuper));
 				printf("%d,",maxSuper);
+				printf("%d,",minSuper);
 				printf("%f,",time[max]/(double)turns[max]);
 				printf("%f,",time[min]/(double)turns[min]);
 				printf("%f\n",-1 * totalScore[max]/(double)numGames);
@@ -681,7 +682,7 @@ static int isSuper(int firstOutcome, int secondOutcome){
 		return (firstOutcome-secondOutcome);
 }
 
-static int printMessage(){
+static int printMessage() {
 		puts("");
 		puts("Usage: games <DOMAIN> <optional-flags>");
 		puts("");

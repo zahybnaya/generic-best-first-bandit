@@ -236,7 +236,7 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 	else if (backupOp == CI)
 		ci_backup(node, ret, ci_threshold);
 	else if (backupOp == VARIANCE_ALL)
-		subset_backup(node, ret, ci_threshold, variance);
+		subset_backup(node, ret, ci_threshold, standardDeviation);
 	else if (backupOp == VARIANCE)
 		variance_backup(node, ret, ci_threshold);
 	else if (backupOp == SIZE)
