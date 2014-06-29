@@ -12,6 +12,7 @@ DOM* init_domain(DOM_NAME name){
 	DOM* retVal = (DOM*)malloc(sizeof(DOM));
 	switch (name) {
 		case GGP:
+			compile_ggp();
 			retVal->dom_name = GGP;
 			retVal->getNumOfChildren = getNumOfChildren_ggp;
 			retVal->estimateTreeSize = estimateTreeSize_ggp;

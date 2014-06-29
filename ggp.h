@@ -19,4 +19,5 @@ void printBoard_ggp(rep_t rep, int dummy);
 // Heuristic routines
 double h1_ggp(rep_t rep, int side, int horizion);
 
+void compile_ggp();
 #endif //GGP_H_INCLUDED

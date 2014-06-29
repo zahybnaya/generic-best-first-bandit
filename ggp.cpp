@@ -76,3 +76,15 @@ rep_t allocate_ggp();
 void destructRep_ggp(rep_t rep);
 void copy_ggp(rep_t src,rep_t dst);
 double h1(rep_t rep, int side, int dummy);
+
+void compile_ggp() {
+	std::string filename = "./gpp-reasoner/tictactoe.kif"; //TODO: Get this from argument
+	KIF kif;
+	
+	bool result = kif.parseFile(filename, true);
+
+	if (!result)
+		std::cerr << "Error parsing " << filename << std::endl;
+
+	gdl.initFromKIF(kif);
+}
