@@ -28,6 +28,7 @@ void updateStatistics(treeNode *node, double sample);
 
 //Backup operators
 void minmax_backup(treeNode *node);
+void coulom(treeNode *node, double ret);
 void weighted_mm_backup(treeNode *node, double ret);
 void ci_backup(treeNode *node, double ret, int ci_threshold);
 void subset_backup(treeNode *node, double ret, int ci_threshold, double (confidenceMeasure)(treeNode *));

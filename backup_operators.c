@@ -83,6 +83,40 @@ void size_backup(treeNode *node, double ret, int ci_threshold) {
 }
 
 
+
+/**
+ *
+ * Update function as described by coulom 2007 paper.
+ *
+ * */
+void coulom(treeNode *node, double ret){
+  int i, maxVisits=-1, childWithBestScore, childWithMostVisits;
+  double bestScore, score;
+  bestScore = (node->side == max) ? MIN_WINS : MAX_WINS;
+  for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+    if (node->children[i]) { 
+	    if (node->children[i]->n > maxVisits){
+		    maxVisits = node->children[i]->n; 
+		    childWithMostVisits = i;
+	    } 
+	    score = assignedScore(node->children[i]);
+	    if (((node->side == max) && (score > bestScore)) || ((node->side == min) && (score < bestScore))){
+		    bestScore = score;
+		    childWithBestScore = i;
+	    }
+    }
+  }
+  if(childWithBestScore == childWithMostVisits){
+	  (node->n)++;
+	  node->scoreSum = (node->n) * bestScore; // reset score to that of min/max of children
+  } else {
+	  updateStatistics(node,ret);
+  }
+
+}
+
+
+
 void minmax_backup(treeNode *node) {
   int i;
   double bestScore, score;

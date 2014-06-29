@@ -48,6 +48,7 @@
 #define VARIANCE_ALL 5
 #define SIZE 6
 #define CI_ALL 7
+#define COULOM 8
 
 // Game parameters
 #define NUM_PITS 6 // affects branching factor

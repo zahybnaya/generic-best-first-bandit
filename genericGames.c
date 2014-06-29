@@ -704,7 +704,7 @@ static int printMessage() {
 		puts("-i1/i2 <n>:    Sets number of iterations of UCT for player 1/2. The special value of 0 makes the UCT player match it's");
 		puts("               number of iterations to the number of nodes that its opponent minimax player would expand. Default = 5000.");
 		puts("-b1/b2 <n>:    Sets playout budget for player 1/2. Specified number of playouts are performed at each leaf node. Default = 1.");
-		puts("-a1/a2 <n>:    Back-up operator to be used for UCT player 1/2. Values = 1 (average), 2 (minimax), 3 (semimax). Default = 1.");
+		puts("-a1/a2 <n>:    Back-up operator to be used for UCT player 1/2. Values = 1 (average), 2 (minimax), 3 (semimax). 7 coulom Default = 1.");
 		puts("-n:            Makes minimax player noisy (disabled by default)");
 		puts("-r:            Enables random tie-breaking for minimax player (disabled by default)");
 		puts("-s <n>:        Sets seed of random number generator to n. By default, seeded with system noise.");
