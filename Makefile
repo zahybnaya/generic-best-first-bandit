@@ -6,9 +6,9 @@ ggames: common.h domain genericGames.c uct.c uct.h minmax.c heuristic.c move.c b
 evalstates: common.h domain evalstates.c uct.c minmax.c heuristic.c move.c board.c phi.c util.c random.c bfb.c brue.c type.h type.c sts.c cits.c 
 	gcc evalstates.c  util.c value_iteration.c  domain.o -o evalstates $(CFLAGS) 
 	
-domain: synth mancala zop c4 sailing domain.c domain.h
+domain: ggp synth mancala zop c4 sailing domain.c domain.h
 	gcc -c domain.c -o tmpdomain.o $(CFLAGS) 
-	ld -r tmpdomain.o synth.o mancala.o zop.o c4.o sailing.o -o domain.o 
+	ld -r tmpdomain.o synth.o mancala.o zop.o c4.o sailing.o ggp.o -o domain.o 
 	rm tmpdomain.o	
 
 synth: synth.c synth.h
@@ -34,7 +34,7 @@ mancala: mancala.c mancala.h move.c board.c heuristic.c
 	rm tmpmm.o tmpmove.o tmpboard.o tmprandom.o tmpmancala.o tmpheuristic.o
 
 ggp: ggp.h ggp.cpp ggp_unity.cpp
-	g++ ggp_unity.cpp -o ggp.o
+	g++ -c ggp_unity.cpp -o ggp.o
 
 chess: chess.cpp chess.h normalNoise.c normalNoiseH.h domain.h mmuct.c common.h minmax.c mmuct.c heuristic.c move.c board.c util.c random.c mmuct_test.c uct.c domain.c synth.h synth.c mancala.h mmuct.h
 	g++ chess.cpp /media/data/Research/mmuct/gnuchess/gnuchess-6.0.1/src/engine/*.c* -o chess $(CFLAGS)

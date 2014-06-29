@@ -7,7 +7,7 @@ static int mm_Counter; // for counting nodes
 /* Routine to free up UCT tree */
 static void freeTree(treeNode* node) {
   int i;
-  for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+  for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
     if (node->children[i]) {
       freeTree(node->children[i]);
       node->children[i] = NULL;
@@ -18,9 +18,9 @@ static void freeTree(treeNode* node) {
   free(node);
 }
 
-static void freeTypeSystems(type_system **type_systems) {
+static void freeTypeSystems(type_system **type_systems, int size) {
   int i;
-  for (i = 1; i < _DOM->getNumOfChildren(); i++)
+  for (i = 1; i < size; i++)
     if (type_systems[i])
       destroy_ts(type_systems[i]);
     
@@ -153,10 +153,10 @@ static int selectType(type_system *ts, double C, int side, int policy, int backu
 static void generateChild(treeNode *node, int i) {
   mm_Counter++;
   node->children[i] = calloc(1, sizeof(treeNode));
-  node->children[i]->children = calloc(_DOM->getNumOfChildren(), sizeof(treeNode*));
   node->children[i]->rep = _DOM->cloneRep(node->rep); // copy over the current board to child
   node->children[i]->side = node->side; // copy over the current side on move to child
   _DOM->makeMove(node->children[i]->rep, &(node->children[i]->side), i); //Make the i-th move
+  node->children[i]->children = calloc(_DOM->getNumOfChildren(node->rep, node->side), sizeof(treeNode*));
   node->children[i]->parent = node; //save parent
   node->children[i]->depth = node->depth + 1;
   node->children[i]->subtreeSize = 1;
@@ -175,7 +175,7 @@ double actionCostFindMove(treeNode *node) {
     return 0;
   
   int i;
-  for (i = 1; i < _DOM->getNumOfChildren(); i++)
+  for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++)
     if (node->parent->children[i] == node)
       return actionCost_sailing(node->parent->rep, i);
     
@@ -243,12 +243,12 @@ int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, dou
   int bestMove = NULL_MOVE;
   double bestScore;
   treeNode* rootNode;
-  type_system **type_systems = calloc(_DOM->getNumOfChildren(), sizeof(type_system *)); //Alocate a type system for every possible child of the root
+  type_system **type_systems = calloc(_DOM->getNumOfChildren(rep, *side), sizeof(type_system *)); //Alocate a type system for every possible child of the root
   *numBestMoves = 0; // reset size of set of best moves
   
   // Create the root node of the UCT tree; populate the board and side on move fields
   rootNode = calloc(1, sizeof(treeNode));
-  rootNode->children = calloc(_DOM->getNumOfChildren(), sizeof(treeNode*));
+  rootNode->children = calloc(_DOM->getNumOfChildren(rep, *side), sizeof(treeNode*));
   rootNode->rep = _DOM->cloneRep(rep);
   rootNode->side = *side;
   rootNode->depth = 0;
@@ -260,7 +260,7 @@ int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, dou
   
   if (!TYPE_FROM_ROOT) {
     //Generate the children of the root node
-    for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+    for (i = 1; i < _DOM->getNumOfChildren(rep, *side); i++) {
       if (!_DOM->isValidChild(rootNode->rep, rootNode->side, i)) // if the i^th move is illegal, skip it
 	continue;
     
@@ -287,7 +287,7 @@ int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, dou
   }
 
   //Now look at the children 1-ply deep and determing the best one (break ties randomly)
-  for (i = 1; i < _DOM->getNumOfChildren(); i++) { //For each move
+  for (i = 1; i < _DOM->getNumOfChildren(rootNode->rep, rootNode->side); i++) { //For each move
     if (!_DOM->isValidChild(rootNode->rep, rootNode->side, i)) //Skip illegal moves
       continue;
 
@@ -328,7 +328,7 @@ int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, dou
 
   // Clean up before returning
   freeTree(rootNode);
-  freeTypeSystems(type_systems);
+  freeTypeSystems(type_systems, _DOM->getNumOfChildren(rootNode->rep, rootNode->side));
   
   return bestMove;
 }

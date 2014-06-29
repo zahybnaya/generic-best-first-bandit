@@ -25,7 +25,7 @@
 int selectMoveStochastic_sailing(rep_t rep);
 int isChanceNode_sailing(rep_t rep);
 double actionCost_sailing(rep_t rep, int move);
-int getNumOfChildren_sailing();
+int getNumOfChildren_sailing(rep_t rep, int side);
 int isValidChild_sailing(rep_t rep, int side, int move);
 int getGameStatus_sailing(rep_t rep);
 void makeMove_sailing(rep_t rep,int * side, int move);

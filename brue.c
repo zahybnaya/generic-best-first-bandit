@@ -18,7 +18,7 @@ extern DOM* _DOM;
 /* Routine to free up UCT tree */
 static void freeTree(treeNode* node) {
 	int i;
-	for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+	for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
 		if (node->children[i]) {
 			freeTree(node->children[i]);
 			node->children[i] = NULL;
@@ -37,7 +37,7 @@ treeNode* createNode(rep_t rep, int side, treeNode* parent){
 	treeNode* rootNode = (treeNode*)calloc(1, sizeof(treeNode));
 	rootNode->rep = _DOM->cloneRep(rep);
 	rootNode->side = side;
-	rootNode->children = (treeNode**)calloc(_DOM->getNumOfChildren(), sizeof(treeNode*));
+	rootNode->children = (treeNode**)calloc(_DOM->getNumOfChildren(rep, side), sizeof(treeNode*));
 	rootNode->parent = parent;
 	return rootNode;
 }
@@ -59,7 +59,7 @@ int selectBestMove(int* bestMoves, int numBestMoves) {
 void findBestMoves(treeNode* root, int* bestMoves, int* numBestMoves) {
 	int i;
 	double val, bestScore;
-	for (i = 1; i < _DOM->getNumOfChildren(); i++) { // for each move
+	for (i = 1; i < _DOM->getNumOfChildren(root->rep, root->side); i++) { // for each move
 		if (!_DOM->isValidChild(root->rep,root->side, i))
 			continue;
 		if (!root->children[i]) // this node was not created since # iterations was too small
@@ -86,8 +86,8 @@ void findBestMoves(treeNode* root, int* bestMoves, int* numBestMoves) {
 int validRandomMove(treeNode* current)
 {
 	int i,validCounter=0;
-	int valids[_DOM->getNumOfChildren()];
-	for (i = 1; i < _DOM->getNumOfChildren(); i++) { // for each move
+	int valids[_DOM->getNumOfChildren(current->rep, current->side)];
+	for (i = 1; i < _DOM->getNumOfChildren(current->rep, current->side); i++) { // for each move
 		if (_DOM->isValidChild(current->rep,current->side, i))
 			valids[++validCounter]=i;
 	}	
@@ -99,7 +99,7 @@ int validRandomMove(treeNode* current)
 int validMove(treeNode* current)
 {
 	int i;
-	for (i = 1; i < _DOM->getNumOfChildren(); i++) { // for each move
+	for (i = 1; i < _DOM->getNumOfChildren(current->rep, current->side); i++) { // for each move
 		if (_DOM->isValidChild(current->rep,current->side, i))
 			return i;
 	}	
@@ -111,7 +111,7 @@ int validMove(treeNode* current)
  * The exploitation policy for selecting the next node
  */
 int selectMoveExploitation(treeNode* current){
-	int bestMoves[_DOM->getNumOfChildren()];
+	int bestMoves[_DOM->getNumOfChildren(current->rep, current->side)];
 	int numBestMoves=0;
 	findBestMoves(current,bestMoves,&numBestMoves);
 	return selectBestMove(bestMoves,numBestMoves);

@@ -60,7 +60,7 @@ void printBoard_sailing(rep_t rep, int dummy) {
   printf("Goal loc: (%d, %d)\n", game[GOAL_X], game[GOAL_Y]);
 }
 
-int getNumOfChildren_sailing() {
+int getNumOfChildren_sailing(rep_t rep, int side) {
     return SAILING_DIRECTIONS + 1;
 }
 

@@ -18,7 +18,7 @@ void backprop_sts(void *void_ts, treeNode *node, double rollout, int generated, 
 	if (node->subtreeSize > threshold) {	  
 	  node->type = false;
 	  
-	  for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+	  for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
 	    if (node->children[i]) {
 	      node->children[i]->type = true;
 	      
@@ -62,7 +62,7 @@ void backprop_sts(void *void_ts, treeNode *node, double rollout, int generated, 
       double bestScore = (node->side == max) ? -INF : INF;
       double score;
       
-      for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+      for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
 	if (node->children[i] && node->children[i]->type == false) { // if child exists, is it the best scoring child?
 	  score = node->children[i]->scoreSum / (double)node->children[i]->n;
 	  if (((node->side == max) && (score > bestScore)) || ((node->side == min) && (score < bestScore)))

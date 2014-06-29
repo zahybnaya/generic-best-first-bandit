@@ -32,7 +32,7 @@ void subset_backup(treeNode *node, double ret, int ci_threshold, double (confide
 		double bestChildConfidence = INF;
 		node->ci = confidenceMeasure(node);
 		
-		for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+		for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
 			if (node->children[i] && node->children[i]->n >= ci_threshold) { // if child exists, is it the best scoring child?
 				score = assignedScore(node->children[i]);
 				score = node->side == max ? score : -score;
@@ -64,7 +64,7 @@ void size_backup(treeNode *node, double ret, int ci_threshold) {
 		int i, bestChild = 0;
 		double score, bestScore = (node->side == max) ? MIN_WINS : MAX_WINS;
 	
-		for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+		for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
 			if (node->children[i] && node->children[i]->n >= ci_threshold) { // if child exists, is it the best scoring child?
 				score = assignedScore(node->children[i]);
 				if (((node->side == max) && (score > bestScore)) || ((node->side == min) && (score < bestScore))) {
@@ -90,7 +90,7 @@ void minmax_backup(treeNode *node) {
   (node->n)++;
   bestScore = (node->side == max) ? MIN_WINS : MAX_WINS;
   
-  for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+  for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
     if (node->children[i]) { // if child exists, is it the best scoring child?
       score = assignedScore(node->children[i]);
       if (((node->side == max) && (score > bestScore)) || ((node->side == min) && (score < bestScore)))
@@ -113,7 +113,7 @@ void variance_backup(treeNode *node, double ret, int ci_threshold) {
 		bestScore = (node->side == max) ? MIN_WINS : MAX_WINS;
 		double bestSD = INF;
 
-		for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+		for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
 			if (node->children[i] && node->children[i]->n >= ci_threshold) { // if child exists, is it the best scoring child?
 				score = node->children[i]->scoreSum / (double)node->children[i]->n;
 				if (((node->side == max) && (score > bestScore)) || ((node->side == min) && (score < bestScore))){
@@ -156,7 +156,7 @@ void ci_backup(treeNode *node, double ret, int ci_threshold) {
 		bestScore = (node->side == max) ? MIN_WINS : MAX_WINS;
 		double bestCI = INF;
 		
-		for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+		for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
 			if (node->children[i] && node->children[i]->n >= ci_threshold) { // if child exists, is it the best scoring child?
 				score = node->children[i]->scoreSum / (double)node->children[i]->n;
 				if (((node->side == max) && (score > bestScore)) || ((node->side == min) && (score < bestScore))){
@@ -228,7 +228,7 @@ static double getProbForMaximialChild(int mi, treeNode* node) {
 	treeNode* child = node->children[mi];
 	if (!child)
 		return 0;
-	for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+	for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
 	  if (i==mi||!node->children[i]) { 
 		  continue;
 	  }
@@ -244,7 +244,7 @@ void weighted_mm_backup(treeNode *node, double ret) {
     double nodeP,nodeVal;
     int i;
 
-    for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+    for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
       if (node->children[i]) { // if child exists, is it the best scoring child?
 	nodeP=getProbForMaximialChild(i,node);
 	ttlPp+=nodeP;
@@ -274,13 +274,13 @@ static double weightedMM(treeNode* node,heuristics_t heuristic) {
 	}
 	double ttlPp=0;
 	double rttlp=0;
-	for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+	for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
 	  if (node->children[i]) { // only descend if child exists
 	    ttlPp+=getProbForMaximialChild(i,node); 
 	  }
 	}
 	assert(ttlPp>0);
-	for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+	for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
 	  if (node->children[i]) { // only descend if child exists
 	    val = weightedMM(node->children[i], heuristic); 
 	    double uctVal = node->children[i]->scoreSum/node->children[i]->n;

@@ -100,7 +100,7 @@ int main(int argc, char* argv[]) {
 						puts("Unrecognized domain description.");
 						return (-1);
 		}
-		int bestMoves[_DOM->getNumOfChildren()];
+		
 		heuristics_t heuristic[] =  {_DOM->hFunctions.h1, _DOM->hFunctions.h1}; // the heuristics used by the max and min playersa 
 		// Process command-line args
 		// Mandatory args -- the search algorithms the two players will use
@@ -516,7 +516,8 @@ int main(int argc, char* argv[]) {
 										_DOM->printBoard(state, side);
 										fflush(stdout);
 								}
-
+								
+								int bestMoves[_DOM->getNumOfChildren(state, side)];
 								start = startTiming();
 								switch(player[side]){
 										case UCT:

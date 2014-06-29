@@ -18,7 +18,7 @@ int i_CA,pit_CA; \
 }
 
 
-int getNumOfChildren_mancala();
+int getNumOfChildren_mancala(rep_t rep, int side);
 int estimateTreeSize_mancala(int treeSize);
 int isValidChild_mancala(rep_t rep, int side, int move);
 int getGameStatus_mancala(rep_t rep);

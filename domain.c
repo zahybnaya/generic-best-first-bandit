@@ -12,11 +12,20 @@ DOM* init_domain(DOM_NAME name){
 	DOM* retVal = (DOM*)malloc(sizeof(DOM));
 	switch (name) {
 		case GGP:
-			rules_t r = compile();
-			rules_holder_t rulesHolder = createRulesHolder(r);
-			retVal->getNumOfChildren = generateGetNumOfChildren(rulesHolder);
-			//...///
 			retVal->dom_name = GGP;
+			retVal->getNumOfChildren = getNumOfChildren_ggp;
+			retVal->estimateTreeSize = estimateTreeSize_ggp;
+			retVal->isValidChild = isValidChild_ggp;
+			retVal->applyHeuristics = applyHeuristics_ggp;
+			retVal->cloneRep = cloneRep_ggp;
+			retVal->makeMove = makeMove_ggp;
+			retVal->getGameStatus = getGameStatus_ggp;
+			retVal->destructRep = destructRep_ggp;
+			retVal->allocate = allocate_ggp;
+			retVal->generateRandomStart = generateRandomStart_ggp;
+			retVal->copy = copy_ggp;
+			retVal->printBoard = printBoard_ggp;
+			retVal->hFunctions.h1  = h1_ggp;
 			break;
 		case SAILING:
 			retVal->dom_name = SAILING;

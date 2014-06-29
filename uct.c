@@ -15,7 +15,7 @@ static int mm_Counter; // for counting nodes
 /* Routine to free up UCT tree */
 static void freeTree(treeNode* node) {
 	int i;
-	for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+	for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
 		if (node->children[i]) {
 			freeTree(node->children[i]);
 			node->children[i] = NULL;
@@ -55,14 +55,14 @@ static int selectMove(treeNode* node, double C, int isSimpleRegret) {
 	double score;
 	int numBestMoves = 0;
 	double bestScore;
-	int bestMoves[_DOM->getNumOfChildren()]; //This should be ok when compiled with c99+ 
+	int bestMoves[_DOM->getNumOfChildren(node->rep, node->side)]; //This should be ok when compiled with c99+ 
 	/*
 	 * The multiplier is used to set the sign of the exploration bonus term (should be negative
 	 for the min player and positive for the max player) i.e. so that we correctly compute
 	 an upper confidence bound for Max and a lower confidence bound for Min */
 	double multiplier = (node->side == max) ? 1 : -1;
 
-	for (i = 1; i < _DOM->getNumOfChildren(); i++) { // iterate over all children
+	for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) { // iterate over all children
 		if(!_DOM->isValidChild(node->rep, node->side, i)) { // if the i^th move is illegal, skip it
 			continue;
 		}
@@ -181,7 +181,6 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 	if (node->children[move] == NULL) {
 		mm_Counter++;
 		node->children[move] = (treeNode*) calloc(1, sizeof(treeNode));
-		node->children[move]->children =(treeNode**)  calloc(_DOM->getNumOfChildren(), sizeof(treeNode*));
 		node->children[move]->rep = _DOM->cloneRep(node->rep);// copy over the current board to child
 		node->children[move]->side = node->side; // copy over the current side on move to child
 		node->children[move]->depth = node->depth + 1;
@@ -192,6 +191,7 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 		// From the current board, we make the move recommended by selectMove() -- the resulting game state
 		// is what is stored in the child node
 		_DOM->makeMove(node->children[move]->rep, &(node->children[move]->side), move);
+		node->children[move]->children = (treeNode**)calloc(_DOM->getNumOfChildren(node->children[move]->rep, node->children[move]->side), sizeof(treeNode*));
 		if(debuglog)printf("Created a node for move %d\n",move);
 		
 		if (node->depth > *treeDepth)
@@ -216,7 +216,7 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 	  
 	  node->scoreSum = 0;
 	  node->ci = 0;
-	  for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+	  for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
 	    if (node->children[i]) {
 	      node->scoreSum += node->children[i]->scoreSum;
 	      node->ci += pow(node->children[i]->ci, 2);
@@ -259,7 +259,7 @@ static treeNode* createRootNode(int* side, rep_t rep) {
 	rootNode = (treeNode*)calloc(1, sizeof(treeNode));
 	rootNode->rep = _DOM->cloneRep(rep);
 	rootNode->side = *side;
-	rootNode->children = (treeNode**)calloc(_DOM->getNumOfChildren(), sizeof(treeNode*));
+	rootNode->children = (treeNode**)calloc(_DOM->getNumOfChildren(rootNode->rep, rootNode->side), sizeof(treeNode*));
 	return rootNode;
 }
 
@@ -291,7 +291,7 @@ int makeUCTMove(rep_t rep, int *side, int numIterations, double C,
 
 	// Now look at the children 1-ply deep and determing the best one (break ties
 	// randomly)
-	for (i = 1; i < _DOM->getNumOfChildren(); i++) { // for each move
+	for (i = 1; i < _DOM->getNumOfChildren(rootNode->rep, rootNode->side); i++) { // for each move
 		if (!_DOM->isValidChild(rep,*side, i))
 			continue;
 		if (!rootNode->children[i]) // this node was not created since # iterations was too small
@@ -395,7 +395,7 @@ static double minmaxUCT(treeNode* node) {
 	}
 
 	// Otherwise, we are at an internal node, so descend recursively
-	for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+	for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
 	  if (node->children[i]) { // only descend if child exists
 	    val = minmaxUCT(node->children[i]); // compute minimax value of i^th child
 	    if ((node->side == max) && (val > bestScore)) // maximizing level -- is this child score higher than the best so far?
@@ -450,7 +450,7 @@ static vci *vciMinmaxUCT(treeNode* node, int ci_threshold, int* parentCIWin,int*
 		nodeci = 2 * z975 * sqrt(variance / (double)node->n);
 	}
 	double bestChildScore = node->side==max? MIN_WINS : MAX_WINS;
-	for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+	for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
 		if (node->children[i]) { // only descend if child exists
 			currentVCI = vciMinmaxUCT(node->children[i], ci_threshold,parentCIWin,parentCITotal,avgDepth,minDepth,treeDepth); 
 			if ((((node->side == max) && (currentVCI->score >= bestChildScore )) || ((node->side == min) && (currentVCI->score <=bestChildScore )))
@@ -507,7 +507,7 @@ int makeMinmaxOnUCTMove(rep_t rep, int *side, int numIterations, double C,
 	parentCIWin=0,parentCITotal=0,minDepth=INF,treeDepth=0;
 	
 	// Now minimax the tree we just built (we minimax starting from each child)
-	for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+	for (i = 1; i < _DOM->getNumOfChildren(rootNode->rep, rootNode->side); i++) {
 		if (rootNode->children[i]) { // if this child was explored
 			if (ci_threshold <= 0) {
 			  val = minmaxUCT(rootNode->children[i]);

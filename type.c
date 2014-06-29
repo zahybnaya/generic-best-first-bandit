@@ -30,12 +30,12 @@ int selectMove(treeNode* node, double C) {
   double score;
   int numBestMoves = 0;
   double bestScore;
-  int bestMoves[_DOM->getNumOfChildren()];
+  int bestMoves[_DOM->getNumOfChildren(node->rep, node->side)];
   // The multiplier is used to set the sign of the exploration bonus term (should be negative
   // for the min player and positive for the max player) i.e. so that we correctly compute
   // an upper confidence bound for Max and a lower confidence bound for Min
   double multiplier = (node->side == max) ? 1 : -1;
-  for (i = 1; i < _DOM->getNumOfChildren(); i++) { // iterate over all children
+  for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) { // iterate over all children
     if (!_DOM->isValidChild(node->rep, node->side, i)) // if the i^th move is illegal, skip it
       continue;
     

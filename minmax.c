@@ -45,7 +45,7 @@ static double alphaBeta(rep_t rep, int searchDepth, int depth, int side, double 
   // Otherwise, recurse
   if (side == max) { // at a Max node
     val1 = alpha;
-    for (i = 1; i < _DOM->getNumOfChildren(); i++) { // iterate over all possible moves
+    for (i = 1; i < _DOM->getNumOfChildren(rep, side); i++) { // iterate over all possible moves
       side = origSide;
       if (!_DOM->isValidChild(rep,side,i))
 	      continue;
@@ -63,7 +63,7 @@ static double alphaBeta(rep_t rep, int searchDepth, int depth, int side, double 
   }
   else { // at a Min node
     val1 = beta;
-    for (i = 1; i < _DOM->getNumOfChildren(); i++) { // iterate over all possible moves
+    for (i = 1; i < _DOM->getNumOfChildren(rep, side); i++) { // iterate over all possible moves
       side = origSide;
       if (!_DOM->isValidChild(rep,side,i))
 	continue;
@@ -94,14 +94,14 @@ int makeMinmaxMove(rep_t rep, int* side, int depth, heuristics_t heuristic, int 
   double bestScore;
   double secondBestScore = -INF;
   int origSide = *side;
-  double scores[_DOM->getNumOfChildren()];
+  double scores[_DOM->getNumOfChildren(rep, origSide)];
   double die;
 
   numNodes = 0; // reset node count
   *numBestMoves = 0; // reset number of best moves
   termCount = 0; // reset terminal nodes count
   
-  for (i = 1; i <_DOM->getNumOfChildren(); i++) { // iterate over all possible moves
+  for (i = 1; i <_DOM->getNumOfChildren(rep, origSide); i++) { // iterate over all possible moves
     *side = origSide;
     if (!_DOM->isValidChild(rep,*side,i))
 	continue;
@@ -140,7 +140,7 @@ int makeMinmaxMove(rep_t rep, int* side, int depth, heuristics_t heuristic, int 
 
   // Find second best move -- note that the score of the second best move must be within 3 of the best move
   // In case there is no such second best move, the index remains set to its initial value of NULL_MOVE
-  for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+  for (i = 1; i < _DOM->getNumOfChildren(rep,*side); i++) {
     if (!_DOM->isValidChild(rep,*side,i))
 	continue;
     if (scores[i] != bestScore) {
