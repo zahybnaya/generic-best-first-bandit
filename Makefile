@@ -5,6 +5,9 @@ ggames: common.h domain genericGames.c uct.c uct.h minmax.c heuristic.c move.c b
 	
 evalstates: common.h domain evalstates.c uct.c minmax.c heuristic.c move.c board.c phi.c util.c random.c bfb.c brue.c type.h type.c sts.c cits.c 
 	gcc evalstates.c  util.c value_iteration.c  domain.o -o evalstates $(CFLAGS) 
+		
+trackrewards: common.h domain trackrewards.c uct.c minmax.c heuristic.c move.c board.c phi.c util.c random.c bfb.c brue.c type.h type.c sts.c cits.c 
+	gcc trackrewards.c  util.c value_iteration.c  backup_operators.c domain.o -o trackrewards $(CFLAGS) 
 	
 domain: synth mancala zop c4 sailing domain.c domain.h
 	gcc -c domain.c -o tmpdomain.o $(CFLAGS) 
