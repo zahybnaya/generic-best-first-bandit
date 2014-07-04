@@ -96,6 +96,9 @@ int main(int argc, char* argv[]) {
 				case 5:
 						_DOM = init_domain(SAILING);
 						break;
+				case 6:
+						_DOM = init_domain(GGP);
+						break;
 				default:
 						puts("Unrecognized domain description.");
 						return (-1);
@@ -475,14 +478,14 @@ int main(int argc, char* argv[]) {
 		int **weathers;
 		rep_t *testStates;
 		if (_DOM->dom_name == SAILING) {
-		  weathers = calloc(numGames, sizeof(int *));
+		  weathers = (int **)calloc(numGames, sizeof(int *));
 		  int wi = 0;
 		  
 		  for (wi = 0; wi < numGames; wi++)
 		    weathers[wi] = generateWeather(1);
 		} else if (_DOM->dom_name == MANCALA) {
 		  int s;
-		  testStates = calloc(numGames, sizeof(rep_t));
+		  testStates = (void **)calloc(numGames, sizeof(rep_t));
 		  
 		  for (s = 0; s < numGames; s++) {
 		    testStates[s] = _DOM->allocate();
@@ -506,7 +509,7 @@ int main(int argc, char* argv[]) {
 						moveCount = 0; // reset move count
 						side = rootSide; // Restore the starting board (which was either randomly generated or read from a file)
 						_DOM->copy(randState,state);
-						
+
 						// Play complete game
 						while ((outcome = _DOM->getGameStatus(state)) == INCOMPLETE) {
 								origSide = side; /* this is who is currently on move -- since this is not a strict turn taking game,

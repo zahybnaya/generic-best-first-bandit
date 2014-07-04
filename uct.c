@@ -292,15 +292,19 @@ int makeUCTMove(rep_t rep, int *side, int numIterations, double C,
 	// Now look at the children 1-ply deep and determing the best one (break ties
 	// randomly)
 	for (i = 1; i < _DOM->getNumOfChildren(rootNode->rep, rootNode->side); i++) { // for each move
-		if (!_DOM->isValidChild(rep,*side, i))
+		if (!_DOM->isValidChild(rep,*side, i)) {
+			//printf("not valid\n");
 			continue;
-		if (!rootNode->children[i]) // this node was not created since # iterations was too small
+		}
+		if (!rootNode->children[i]) { // this node was not created since # iterations was too small
+			//printf("doesn't exist\n");
 			continue;
+		}
 		
 		val = assignedScore(rootNode->children[i]);
-		//printf("UCT:%d:%f/%d\n",i,rootNode->children[i]->scoreSum,rootNode->children[i]->n);
 		if (_DOM->dom_name == SAILING)
 		  val += actionCost_sailing(rootNode->rep, i);
+		
 		// If this was min's move, negate the utility value (this makes things a little cleaner
 		// as we can then always take the max of the children, since min(s1,s2,...) = -max(-s1,-s2,...))
 		val = (*side == min) ? -val : val;

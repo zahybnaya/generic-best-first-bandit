@@ -18,15 +18,15 @@ GDL gdl;
 int getNumOfChildren_ggp(rep_t rep, int side) {
 	GDL::State *state = (GDL::State *)rep;
 	GDL::StringVec moves = gdl.getPossibleMoves(side, *state);
-	return moves.size();
+	return moves.size() + 1;
 }
 
 int isValidChild_ggp(rep_t rep, int side, int move) {
 	GDL::State *state = (GDL::State *)rep;
 	GDL::StringVec moves = gdl.getPossibleMoves(side, *state);
 		
-	//We dont have a fixed amout of moves so the only way to make an illegal move would be an out of bound.
-	if (move < moves.size())
+	//We dont have a fixed amount of moves so the only way to make an illegal move would be an out of bound.
+	if (move < moves.size() + 1)
 		return true;
 	return false;
 }
@@ -43,6 +43,7 @@ int getGameStatus_ggp(rep_t rep) {
 }
 
 void makeMove_ggp(rep_t rep, int *side, int move) {
+	move--; //The system moves are 1-based while ggp is 0-based
 	GDL::State *state = (GDL::State *)rep;
 
 	GDL::StringVec aMoves = gdl.getPossibleMoves(*side, *state);
@@ -58,24 +59,72 @@ void makeMove_ggp(rep_t rep, int *side, int move) {
 }
 	
 rep_t cloneRep_ggp(rep_t orig) {
-	rep_t clone = calloc(1, sizeof(GDL::State));
-	memcpy(clone, orig, sizeof(GDL::State));
-	return clone;
+	GDL::State *state = (GDL::State *)orig;
+	return new GDL::State(*state);
 }
 
 double applyHeuristics_ggp(heuristics_t h, rep_t rep, int side, int budget) {
 	return h(rep, side, budget);
 }
 
-void generateRandomStart_ggp(rep_t rep, int *side) {
-  
+rep_t allocate_ggp() { 
+	return new GDL::State();
 }
 
-rep_t allocate_ggp() { return 0; }
-void destructRep_ggp(rep_t rep) {  }
-void copy_ggp(rep_t src,rep_t dst) {  }
-double h1_ggp(rep_t rep, int side, int dummy) { return 0; }
-void printBoard_ggp(rep_t rep, int dummy) { }
+void printBoard_ggp(rep_t rep, int dummy) {
+	GDL::State *state = (GDL::State *)rep;
+	std::cout << *state << std::endl;
+}
+
+void destructRep_ggp(rep_t rep) { 
+	GDL::State *state = (GDL::State *)rep;
+	delete state;
+}
+
+void copy_ggp(rep_t src,rep_t dst) {
+	GDL::State *sSrc = (GDL::State *)src;
+	GDL::State *sDst = (GDL::State *)dst;
+	
+	*sDst = *sSrc;
+}
+
+double h1_ggp(rep_t rep, int side, int dummy) { 
+	GDL::State state = *(GDL::State *)rep;
+	
+	while (!gdl.isFinishState(state)) {
+		GDL::StringVec aMoves = gdl.getPossibleMoves(0, state);
+		GDL::StringVec bMoves = gdl.getPossibleMoves(1, state);
+		GDL::Move m;
+		
+		m.resize(2);
+		m[0] = aMoves[random() % aMoves.size()];
+		m[1] = bMoves[random() % bMoves.size()];
+		
+		state = gdl.getNextState(state, m);
+	}
+	
+	int result;
+	gdl.points((size_t)side, state, result);
+	
+	return result;
+}
+
+void generateRandomStart_ggp(rep_t rep, int *side) {
+	GDL::State *state = (GDL::State *)rep;
+	*state = gdl.getInitState();
+
+	int i, moves = random() % 9; //TODO: param/generify to be domain dependant. for example, 9 moves is all possible in tic tac toe
+	for (i = 0; i < moves; i++) {
+		GDL::StringVec aMoves = gdl.getPossibleMoves(*side, *state);
+		GDL::StringVec bMoves = gdl.getPossibleMoves(1 - *side, *state);
+		GDL::Move m;
+		
+		m.resize(2);
+		m[0] = aMoves[random() % aMoves.size()];
+		m[1] = bMoves[random() % bMoves.size()];
+		*state = gdl.getNextState(*state, m);
+	}
+}
 
 void compile_ggp() {
 	std::string filename = "./gpp-reasoner/tictactoe.kif"; //TODO: Get this from argument
