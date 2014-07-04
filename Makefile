@@ -1,14 +1,26 @@
 CFLAGS = -lm -Wall -g 
 
-ggames: common.h domain genericGames.c uct.c uct.h minmax.c heuristic.c move.c board.c util.c random.c bfb.c brue.c type.h type.c sts.c cits.c 
-	gcc genericGames.c uct.c backup_operators.c bfb.c sts.c cits.c brue.c type.c util.c value_iteration.c domain.o -o ggames $(CFLAGS)
+ggames: common.h domain genericGames.c uct.c uct.h minmax.c heuristic.c move.c board.c util.c random.c bfb.c brue.c type.h type.c sts.c cits.c ggp
+	#gcc genericGames.c uct.c backup_operators.c bfb.c sts.c cits.c brue.c type.c util.c value_iteration.c domain.o -o ggames $(CFLAGS)
+	gcc -c genericGames.c -o genericGames.c.o $(CFLAGS)
+	gcc -c uct.c -o uct.c.o $(CFLAGS)
+	gcc -c backup_operators.c -o backup_operators.c.o $(CFLAGS)
+	gcc -c bfb.c -o bfb.c.o $(CFLAGS)
+	gcc -c sts.c -o sts.c.o $(CFLAGS)
+	gcc -c cits.c -o cits.c.o $(CFLAGS)
+	gcc -c brue.c -o brue.c.o $(CFLAGS)
+	gcc -c type.c -o type.c.o $(CFLAGS)
+	gcc -c util.c -o util.c.o $(CFLAGS)
+	gcc -c value_iteration.c -o value_iteration.c.o $(CFLAGS)
+	ld -r genericGames.c.o uct.c.o backup_operators.c.o bfb.c.o sts.c.o cits.c.o brue.c.o type.c.o util.c.o value_iteration.c.o  domain.o -o games.o
+	g++ ggp.o games.o -o ggames 
 	
 evalstates: common.h domain evalstates.c uct.c minmax.c heuristic.c move.c board.c phi.c util.c random.c bfb.c brue.c type.h type.c sts.c cits.c 
 	gcc evalstates.c  util.c value_iteration.c  domain.o -o evalstates $(CFLAGS) 
 	
-domain: ggp synth mancala zop c4 sailing domain.c domain.h
+domain: synth mancala zop c4 sailing domain.c domain.h
 	gcc -c domain.c -o tmpdomain.o $(CFLAGS) 
-	ld -r tmpdomain.o synth.o mancala.o zop.o c4.o sailing.o ggp.o -o domain.o 
+	ld -r tmpdomain.o synth.o mancala.o zop.o c4.o sailing.o -o domain.o
 	rm tmpdomain.o	
 
 synth: synth.c synth.h

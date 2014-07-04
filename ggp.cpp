@@ -6,7 +6,6 @@
 #include "./gpp-reasoner/libgdl/src/microtimer.h"
 #include "./gpp-reasoner/libgdl/src/gdl/knowledgebase.h"
 #include "./gpp-reasoner/libgdl/src/gdl/kif.h"
-#include "common.h"
 #include "ggp.h"
 
 /**
@@ -22,7 +21,7 @@ int getNumOfChildren_ggp(rep_t rep, int side) {
 	return moves.size();
 }
 
-int isValidChild_ggp(rep_t rep, int side, int move){
+int isValidChild_ggp(rep_t rep, int side, int move) {
 	GDL::State *state = (GDL::State *)rep;
 	GDL::StringVec moves = gdl.getPossibleMoves(side, *state);
 		
@@ -72,10 +71,11 @@ void generateRandomStart_ggp(rep_t rep, int *side) {
   
 }
 
-rep_t allocate_ggp();
-void destructRep_ggp(rep_t rep);
-void copy_ggp(rep_t src,rep_t dst);
-double h1(rep_t rep, int side, int dummy);
+rep_t allocate_ggp() { return 0; }
+void destructRep_ggp(rep_t rep) {  }
+void copy_ggp(rep_t src,rep_t dst) {  }
+double h1_ggp(rep_t rep, int side, int dummy) { return 0; }
+void printBoard_ggp(rep_t rep, int dummy) { }
 
 void compile_ggp() {
 	std::string filename = "./gpp-reasoner/tictactoe.kif"; //TODO: Get this from argument

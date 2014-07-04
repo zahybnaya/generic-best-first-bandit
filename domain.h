@@ -1,6 +1,11 @@
 #ifndef DOMAIN_H_INCLUDED
 #define DOMAIN_H_INCLUDED
 #include "common.h"
+#include "mancala.h"
+#include "synth.h"
+#include "chess.h"
+#include "zop.h"
+#include "c4.h"
 #include "sailing.h"
 #include "ggp.h"
 

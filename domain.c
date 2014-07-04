@@ -1,12 +1,4 @@
 #include "domain.h"
-#include "mancala.h"
-#include "synth.h"
-#include "chess.h"
-#include "zop.h"
-#include "c4.h"
-#include "sailing.h"
-#include "ggp.h"
-
 
 DOM* init_domain(DOM_NAME name){
 	DOM* retVal = (DOM*)malloc(sizeof(DOM));
@@ -92,7 +84,7 @@ DOM* init_domain(DOM_NAME name){
 			retVal->hFunctions.h6  = h6;
 			break;
 		case SYNTH:
-			retVal->dom_name=SYNTH;
+			retVal->dom_name = SYNTH;
 			retVal->getNumOfChildren = getNumOfChildren_synth;
 			retVal->estimateTreeSize  = estimateTreeSize_synth;
 			retVal->isValidChild = isValidChild_synth;
