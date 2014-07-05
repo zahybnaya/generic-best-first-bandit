@@ -137,7 +137,7 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 	int move,i;
 
 	assert(node != NULL); // should never be calling uctRecurse on a non-existent node
-	if ((ret = _DOM->getGameStatus(node->rep))!= INCOMPLETE) {
+	if ((ret = _DOM->getGameStatus(node->rep))!= _DOM->incomplete) {
 		fflush(stdout);
 		
 		if (_DOM->dom_name == SAILING)
@@ -149,7 +149,7 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 		// which are substantially larger. To make these values comparable in magnitude, we need to rescale the terminal
 		// node values. If we are using engineered heuristics, then no rescaling is necessary.
 		if ((heuristic == _DOM->hFunctions.h3) || (heuristic == _DOM->hFunctions.h4) || (heuristic == _DOM->hFunctions.h5)) {
-			ret /= MAX_WINS; // rescale
+			ret /= _DOM->max_wins; // rescale
 		}
 		if ((dotFormat) && (node->n == 0)) // on first visit to a terminal node, color it red
 			printf("n%d [color=\"red\"];", node->id);
@@ -386,15 +386,15 @@ static double minmaxUCT(treeNode* node) {
 	assert(node != NULL);
 
 	// Initialize bestScore to a very unfavorable value based on who is on move
-	bestScore = (node->side == max) ? MIN_WINS : MAX_WINS;
+	bestScore = (node->side == max) ? _DOM->min_wins : _DOM->max_wins;
 
 	// Is this a terminal node?
-	if ((val = _DOM->getGameStatus(node->rep)) != INCOMPLETE)
+	if ((val = _DOM->getGameStatus(node->rep)) != _DOM->incomplete)
 		return val; // return something from the set {MIN_WINS, DRAW, MAX_WINS}
 
 	// Is this a leaf node? (can determine this by looking at the UCT visit count to this node)
 	if (node->n == 1) {
-	  assert((node->scoreSum > MIN_WINS) && (node->scoreSum < MAX_WINS)); // make sure heuristic is bounded by terminal node values
+	  assert((node->scoreSum > _DOM->min_wins) && (node->scoreSum < _DOM->max_wins)); // make sure heuristic is bounded by terminal node values
 	  return node->scoreSum; // the node was already evaluated when doing UCT, so just use that value
 	}
 
@@ -425,7 +425,7 @@ static vci *vciMinmaxUCT(treeNode* node, int ci_threshold, int* parentCIWin,int*
 	int i;
 	
 	//Terminals returns CI=0
-	if (_DOM->getGameStatus(node->rep) != INCOMPLETE) {
+	if (_DOM->getGameStatus(node->rep) != _DOM->incomplete) {
 		vci *bestVCI = (vci*)calloc(1, sizeof(vci));
 		bestVCI->score = _DOM->getGameStatus(node->rep);
 		bestVCI->ci = 0;
@@ -453,7 +453,7 @@ static vci *vciMinmaxUCT(treeNode* node, int ci_threshold, int* parentCIWin,int*
 	       	variance = node->M2 / (double)(node->n - 1);
 		nodeci = 2 * z975 * sqrt(variance / (double)node->n);
 	}
-	double bestChildScore = node->side==max? MIN_WINS : MAX_WINS;
+	double bestChildScore = node->side==max? _DOM->min_wins : _DOM->max_wins;
 	for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
 		if (node->children[i]) { // only descend if child exists
 			currentVCI = vciMinmaxUCT(node->children[i], ci_threshold,parentCIWin,parentCITotal,avgDepth,minDepth,treeDepth); 

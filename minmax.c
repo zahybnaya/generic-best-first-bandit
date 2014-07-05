@@ -23,7 +23,7 @@ static double alphaBeta(rep_t rep, int searchDepth, int depth, int side, double 
   numNodes++; // track number of nodes expanded
   
   // Hit terminal node -- return value is one of {MAX_WINS, MIN_WINS, DRAW}
-  if ((val1 = _DOM->getGameStatus(rep)) != INCOMPLETE) {
+  if ((val1 = _DOM->getGameStatus(rep)) != _DOM->incomplete) {
     termCount++; // update terminal node count
     if (dotFormat)
       printf("n%d [color=\"red\"];", currentNodeId); // terminal nodes are colored red
@@ -37,7 +37,7 @@ static double alphaBeta(rep_t rep, int searchDepth, int depth, int side, double 
 
     // Ensure that the heuristic value is always bounded by the values assigned to terminal nodes (i.e. true win/loss
     // positions)
-    assert ((val1 < MAX_WINS) && (val1 > MIN_WINS));
+    assert ((val1 < _DOM->max_wins) && (val1 > _DOM->min_wins));
 
     return val1;
   }
@@ -101,7 +101,7 @@ int makeMinmaxMove(rep_t rep, int* side, int depth, heuristics_t heuristic, int 
   *numBestMoves = 0; // reset number of best moves
   termCount = 0; // reset terminal nodes count
   
-  for (i = 1; i <_DOM->getNumOfChildren(rep, origSide); i++) { // iterate over all possible moves
+  for (i = 1; i < _DOM->getNumOfChildren(rep, origSide); i++) { // iterate over all possible moves
     *side = origSide;
     if (!_DOM->isValidChild(rep,*side,i))
 	continue;
@@ -110,7 +110,7 @@ int makeMinmaxMove(rep_t rep, int* side, int depth, heuristics_t heuristic, int 
 
     // Compute MM-(k-1) value of i^th child (since the children are already at depth 1 from the root node,
     // and we do a search from each child)
-    val = alphaBeta(dummyRep , 1, depth, *side, MIN_WINS, MAX_WINS, heuristic, budget, id);
+    val = alphaBeta(dummyRep , 1, depth, *side, _DOM->min_wins, _DOM->max_wins, heuristic, budget, id);
     _DOM->destructRep(dummyRep);
     // If this was min's move, negate the utility value (this makes things a little cleaner
     // as we can then always take the max of the children, since min(s1,s2,...) = -max(-s1,-s2,...))    
@@ -175,7 +175,7 @@ int makeMinmaxMove(rep_t rep, int* side, int depth, heuristics_t heuristic, int 
 /* Performs an alpha-beta search from the given board and returns the number of nodes visited */
 int getAlphaBetaTreeSize(rep_t rep, int side, int depth, heuristics_t heuristic , int budget) {
   numNodes = termCount = 0; // reset node and terminal node counts
-  alphaBeta(rep , 0, depth, side, MIN_WINS, MAX_WINS, heuristic, budget, id); // run specified alpha-beta search
+  alphaBeta(rep , 0, depth, side, _DOM->min_wins, _DOM->max_wins, heuristic, budget, id); // run specified alpha-beta search
   return numNodes; // return number of nodes expanded (updated by call to alphaBeta above)
 }
 
@@ -192,7 +192,7 @@ void genAlphaBetaTree(rep_t rep, int side, int depth, heuristics_t heuristic, in
   // Generate the body of the graph using specified settings
   dotFormat = true;
   assert(id == 0); // for now, we only generate one graph per run
-  alphaBeta(rep, 0, depth, side, MIN_WINS, MAX_WINS, heuristic, budget, ++id);
+  alphaBeta(rep, 0, depth, side, _DOM->min_wins, _DOM->max_wins, heuristic, budget, ++id);
   dotFormat = false;
 
   printf("}\n");

@@ -15,7 +15,12 @@
  *
  * */
 
-int getNumOfChildren_zop();
+#define ZOP_MAX_WINS 1
+#define ZOP_MIN_WINS -1
+#define ZOP_INCOMPLETE -2
+#define ZOP_DRAW 0
+
+int getNumOfChildren_zop(rep_t rep, int side);
 int estimatedTreeSize_zop(int treeSize);
 int isValidChild_zop(rep_t rep, int side,int move);
 int getGameStatus_zop(rep_t rep);
@@ -24,7 +29,7 @@ rep_t cloneRep_zop(rep_t orig);
 double applyHeuristics_zop(heuristics_t h,rep_t rep,int side, int budget);
 void destructRep_zop (rep_t rep);
 rep_t allocate_zop();
-void generateRandomStart_zop(rep_t state, int side);
+void generateRandomStart_zop(rep_t state, int *side);
 void copy_zop (rep_t src ,rep_t dest);
 
 double h1_zop(rep_t , int, int);

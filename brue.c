@@ -122,7 +122,7 @@ int selectMoveExploitation(treeNode* current){
  */
 treeNode* nextNode(treeNode* current, POLICY p) {
 	int ret,move;
-	if ((ret = _DOM->getGameStatus(current->rep))!= INCOMPLETE) {
+	if ((ret = _DOM->getGameStatus(current->rep))!= _DOM->incomplete) {
 		return NULL;
 	}
 	if (current->n == 0){
@@ -158,9 +158,9 @@ void backpropagate(treeNode* leaf, double reward)
  */
 double getReward(treeNode* leaf, heuristics_t heuristic, int budget){
 	int ret;
-	if ((ret = _DOM->getGameStatus(leaf->rep))!= INCOMPLETE) {
+	if ((ret = _DOM->getGameStatus(leaf->rep))!= _DOM->incomplete) {
 		if ((heuristic == _DOM->hFunctions.h3) || (heuristic == _DOM->hFunctions.h4) || (heuristic == _DOM->hFunctions.h5))
-			ret /= MAX_WINS; // rescale
+			ret /= _DOM->max_wins; // rescale
 	}
 	else if (leaf->n == 0) { 
 		ret = heuristic(leaf->rep , leaf->side, budget);
@@ -177,7 +177,7 @@ void performIteration(treeNode* root,  int switchingPoint, heuristics_t heuristi
 	treeNode* n = root, *leaf = NULL;
 	while (n != NULL && n->n>0){
 		leaf = n;
-		POLICY p = level < switchingPoint? EXPLORATION : EXPLOITATION;
+		POLICY p = level < switchingPoint ? EXPLORATION : EXPLOITATION;
 		n = nextNode(n,p);	
 		level++;
 	}

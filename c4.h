@@ -6,7 +6,12 @@
 #define BOARD_ROWS 6
 #define BOARD_COLS 7
 
-int getNumOfChildren_connect4();
+#define C4_MAX_WINS 1
+#define C4_MIN_WINS -1
+#define C4_INCOMPLETE -2
+#define C4_DRAW 0
+
+int getNumOfChildren_connect4(rep_t rep, int side);
 int estimateTreeSize_connect4(int treeSize);
 int isValidChild_connect4(rep_t rep, int side, int move);
 int getGameStatus_connect4(rep_t rep);

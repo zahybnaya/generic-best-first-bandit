@@ -37,9 +37,9 @@ int getGameStatus_ggp(rep_t rep) {
 	GDL::State *state = (GDL::State *)rep;
 		
 	if (gdl.isFinishState(*state))
-		return MAX_WINS; //Anything different from INCOMPLETE is good  
+		return GGP_MAX_WINS; //Anything different from INCOMPLETE is good  
 		
-	return INCOMPLETE;	
+	return GGP_INCOMPLETE;	
 }
 
 void makeMove_ggp(rep_t rep, int *side, int move) {
@@ -51,8 +51,8 @@ void makeMove_ggp(rep_t rep, int *side, int move) {
 	
 	GDL::Move m;
 	m.resize(2);
-	m[0] = aMoves[move];
-	m[1] = bMoves[0];
+	m[*side] = aMoves[move];
+	m[(*side + 1) % 2] = bMoves[0];
 
 	*state = gdl.getNextState(*state, m);
 	*side = (*side + 1) % 2;
@@ -112,7 +112,7 @@ double h1_ggp(rep_t rep, int side, int dummy) {
 void generateRandomStart_ggp(rep_t rep, int *side) {
 	GDL::State *state = (GDL::State *)rep;
 	*state = gdl.getInitState();
-
+/*
 	int i, moves = random() % 9; //TODO: param/generify to be domain dependant. for example, 9 moves is all possible in tic tac toe
 	for (i = 0; i < moves; i++) {
 		GDL::StringVec aMoves = gdl.getPossibleMoves(*side, *state);
@@ -123,7 +123,7 @@ void generateRandomStart_ggp(rep_t rep, int *side) {
 		m[0] = aMoves[random() % aMoves.size()];
 		m[1] = bMoves[random() % bMoves.size()];
 		*state = gdl.getNextState(*state, m);
-	}
+	}*/
 }
 
 void compile_ggp() {

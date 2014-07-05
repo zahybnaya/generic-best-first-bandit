@@ -14,7 +14,7 @@ typedef struct zop_t{
 	int number;
 } ZOP_state;
 
-int getNumOfChildren_zop(){
+int getNumOfChildren_zop(rep_t rep, int side){
 	return 5;
 }
 
@@ -30,11 +30,11 @@ int isValidChild_zop(rep_t rep, int side,int move){
 int getGameStatus_zop(rep_t rep){
 	ZOP_state* s = (ZOP_state*)rep;
 	if (s->plays < 2){
-		return INCOMPLETE;
+		return ZOP_INCOMPLETE;
 	}
 	if (s->number%2==0)
-		return MAX_WINS;
-	return MIN_WINS;
+		return ZOP_MAX_WINS;
+	return ZOP_MIN_WINS;
 }
 
 void makeMove_zop(rep_t rep,int * side, int move){
@@ -67,7 +67,7 @@ rep_t allocate_zop(){
 
 
 
-void generateRandomStart_zop(rep_t state, int side){
+void generateRandomStart_zop(rep_t state, int *side){
  ZOP_state* s = ((ZOP_state*)state);
  s->plays = 0;
  s->number= 0;

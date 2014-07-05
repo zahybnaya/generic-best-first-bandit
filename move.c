@@ -1,5 +1,6 @@
 
 #include "common.h"
+#include "mancala.h"
 
 /* Contains two generic routines central to Mancala game-play */
 
@@ -57,8 +58,8 @@ int getNumLegalMoves(int board[2][NUM_PITS+1], int side) {
 }
 
 
-/* Returns the current status of the board -- a value from the set {MAX_WINS, DRAW, MIN_WINS,
-   INCOMPLETE} */
+/* Returns the current status of the board -- a value from the set {MANCALA_MAX_WINS, MANCALA_DRAW, MANCALA_MIN_WINS,
+   MANCALA_INCOMPLETE} */
 int getGameStatus(int board[2][NUM_PITS+1]) {
   int i, j;
   int gameOver = true;
@@ -87,14 +88,14 @@ int getGameStatus(int board[2][NUM_PITS+1]) {
 	minScore += board[max][j];
       }
       if (maxScore > minScore)
-	return MAX_WINS;
+	return MANCALA_MAX_WINS;
       else if (minScore > maxScore)
-	return MIN_WINS;
+	return MANCALA_MIN_WINS;
       else
-	return DRAW;
+	return MANCALA_DRAW;
     }
   }
 
   // Both sides have legal moves left, so game is incomplete
-  return INCOMPLETE;
+  return MANCALA_INCOMPLETE;
 }

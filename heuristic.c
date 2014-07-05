@@ -6,7 +6,7 @@
 /***********************************************************************************************************
   Heuristics -- guidelines:
 
-  1) Values returned need to be in the range (MIN_WINS, MAX_WINS) (note that the bounds are not inclusive)    
+  1) Values returned need to be in the range (MANCALA_MIN_WINS, MANCALA_MAX_WINS) (note that the bounds are not inclusive)    
 
   2) Positive values should favor Max, negative values indicate position is favorable to Min.    
 
@@ -35,11 +35,11 @@ static int playout(int board[2][NUM_PITS+1], int side) {
 	cloneBoard(board, dummyBoard);
 
 	// Play randomly to the end
-	while ((val = getGameStatus(dummyBoard)) == INCOMPLETE)
+	while ((val = getGameStatus(dummyBoard)) == MANCALA_INCOMPLETE)
 		makeMove(dummyBoard, &side, pickRandomMove(dummyBoard, side));
 
 	// Rescale outcome to value in the set {-1, 0, +1}
-	val /= MAX_WINS;
+	val /= MANCALA_MAX_WINS;
 
 	return val;
 }
@@ -55,7 +55,7 @@ static int finerPlayout(int board[2][NUM_PITS+1], int side) {
 	cloneBoard(board, dummyBoard);
 
 	// Play randomly to the end
-	while ((val = getGameStatus(dummyBoard)) == INCOMPLETE)
+	while ((val = getGameStatus(dummyBoard)) == MANCALA_INCOMPLETE)
 		makeMove(dummyBoard, &side, pickRandomMove(dummyBoard, side));
 
 	// What is the difference of the stores at the end?
@@ -129,10 +129,10 @@ double h4(rep_t rep, int side, int dummy) {
 	//TO_REGULAR_ARR(board);
 	double die;
 
-	// Make sure that the values {-1, 0, 1} do not clash with MIN_WINS, MAX_WINS and DRAW
-	assert ((MIN_WINS != -1) && (MIN_WINS != 0) && (MIN_WINS != 1));
-	assert ((MAX_WINS != -1) && (MAX_WINS != 0) && (MAX_WINS != 1));
-	assert ((DRAW != -1) && (DRAW != 0) && (DRAW != 1));
+	// Make sure that the values {-1, 0, 1} do not clash with MANCALA_MIN_WINS, MANCALA_MAX_WINS and MANCALA_DRAW
+	assert ((MANCALA_MIN_WINS != -1) && (MANCALA_MIN_WINS != 0) && (MANCALA_MIN_WINS != 1));
+	assert ((MANCALA_MAX_WINS != -1) && (MANCALA_MAX_WINS != 0) && (MANCALA_MAX_WINS != 1));
+	assert ((MANCALA_DRAW != -1) && (MANCALA_DRAW != 0) && (MANCALA_DRAW != 1));
 
 	die = (double)(random() % 10000) / (double)(10000 - 1);
 

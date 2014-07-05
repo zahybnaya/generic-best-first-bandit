@@ -6,6 +6,10 @@ DOM* init_domain(DOM_NAME name){
 		case GGP:
 			compile_ggp();
 			retVal->dom_name = GGP;
+			retVal->max_wins = GGP_MAX_WINS;
+			retVal->min_wins = GGP_MIN_WINS;
+			retVal->incomplete = GGP_INCOMPLETE;
+			retVal->draw = GGP_DRAW;
 			retVal->getNumOfChildren = getNumOfChildren_ggp;
 			retVal->estimateTreeSize = estimateTreeSize_ggp;
 			retVal->isValidChild = isValidChild_ggp;
@@ -22,6 +26,10 @@ DOM* init_domain(DOM_NAME name){
 			break;
 		case SAILING:
 			retVal->dom_name = SAILING;
+			retVal->max_wins = SAILING_MAX_WINS;
+			retVal->min_wins = SAILING_MIN_WINS;
+			retVal->incomplete = SAILING_INCOMPLETE;
+			retVal->draw = SAILING_DRAW;
 			retVal->getNumOfChildren = getNumOfChildren_sailing;
 			retVal->estimateTreeSize = estimateTreeSize_sailing;
 			retVal->isValidChild = isValidChild_sailing;
@@ -42,7 +50,11 @@ DOM* init_domain(DOM_NAME name){
 			retVal->hFunctions.h6  = h6_sailing;
 			break;
 		case C4:
-			retVal->dom_name=C4;
+			retVal->dom_name = C4;
+			retVal->max_wins = C4_MAX_WINS;
+			retVal->min_wins = C4_MIN_WINS;
+			retVal->incomplete = C4_INCOMPLETE;
+			retVal->draw = C4_DRAW;
 			retVal->getNumOfChildren = getNumOfChildren_connect4;
 			retVal->estimateTreeSize  = estimateTreeSize_connect4;
 			retVal->isValidChild = isValidChild_connect4;
@@ -63,7 +75,11 @@ DOM* init_domain(DOM_NAME name){
 			retVal->hFunctions.h6  = h3_c4;
 			break;
 		case MANCALA:
-			retVal->dom_name=MANCALA;
+			retVal->dom_name = MANCALA;
+			retVal->max_wins = MANCALA_MAX_WINS;
+			retVal->min_wins = MANCALA_MIN_WINS;
+			retVal->incomplete = MANCALA_INCOMPLETE;
+			retVal->draw = MANCALA_DRAW;
 			retVal->getNumOfChildren = getNumOfChildren_mancala;
 			retVal->estimateTreeSize  = estimateTreeSize_mancala;
 			retVal->isValidChild = isValidChild_mancala;
@@ -85,6 +101,10 @@ DOM* init_domain(DOM_NAME name){
 			break;
 		case SYNTH:
 			retVal->dom_name = SYNTH;
+			retVal->max_wins = SYNTH_MAX_WINS;
+			retVal->min_wins = SYNTH_MIN_WINS;
+			retVal->incomplete = SYNTH_INCOMPLETE;
+			retVal->draw = SYNTH_DRAW;
 			retVal->getNumOfChildren = getNumOfChildren_synth;
 			retVal->estimateTreeSize  = estimateTreeSize_synth;
 			retVal->isValidChild = isValidChild_synth;
@@ -119,7 +139,11 @@ DOM* init_domain(DOM_NAME name){
 			//            retVal->copy = copy_chess;
 			break;
 		case ZOP: 
-			retVal->dom_name=ZOP ;
+			retVal->dom_name = ZOP;
+			retVal->max_wins = ZOP_MAX_WINS;
+			retVal->min_wins = ZOP_MIN_WINS;
+			retVal->incomplete = ZOP_INCOMPLETE;
+			retVal->draw = ZOP_DRAW;
 			retVal->getNumOfChildren = getNumOfChildren_zop;
 			retVal->estimateTreeSize  = estimatedTreeSize_zop;
 			retVal->isValidChild = isValidChild_zop;

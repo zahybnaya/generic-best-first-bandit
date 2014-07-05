@@ -32,6 +32,10 @@ typedef enum {MANCALA = 0 ,SYNTH = 1 ,CHESS = 2, ZOP = 3, C4 = 4, SAILING = 5, G
 /* Holds only the functions*/
 typedef struct {
     DOM_NAME dom_name;
+    int max_wins;
+    int min_wins;
+    int draw;
+    int incomplete;
     getNumOfChildren_func getNumOfChildren;
     estimatedTreeSize_func estimateTreeSize;
     isValidChild_func isValidChild;

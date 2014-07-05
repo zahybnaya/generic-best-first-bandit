@@ -9,6 +9,11 @@
 
 #include "common.h"
 
+#define GGP_MAX_WINS 100
+#define GGP_MIN_WINS 0
+#define GGP_INCOMPLETE -1
+#define GGP_DRAW 50
+
 EXTERNC int getNumOfChildren_ggp(rep_t rep, int side);
 EXTERNC int isValidChild_ggp(rep_t rep, int side, int move);
 EXTERNC int getGameStatus_ggp(rep_t rep);

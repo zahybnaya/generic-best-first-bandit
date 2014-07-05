@@ -62,7 +62,7 @@ void size_backup(treeNode *node, double ret, int ci_threshold) {
 		  return;
 		
 		int i, bestChild = 0;
-		double score, bestScore = (node->side == max) ? MIN_WINS : MAX_WINS;
+		double score, bestScore = (node->side == max) ? _DOM->min_wins : _DOM->max_wins;
 	
 		for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
 			if (node->children[i] && node->children[i]->n >= ci_threshold) { // if child exists, is it the best scoring child?
@@ -88,7 +88,7 @@ void minmax_backup(treeNode *node) {
   double bestScore, score;
 	
   (node->n)++;
-  bestScore = (node->side == max) ? MIN_WINS : MAX_WINS;
+  bestScore = (node->side == max) ? _DOM->min_wins : _DOM->max_wins;
   
   for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
     if (node->children[i]) { // if child exists, is it the best scoring child?
@@ -110,7 +110,7 @@ void variance_backup(treeNode *node, double ret, int ci_threshold) {
 		int i;
 		double bestScore, score;
 		
-		bestScore = (node->side == max) ? MIN_WINS : MAX_WINS;
+		bestScore = (node->side == max) ? _DOM->min_wins : _DOM->max_wins;
 		double bestSD = INF;
 
 		for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
@@ -153,7 +153,7 @@ void ci_backup(treeNode *node, double ret, int ci_threshold) {
 		  return;
 		}
 		
-		bestScore = (node->side == max) ? MIN_WINS : MAX_WINS;
+		bestScore = (node->side == max) ? _DOM->min_wins : _DOM->max_wins;
 		double bestCI = INF;
 		
 		for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
@@ -197,10 +197,10 @@ void ci_backup(treeNode *node, double ret, int ci_threshold) {
 static double getProbForGreater(int i,int j, treeNode* node){
 	double xi = node->children[i]->scoreSum/node->children[i]->n;
 	double xj = node->children[j]->scoreSum/node->children[j]->n;
-	if ((xi == MIN_WINS && node->side == min) || (xi == MAX_WINS && node->side == max) ){
+	if ((xi == _DOM->min_wins && node->side == min) || (xi == _DOM->max_wins && node->side == max) ){
 		return 1;
 	}
-	if ((xj == MIN_WINS && node->side == min) || (xj == MAX_WINS && node->side == max) ){
+	if ((xj == _DOM->min_wins && node->side == min) || (xj == _DOM->max_wins && node->side == max) ){
 		return 0;
 	}
 	double sdi=0.5,sdj=0.5;
@@ -262,14 +262,14 @@ static double weightedMM(treeNode* node,heuristics_t heuristic) {
 	double bestScore = 0;
 	char s[1512],b[256]; 
 	sprintf(s,"*side:%d visits:%d depth:%d ",node->side,node->n,node->depth);
-	if ((val = _DOM->getGameStatus(node->rep)) != INCOMPLETE){
+	if ((val = _DOM->getGameStatus(node->rep)) != _DOM->incomplete){
 		if ((heuristic == _DOM->hFunctions.h3) || (heuristic == _DOM->hFunctions.h4) || (heuristic == _DOM->hFunctions.h5)) {
-			val = (val/MAX_WINS);
+			val = val / _DOM->max_wins;
 		}
 		return val; // return something from the set {MIN_WINS, DRAW, MAX_WINS}
 	}
 	if (node->n == 1) {
-	  assert((node->scoreSum > MIN_WINS) && (node->scoreSum < MAX_WINS)); 
+	  assert((node->scoreSum > _DOM->min_wins) && (node->scoreSum < _DOM->max_wins)); 
 	  return node->scoreSum; // the node was already evaluated when doing UCT, so just use that value
 	}
 	double ttlPp=0;

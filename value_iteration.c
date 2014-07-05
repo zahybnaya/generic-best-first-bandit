@@ -6,15 +6,15 @@
 static double ****init_state_space_value_matrix() {
   int x, y, w;
   
-  double ****mat = calloc(SAILING_BOARD_SIZE, sizeof(double ***));
+  double ****mat = (double ****)calloc(SAILING_BOARD_SIZE, sizeof(double ***));
   for (x = 0; x < SAILING_BOARD_SIZE; x++) {
-    mat[x] = calloc(SAILING_BOARD_SIZE, sizeof(double **));
+    mat[x] = (double ***)calloc(SAILING_BOARD_SIZE, sizeof(double **));
     
     for (y = 0; y < SAILING_BOARD_SIZE; y++) {
-      mat[x][y] = calloc(SAILING_DIRECTIONS, sizeof(double *));
+      mat[x][y] = (double **)calloc(SAILING_DIRECTIONS, sizeof(double *));
       
       for (w = 0; w < SAILING_DIRECTIONS; w++)
-	mat[x][y][w] = calloc(SAILING_TACK_RANGE, sizeof(double));
+	mat[x][y][w] = (double *)calloc(SAILING_TACK_RANGE, sizeof(double));
     }
   }
   
@@ -99,7 +99,7 @@ double ****value_iteration() {
   
   double delta;
   int x, y, w, t, a;
-  int *stateRep = calloc(SAILING_REP_SIZE, sizeof(int));
+  int *stateRep = (int *)calloc(SAILING_REP_SIZE, sizeof(int));
   do {
     delta = 0;
     
@@ -109,7 +109,7 @@ double ****value_iteration() {
 	  for (t = 0; t < SAILING_TACK_RANGE; t++) {
 	    fillState(stateRep, x, y, w, t);
 	    
-	    if (getGameStatus_sailing(stateRep) != INCOMPLETE)
+	    if (getGameStatus_sailing(stateRep) != SAILING_INCOMPLETE)
 	      continue;
 	    
 	    double maxQsa = -INF;

@@ -152,11 +152,11 @@ static int selectType(type_system *ts, double C, int side, int policy, int backu
 //Generate the i'th child of a uct node
 static void generateChild(treeNode *node, int i) {
   mm_Counter++;
-  node->children[i] = calloc(1, sizeof(treeNode));
+  node->children[i] = (treeNode *)calloc(1, sizeof(treeNode));
   node->children[i]->rep = _DOM->cloneRep(node->rep); // copy over the current board to child
   node->children[i]->side = node->side; // copy over the current side on move to child
   _DOM->makeMove(node->children[i]->rep, &(node->children[i]->side), i); //Make the i-th move
-  node->children[i]->children = calloc(_DOM->getNumOfChildren(node->rep, node->side), sizeof(treeNode*));
+  node->children[i]->children = (treeNode **)calloc(_DOM->getNumOfChildren(node->rep, node->side), sizeof(treeNode*));
   node->children[i]->parent = node; //save parent
   node->children[i]->depth = node->depth + 1;
   node->children[i]->subtreeSize = 1;
@@ -201,7 +201,7 @@ static void bfbIteration(type_system *ts, treeNode *root, double C, double CT, h
   int move;
   int generated = false;
   //travel down the tree using ucb
-  while (_DOM->getGameStatus(node->rep) == INCOMPLETE && node->n > 0) {    
+  while (_DOM->getGameStatus(node->rep) == _DOM->incomplete && node->n > 0) {    
     //TODO handle chance node diffrently (domain independant)
     if (_DOM->dom_name == SAILING && isChanceNode_sailing(node->rep) == true) {
       move = selectMoveStochastic_sailing(node->rep);
@@ -217,7 +217,7 @@ static void bfbIteration(type_system *ts, treeNode *root, double C, double CT, h
   } 
   
   double ret;
-  if ((ret = _DOM->getGameStatus(node->rep)) != INCOMPLETE) {
+  if ((ret = _DOM->getGameStatus(node->rep)) != _DOM->incomplete) {
     if (_DOM->dom_name == SAILING)
 	ret = 0;
     
@@ -227,7 +227,7 @@ static void bfbIteration(type_system *ts, treeNode *root, double C, double CT, h
     // which are substantially larger. To make these values comparable in magnitude, we need to rescale the terminal
     // node values. If we are using engineered heuristics, then no rescaling is necessary.
     if ((heuristic == _DOM->hFunctions.h3) || (heuristic == _DOM->hFunctions.h4) || (heuristic == _DOM->hFunctions.h5))
-	ret /= MAX_WINS; // rescale
+	ret /= _DOM->max_wins; // rescale
 	
   } else {
     ret = heuristic(node->rep, node->side, budget); 
@@ -243,12 +243,12 @@ int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, dou
   int bestMove = NULL_MOVE;
   double bestScore;
   treeNode* rootNode;
-  type_system **type_systems = calloc(_DOM->getNumOfChildren(rep, *side), sizeof(type_system *)); //Alocate a type system for every possible child of the root
+  type_system **type_systems = (type_system **)calloc(_DOM->getNumOfChildren(rep, *side), sizeof(type_system *)); //Alocate a type system for every possible child of the root
   *numBestMoves = 0; // reset size of set of best moves
   
   // Create the root node of the UCT tree; populate the board and side on move fields
-  rootNode = calloc(1, sizeof(treeNode));
-  rootNode->children = calloc(_DOM->getNumOfChildren(rep, *side), sizeof(treeNode*));
+  rootNode = (treeNode *)calloc(1, sizeof(treeNode));
+  rootNode->children = (treeNode **)calloc(_DOM->getNumOfChildren(rep, *side), sizeof(treeNode *));
   rootNode->rep = _DOM->cloneRep(rep);
   rootNode->side = *side;
   rootNode->depth = 0;
@@ -268,7 +268,7 @@ int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, dou
       rootNode->subtreeSize++;
     
       //Allocate a type system for the i'th child and assign him to it
-      type_systems[i] = init_type_system(tsId);
+      type_systems[i] = (type_system *)init_type_system(tsId);
       type_systems[i]->types[0] = rootNode->children[i];
       rootNode->children[i]->type = true;
     }

@@ -2,7 +2,16 @@
 #define MANCALA_H_INCLUDED
 
 #include "domain.h"
+
+// Game parameters
+#define NUM_PITS 6 // affects branching factor
+#define SHELLS_PER_PIT 4 // affects depth of tree
 #define ESTIMATED_MANCALA_BRANCHING_FACTOR 3.4
+
+#define MANCALA_MAX_WINS (NUM_PITS * SHELLS_PER_PIT * 2)
+#define MANCALA_MIN_WINS -MANCALA_MAX_WINS
+#define MANCALA_INCOMPLETE -1
+#define MANCALA_DRAW 0
 
 /*
  * This macro generates a real "continues" array called __board
@@ -16,7 +25,6 @@
 int i_CA,pit_CA; \
    for(i_CA=0;i_CA<2;i_CA++)for(pit_CA=0;pit_CA<NUM_PITS+1;pit_CA++)dst[i_CA][pit_CA]=src[i_CA][pit_CA];\
 }
-
 
 int getNumOfChildren_mancala(rep_t rep, int side);
 int estimateTreeSize_mancala(int treeSize);
@@ -37,5 +45,24 @@ double h3(rep_t rep, int side, int numPlayouts);
 double h4(rep_t rep, int side, int dummy);
 double h5(rep_t rep, int side, int dummy);
 double h6(rep_t rep, int side, int numPlayouts);
+
+/* Function prototypes */
+// Board-related routines (board.c)
+void initBoard(int board[2][NUM_PITS+1], int* side);
+void genRandomBoard(int board[2][NUM_PITS+1], int* side, int depth);
+void cloneBoard(int srcBoard[2][NUM_PITS+1] , int dstBoard[2][NUM_PITS+1]);
+int readBoard(char* fileName, int board[2][NUM_PITS+1], int* side, short mode);
+void writeBoard(char* fileName, int board[2][NUM_PITS+1], int side, short mode);
+int isEqual(int board1[2][NUM_PITS+1], int board2[2][NUM_PITS+1]);
+void printBoard_mancala(rep_t rep, int side);
+
+// Game-rules related routines (move.c)
+int getGameStatus(int board[2][NUM_PITS+1]);
+void makeMove(int board[2][NUM_PITS+1] , int* side, int move);
+int getNumLegalMoves(int board[2][NUM_PITS+1], int side);
+
+// Random play routines (random.c)
+int pickRandomMove(int board[2][NUM_PITS+1], int side);
+int makeRandomMove(int board[2][NUM_PITS+1], int *side);
 
 #endif // MANCALA_H_INCLUDED

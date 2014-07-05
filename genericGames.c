@@ -511,7 +511,7 @@ int main(int argc, char* argv[]) {
 						_DOM->copy(randState,state);
 
 						// Play complete game
-						while ((outcome = _DOM->getGameStatus(state)) == INCOMPLETE) {
+						while ((outcome = _DOM->getGameStatus(state)) == _DOM->incomplete) {
 								origSide = side; /* this is who is currently on move -- since this is not a strict turn taking game,
 													we need to keep track of this for later bookkeeping/diagnostic messages */
 								if (verbose) {
@@ -543,6 +543,9 @@ int main(int argc, char* argv[]) {
 								if (_DOM->dom_name == SAILING)
 								  gameScore[side] += actionCost_sailing(state, moveMade);
 								
+								turns[side]++;
+								time[side] = time[side] + getElapsed(start);
+								
 								if (verbose)
 									printf("current score %f\n", gameScore[side]);
 
@@ -554,9 +557,6 @@ int main(int argc, char* argv[]) {
 								
 								if (verbose)
 										printf("Elapsed time: %f\n", getElapsed(start));
-
-								turns[side]++;
-								time[side] = time[side] + getElapsed(start);
 								
 								moveCount++;
 								if (verbose) {
@@ -572,12 +572,12 @@ int main(int argc, char* argv[]) {
 								if (_DOM->dom_name == SAILING)
 								  printf("Result: %f\n", gameScore[side]);
 								else
-								  printf("Result: %d\n", outcome/MAX_WINS);
+								  printf("Result: %d\n", outcome / _DOM->max_wins);
 						} else {
 								if (_DOM->dom_name == SAILING)
 								  printf("%f", gameScore[side]);
 								else
-								  printf("%d\n", outcome/MAX_WINS);
+								  printf("%d\n", outcome / _DOM->max_wins);
 						}
 						fflush(stdout);
 						
@@ -587,27 +587,22 @@ int main(int argc, char* argv[]) {
 						  break;
 						}
 						
-						switch(outcome){
-								case MAX_WINS:
-										maxWins++;
-										break;
-								case DRAW:
-										draws++;
-										break;
-								case MIN_WINS:
-										minWins++;
-										break;
-								case INCOMPLETE:
-										incompletes++;
-										break;
-								default:
-										printf("ERROR: outcome is unknown");
-										break;
-						}
-						if(j==0){
+						if (outcome == _DOM->max_wins)
+							maxWins++;
+						else if (outcome == _DOM->draw)
+							draws++;
+						else if (outcome == _DOM->min_wins)
+							minWins++;
+						else if (outcome == _DOM->incomplete)
+							incompletes++;
+						else
+							printf("ERROR: outcome is unknown");
+						
+						if(j == 0) {
 								_outcome=outcome;
 						}
-						if(j==1){
+						
+						if(j == 1) {
 								int res=isSuper(_outcome,outcome);
 								if(res>0){
 										maxSuper++;
