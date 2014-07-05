@@ -22,7 +22,8 @@ DOM* init_domain(DOM_NAME name){
 			retVal->generateRandomStart = generateRandomStart_ggp;
 			retVal->copy = copy_ggp;
 			retVal->printBoard = printBoard_ggp;
-			retVal->hFunctions.h1  = h1_ggp;
+			retVal->hFunctions.h1 = h1_ggp;
+			retVal->hFunctions.h2 = h2_ggp;
 			break;
 		case SAILING:
 			retVal->dom_name = SAILING;

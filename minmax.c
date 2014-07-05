@@ -27,6 +27,10 @@ static double alphaBeta(rep_t rep, int searchDepth, int depth, int side, double 
     termCount++; // update terminal node count
     if (dotFormat)
       printf("n%d [color=\"red\"];", currentNodeId); // terminal nodes are colored red
+      
+    if (_DOM->dom_name == GGP && heuristic == _DOM->hFunctions.h2)
+      val1 /= _DOM->max_wins;
+    
     return val1;
   }
 
@@ -37,7 +41,7 @@ static double alphaBeta(rep_t rep, int searchDepth, int depth, int side, double 
 
     // Ensure that the heuristic value is always bounded by the values assigned to terminal nodes (i.e. true win/loss
     // positions)
-    assert ((val1 < _DOM->max_wins) && (val1 > _DOM->min_wins));
+    assert ((val1 <= _DOM->max_wins) && (val1 >= _DOM->min_wins));
 
     return val1;
   }

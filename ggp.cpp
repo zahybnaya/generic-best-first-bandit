@@ -36,8 +36,11 @@ int estimateTreeSize_ggp(int treeSize) { return 0; }
 int getGameStatus_ggp(rep_t rep) {
 	GDL::State *state = (GDL::State *)rep;
 		
-	if (gdl.isFinishState(*state))
-		return GGP_MAX_WINS; //Anything different from INCOMPLETE is good  
+	if (gdl.isFinishState(*state)) {
+		int result;
+		gdl.points(0, *state, result);
+		return result; //Anything different from INCOMPLETE is good  
+	}
 		
 	return GGP_INCOMPLETE;	
 }
@@ -107,6 +110,10 @@ double h1_ggp(rep_t rep, int side, int dummy) {
 	gdl.points((size_t)side, state, result);
 	
 	return result;
+}
+
+double h2_ggp(rep_t rep, int side, int dummy) {
+	return h1_ggp(rep, side, dummy) / GGP_MAX_WINS;
 }
 
 void generateRandomStart_ggp(rep_t rep, int *side) {

@@ -29,6 +29,7 @@ EXTERNC void printBoard_ggp(rep_t rep, int dummy);
 
 // Heuristic routines
 EXTERNC double h1_ggp(rep_t rep, int side, int horizion);
+EXTERNC double h2_ggp(rep_t rep, int side, int horizion);
 
 EXTERNC void compile_ggp();
 
