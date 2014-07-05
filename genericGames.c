@@ -14,7 +14,7 @@ DOM* _DOM;
 static int isSuper(int firstOutcome, int secondOutcome);
 static int printMessage();
 static char* createAlgorithmDecription(int player[],int player_side);
-
+static int scoreToWin(int outcome);
 /*
  * ./ggames 4 b u -a1 1 -a2 1 -ts1 2 -t1 500 -h1 3 -h2 3 -c1 2.5 -c2 2.5 -i1 5000 -i2 5000 -s 0 -g 30
  */
@@ -565,19 +565,19 @@ int main(int argc, char* argv[]) {
 								}
 								//break; //this break will stop the game after one move.
 						} // end of game
-
+						
 						if (verbose) {
 								_DOM->printBoard(state, side);
 								printf("\n");
 								if (_DOM->dom_name == SAILING)
 								  printf("Result: %f\n", gameScore[side]);
 								else
-								  printf("Result: %d\n", outcome / _DOM->max_wins);
+								  printf("Result: %d\n", scoreToWin(outcome));
 						} else {
 								if (_DOM->dom_name == SAILING)
 								  printf("%f", gameScore[side]);
 								else
-								  printf("%d\n", outcome / _DOM->max_wins);
+								  printf("%d\n", scoreToWin(outcome));
 						}
 						fflush(stdout);
 						
@@ -599,7 +599,7 @@ int main(int argc, char* argv[]) {
 							printf("ERROR: outcome is unknown");
 						
 						if(j == 0) {
-								_outcome=outcome;
+								_outcome = outcome;
 						}
 						
 						if(j == 1) {
@@ -723,6 +723,15 @@ static int printMessage() {
 		puts("-h:            Displays this message");
 		puts("");
 		return 0;
+}
+
+static int scoreToWin(int outcome) {
+	if (outcome == _DOM->max_wins)
+		return 1;
+	else if (outcome == _DOM->draw)
+		return 0;
+	else if (outcome == _DOM->min_wins)
+		return -1;
 }
 
 /**
