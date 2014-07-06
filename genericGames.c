@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
 		const char* playerStrings[] = {"max", "min"};
 		const char* hStrings[] = {"heuristic 1", "heuristic 2", "playouts", "random leaf values", "coarsened h1", "finer playouts"};
 		char heurString[][30] = {"heuristic 1", "heuristic 1"};
-		const char* backupOpStrings[] = {"average", "minimax", "confidence","weighted_minimax", "variance", "variance_all", "size", "ci_all"};
+		const char* backupOpStrings[] = {"average", "minimax", "confidence","weighted_minimax", "variance", "variance_all", "size", "ci_all", "coulom", "wilcoxon"};
 		double bolzmanConstant = -2.44, probWeight = 0.5;
 		double gameScore[2]; //The socre of each player for a specific game. Currently used for sailing only.
 		double totalScore[2]; //The socre of each player for all games. Currently used for sailing only.
@@ -341,14 +341,14 @@ int main(int argc, char* argv[]) {
 				else if OPTION("-a1") {
 						CHECK(max, (UCT | BFB), "-a1")
 								if (++i < argc)
-										backupOp[max] = atoi(argv[i]) - 1;
+										backupOp[max] = atoi(argv[i]);
 								else
 										MISSING("a1")
 				}
 				else if OPTION("-a2") {
 						CHECK(min, (UCT | BFB), "-a2")
 								if (++i < argc)
-										backupOp[min] = atoi(argv[i]) - 1;
+										backupOp[min] = atoi(argv[i]);
 								else
 										MISSING("a2")
 				}

@@ -226,9 +226,10 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 	  
 	  return ret;
 	}
-	
-	if (backupOp == AVERAGE) // use averaging back-up
-		updateStatistics(node, ret);
+	if (backupOp == AVERAGE){ // use averaging back-up
+		updateStatistics(node, ret);}
+	else if (backupOp == WILCOXON) {
+		wilcoxon_backup(node, ret);}
 	else if (backupOp == COULOM) 
 		coulom(node, ret);
 	else if (backupOp == MINMAX) // use minimaxing back-up

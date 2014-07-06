@@ -3,6 +3,7 @@
 #include "uct.h"
 #include "phi.c"
 #include "t_values.c"
+#include "wilcoxon.c"
 
 double standardDeviation(treeNode *node) {
   return sqrt(node->M2 / (double)(node->n - 1));
@@ -130,6 +131,38 @@ void minmax_backup(treeNode *node) {
   }
   
   node->scoreSum = (node->n) * bestScore; // reset score to that of min/max of children
+}
+
+
+/**
+ * A non-parameteric approach
+ */
+void wilcoxon_backup(treeNode *node, double ret){
+	int i,numOfVectors=0,winner=-1;
+	updateStatistics(node,ret); //updates the average
+	vector* childData[_DOM->getNumOfChildren()];
+	childData[0] = NULL;
+	for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+	    if (node->children[i]) { 
+		    childData[i] = allLeaves(node->children[i]);
+		    numOfVectors++;
+	    }else{
+		    childData[i] = NULL;
+	    }
+	}
+	if (numOfVectors>1){
+		winner = wilcoxon_winner(childData,_DOM->getNumOfChildren()); 
+	}
+	//assert(winner==-1);
+	if (winner != -1){
+		node->scoreSum = (node->n) * (node->children[winner]->scoreSum/node->children[winner]->n);
+	} 
+	for (i = 1; i < _DOM->getNumOfChildren(); i++) {
+		if (childData[i]){
+			destroyVector(childData[i]);
+			free(childData[i]);
+		}
+	}
 }
 
 void variance_backup(treeNode *node, double ret, int ci_threshold) {

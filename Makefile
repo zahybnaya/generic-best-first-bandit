@@ -1,7 +1,7 @@
 CFLAGS = -lm -Wall -g 
 
-ggames: common.h domain genericGames.c uct.c uct.h minmax.c heuristic.c move.c board.c util.c random.c bfb.c brue.c type.h type.c sts.c cits.c 
-	gcc genericGames.c uct.c backup_operators.c bfb.c sts.c cits.c brue.c type.c util.c value_iteration.c domain.o -o ggames $(CFLAGS)
+ggames: wilcoxon.c common.h domain genericGames.c uct.c uct.h minmax.c heuristic.c move.c board.c util.c random.c bfb.c brue.c type.h type.c sts.c cits.c 
+	gcc genericGames.c uct.c backup_operators.c bfb.c sts.c cits.c brue.c type.c util.c value_iteration.c  domain.o -o ggames $(CFLAGS)
 	
 evalstates: common.h domain evalstates.c uct.c minmax.c heuristic.c move.c board.c phi.c util.c random.c bfb.c brue.c type.h type.c sts.c cits.c 
 	gcc evalstates.c  util.c value_iteration.c  domain.o -o evalstates $(CFLAGS) 
