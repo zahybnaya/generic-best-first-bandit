@@ -301,15 +301,15 @@ static double getProbForMaximialChild(int mi, treeNode* node) {
 	return answer;
 }
 
+/***
+ * An aggregation that sums ,for each child i, Pr(i==max)*Val(i) 
+ */
 void weighted_mm_backup(treeNode *node, double ret) {
     updateStatistics(node,ret);
-    double ttlPp=0;
-    double nodeScore=0;
-    double nodeP,nodeVal;
+    double ttlPp=0, nodeScore=0, nodeP,nodeVal;
     int i;
-
     for (i = 1; i < _DOM->getNumOfChildren(); i++) {
-      if (node->children[i]) { // if child exists, is it the best scoring child?
+      if (node->children[i]) { 
 	nodeP=getProbForMaximialChild(i,node);
 	ttlPp+=nodeP;
 	nodeVal = node->children[i]->scoreSum / (double)node->children[i]->n;
@@ -358,7 +358,5 @@ static double weightedMM(treeNode* node,heuristics_t heuristic) {
 	}
 	sprintf(b,"scr:%2.3f,scru:%2.3f,ttlp:%2.3f,one:%2.2f*\n",bestScore,node->scoreSum/(double)node->n,ttlPp,rttlp);
 	strcat(s,b);
-//	puts(s);
-
 	return bestScore;
 }

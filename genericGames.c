@@ -12,7 +12,7 @@ int logIteration=0;
 DOM* _DOM;
 
 static int isSuper(int firstOutcome, int secondOutcome);
-static int printMessage();
+static int printMessage(const char** backupOpStrings,int howManybackups);
 static char* createAlgorithmDecription(int player[],int player_side);
 
 /*
@@ -69,7 +69,7 @@ int main(int argc, char* argv[]) {
 		double totalScore[2]; //The socre of each player for all games. Currently used for sailing only.
 		// If we see too few arguments, print help message and bail
 		if (argc < 3) {
-				printMessage();
+				printMessage(backupOpStrings,sizeof(backupOpStrings)/sizeof(const char*));
 				return (-1);
 		}
 		// The default seed for the random number generator comes from the OS -- this may be overridden
@@ -341,14 +341,14 @@ int main(int argc, char* argv[]) {
 				else if OPTION("-a1") {
 						CHECK(max, (UCT | BFB), "-a1")
 								if (++i < argc)
-										backupOp[max] = atoi(argv[i]);
+										backupOp[max] = atoi(argv[i])-1;
 								else
 										MISSING("a1")
 				}
 				else if OPTION("-a2") {
 						CHECK(min, (UCT | BFB), "-a2")
 								if (++i < argc)
-										backupOp[min] = atoi(argv[i]);
+										backupOp[min] = atoi(argv[i])-1;
 								else
 										MISSING("a2")
 				}
@@ -682,7 +682,8 @@ static int isSuper(int firstOutcome, int secondOutcome){
 		return (firstOutcome-secondOutcome);
 }
 
-static int printMessage() {
+static int printMessage(const char** backupOpStrings,int howManybackups) {
+	int i=0;
 		puts("");
 		puts("Usage: games <DOMAIN> <optional-flags>");
 		puts("");
@@ -704,7 +705,11 @@ static int printMessage() {
 		puts("-i1/i2 <n>:    Sets number of iterations of UCT for player 1/2. The special value of 0 makes the UCT player match it's");
 		puts("               number of iterations to the number of nodes that its opponent minimax player would expand. Default = 5000.");
 		puts("-b1/b2 <n>:    Sets playout budget for player 1/2. Specified number of playouts are performed at each leaf node. Default = 1.");
-		puts("-a1/a2 <n>:    Back-up operator to be used for UCT player 1/2. Values = 1 (average), 2 (minimax), 3 (semimax). 7 coulom Default = 1.");
+		printf("-a1/a2 <n>:    Back-up operator to be used for UCT player 1/2. Values ");
+		for (i = 0; i < howManybackups; i++) {
+			printf(" %d = (%s)",i+1, backupOpStrings[i]);
+		}
+		puts("");
 		puts("-n:            Makes minimax player noisy (disabled by default)");
 		puts("-r:            Enables random tie-breaking for minimax player (disabled by default)");
 		puts("-s <n>:        Sets seed of random number generator to n. By default, seeded with system noise.");
