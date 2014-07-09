@@ -60,7 +60,7 @@ void printBoard_sailing(rep_t rep, int dummy) {
   printf("Goal loc: (%d, %d)\n", game[GOAL_X], game[GOAL_Y]);
 }
 
-int getNumOfChildren_sailing() {
+int getNumOfChildren_sailing(rep_t rep, int side) {
     return SAILING_DIRECTIONS + 1;
 }
 
@@ -111,9 +111,9 @@ int getGameStatus_sailing(rep_t rep) {
   int *game = rep;
   
   if (game[BOAT_X] == game[GOAL_X] && game[BOAT_Y] == game[GOAL_Y])
-    return MAX_WINS;
+    return SAILING_MAX_WINS;
   
-  return INCOMPLETE;
+  return SAILING_INCOMPLETE;
 }
 
 //Select a "move" at a chance node in an MDP

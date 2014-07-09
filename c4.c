@@ -74,11 +74,10 @@ int diagonalCheck(int *board, int *side)
 	return 0;
 }
 
-
 int pickRandomMove_connect4(int * dummyBoard, int side)
 {
 	int number_moves, random_move;
-	number_moves = getNumOfChildren_connect4();
+	number_moves = getNumOfChildren_connect4(0,0);
 	random_move = random() % number_moves;
 
 //	printf("trying random move: %d \n", random_move);
@@ -103,11 +102,11 @@ static int playout_c4(int * board, int side) {
 	copy_connect4(board, dummyBoard);
 
 	// Play randomly to the end
-	while ((val = getGameStatus_connect4(dummyBoard)) == INCOMPLETE)
+	while ((val = getGameStatus_connect4(dummyBoard)) == C4_INCOMPLETE)
 		makeMove_connect4(dummyBoard, &side, pickRandomMove_connect4(dummyBoard, side));
 
 	// Rescale outcome to value in the set {-1, 0, +1}
-	val /= MAX_WINS;
+	val /= C4_MAX_WINS;
 
 //	printf("value returned playout: %d \n", val);
 //	printBoard_c4(dummyBoard);
@@ -126,7 +125,7 @@ double h3_c4(rep_t rep, int side, int numPlayouts) {
 	return (double)playoutSum/(double)numPlayouts;
 }
 
-int getNumOfChildren_connect4()
+int getNumOfChildren_connect4(rep_t rep, int side)
 {
 	return BOARD_COLS + 1;
 }
@@ -201,13 +200,13 @@ int getGameStatus_connect4(rep_t rep)
 		{
 //			printf("MIN WINS \n");
 //			printBoard_c4(board);
-			return MIN_WINS;
+			return C4_MIN_WINS;
 		}
 		else //MAX player wins
 		{
 //			printf("MAX WINS \n");
 //			printBoard_c4(board);
-			return MAX_WINS;
+			return C4_MAX_WINS;
 		}
 	}
 
@@ -218,13 +217,13 @@ int getGameStatus_connect4(rep_t rep)
 		{
 //			printf("GAME INCOMPLETE \n");
 //			printBoard_c4(board);
-			return INCOMPLETE;
+			return C4_INCOMPLETE;
 		}
 	}
 
 //	printf("IT IS A DRAW \n");
 //	printBoard_c4(board);
-	return DRAW;
+	return C4_DRAW;
 }
 
 void makeMove_connect4(rep_t rep, int * side, int move)

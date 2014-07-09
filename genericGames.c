@@ -14,7 +14,7 @@ DOM* _DOM;
 static int isSuper(int firstOutcome, int secondOutcome);
 static int printMessage(const char** backupOpStrings,int howManybackups);
 static char* createAlgorithmDecription(int player[],int player_side);
-
+static int scoreToWin(int outcome);
 /*
  * ./ggames 4 b u -a1 1 -a2 1 -ts1 2 -t1 500 -h1 3 -h2 3 -c1 2.5 -c2 2.5 -i1 5000 -i2 5000 -s 0 -g 30
  */
@@ -96,11 +96,14 @@ int main(int argc, char* argv[]) {
 				case 5:
 						_DOM = init_domain(SAILING);
 						break;
+				case 6:
+						_DOM = init_domain(GGP);
+						break;
 				default:
 						puts("Unrecognized domain description.");
 						return (-1);
 		}
-		int bestMoves[_DOM->getNumOfChildren()];
+		
 		heuristics_t heuristic[] =  {_DOM->hFunctions.h1, _DOM->hFunctions.h1}; // the heuristics used by the max and min playersa 
 		// Process command-line args
 		// Mandatory args -- the search algorithms the two players will use
@@ -475,14 +478,14 @@ int main(int argc, char* argv[]) {
 		int **weathers;
 		rep_t *testStates;
 		if (_DOM->dom_name == SAILING) {
-		  weathers = calloc(numGames, sizeof(int *));
+		  weathers = (int **)calloc(numGames, sizeof(int *));
 		  int wi = 0;
 		  
 		  for (wi = 0; wi < numGames; wi++)
 		    weathers[wi] = generateWeather(1);
 		} else if (_DOM->dom_name == MANCALA) {
 		  int s;
-		  testStates = calloc(numGames, sizeof(rep_t));
+		  testStates = (void **)calloc(numGames, sizeof(rep_t));
 		  
 		  for (s = 0; s < numGames; s++) {
 		    testStates[s] = _DOM->allocate();
@@ -506,9 +509,9 @@ int main(int argc, char* argv[]) {
 						moveCount = 0; // reset move count
 						side = rootSide; // Restore the starting board (which was either randomly generated or read from a file)
 						_DOM->copy(randState,state);
-						
+
 						// Play complete game
-						while ((outcome = _DOM->getGameStatus(state)) == INCOMPLETE) {
+						while ((outcome = _DOM->getGameStatus(state)) == _DOM->incomplete) {
 								origSide = side; /* this is who is currently on move -- since this is not a strict turn taking game,
 													we need to keep track of this for later bookkeeping/diagnostic messages */
 								if (verbose) {
@@ -516,7 +519,8 @@ int main(int argc, char* argv[]) {
 										_DOM->printBoard(state, side);
 										fflush(stdout);
 								}
-
+								
+								int bestMoves[_DOM->getNumOfChildren(state, side)];
 								start = startTiming();
 								switch(player[side]){
 										case UCT:
@@ -539,6 +543,9 @@ int main(int argc, char* argv[]) {
 								if (_DOM->dom_name == SAILING)
 								  gameScore[side] += actionCost_sailing(state, moveMade);
 								
+								turns[side]++;
+								time[side] = time[side] + getElapsed(start);
+								
 								if (verbose)
 									printf("current score %f\n", gameScore[side]);
 
@@ -550,9 +557,6 @@ int main(int argc, char* argv[]) {
 								
 								if (verbose)
 										printf("Elapsed time: %f\n", getElapsed(start));
-
-								turns[side]++;
-								time[side] = time[side] + getElapsed(start);
 								
 								moveCount++;
 								if (verbose) {
@@ -561,19 +565,19 @@ int main(int argc, char* argv[]) {
 								}
 								//break; //this break will stop the game after one move.
 						} // end of game
-
+						
 						if (verbose) {
 								_DOM->printBoard(state, side);
 								printf("\n");
 								if (_DOM->dom_name == SAILING)
 								  printf("Result: %f\n", gameScore[side]);
 								else
-								  printf("Result: %d\n", outcome/MAX_WINS);
+								  printf("Result: %d\n", scoreToWin(outcome));
 						} else {
 								if (_DOM->dom_name == SAILING)
 								  printf("%f", gameScore[side]);
 								else
-								  printf("%d\n", outcome/MAX_WINS);
+								  printf("%d\n", scoreToWin(outcome));
 						}
 						fflush(stdout);
 						
@@ -583,27 +587,22 @@ int main(int argc, char* argv[]) {
 						  break;
 						}
 						
-						switch(outcome){
-								case MAX_WINS:
-										maxWins++;
-										break;
-								case DRAW:
-										draws++;
-										break;
-								case MIN_WINS:
-										minWins++;
-										break;
-								case INCOMPLETE:
-										incompletes++;
-										break;
-								default:
-										printf("ERROR: outcome is unknown");
-										break;
+						if (outcome == _DOM->max_wins)
+							maxWins++;
+						else if (outcome == _DOM->draw)
+							draws++;
+						else if (outcome == _DOM->min_wins)
+							minWins++;
+						else if (outcome == _DOM->incomplete)
+							incompletes++;
+						else
+							printf("ERROR: outcome is unknown");
+						
+						if(j == 0) {
+								_outcome = outcome;
 						}
-						if(j==0){
-								_outcome=outcome;
-						}
-						if(j==1){
+						
+						if(j == 1) {
 								int res=isSuper(_outcome,outcome);
 								if(res>0){
 										maxSuper++;
@@ -729,6 +728,15 @@ static int printMessage(const char** backupOpStrings,int howManybackups) {
 		puts("-h:            Displays this message");
 		puts("");
 		return 0;
+}
+
+static int scoreToWin(int outcome) {
+	if (outcome == _DOM->max_wins)
+		return 1;
+	else if (outcome == _DOM->draw)
+		return 0;
+	else
+		return -1;
 }
 
 /**

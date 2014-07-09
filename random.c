@@ -1,5 +1,5 @@
 
-#include "common.h"
+#include "mancala.h"
 
 /* Routines related to a random player */
 

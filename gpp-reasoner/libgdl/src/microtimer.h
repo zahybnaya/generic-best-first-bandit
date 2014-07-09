@@ -1,9 +1,8 @@
 #pragma once
-
-#if LINUX || MAC_OSX
+#if linux || MAC_OSX
 #include <sys/time.h> // not compatible to windows
 #include <time.h>
-
+typedef unsigned long uint64_t; // why don't windows have this?
 inline uint64_t microtimer (){
 	timeval t;
 	gettimeofday (&t, NULL);
@@ -11,8 +10,6 @@ inline uint64_t microtimer (){
 }
 #else
 #include <windows.h>
-
-typedef unsigned long long uint64_t; // why don't windows have this?
 inline uint64_t microtimer (){
 	/*
 	Seems as windows doesn't provide a direct way for 

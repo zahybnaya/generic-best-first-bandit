@@ -22,10 +22,15 @@
 #define SAILING_STATE_DET 0    //A deterministic state
 #define SAILING_STATE_CHANCE 1 //A stochastic state
 
+#define SAILING_MAX_WINS 1 //Just something different from incomplete
+#define SAILING_MIN_WINS 0 //Not used
+#define SAILING_INCOMPLETE -1
+#define SAILING_DRAW 0 //Not used
+
 int selectMoveStochastic_sailing(rep_t rep);
 int isChanceNode_sailing(rep_t rep);
 double actionCost_sailing(rep_t rep, int move);
-int getNumOfChildren_sailing();
+int getNumOfChildren_sailing(rep_t rep, int side);
 int isValidChild_sailing(rep_t rep, int side, int move);
 int getGameStatus_sailing(rep_t rep);
 void makeMove_sailing(rep_t rep,int * side, int move);

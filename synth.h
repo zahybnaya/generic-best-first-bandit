@@ -2,6 +2,10 @@
 #define SYNTH_H_INCLUDED
 #include "domain.h"
 
+#define SYNTH_MAX_WINS 48
+#define SYNTH_MIN_WINS -SYNTH_MAX_WINS
+#define SYNTH_INCOMPLETE -1
+#define SYNTH_DRAW 0
 
 typedef struct Hvals_s *Hvals;
 
@@ -9,7 +13,7 @@ void addH(Hvals h,const uid id, double val);
 Hvals createHvals(const uid initialSize, const int reallocSize, const double defaultHval,uid endGame);
 Hvals* initHvals();
 
-int getNumOfChildren_synth();
+int getNumOfChildren_synth(rep_t rep, int side);
 //return BranchingFactor
 
 int estimateTreeSize_synth(int treeSize);
@@ -31,7 +35,7 @@ void destructRep_synth(rep_t rep);
 
 rep_t allocate_synth ();
 
-void generateRandomStart_synth(rep_t rep,int side);
+void generateRandomStart_synth(rep_t rep,int *side);
 
 rep_t allocate_synth();
 

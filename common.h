@@ -51,21 +51,11 @@
 #define COULOM 8
 #define WILCOXON 9
 
-// Game parameters
-#define NUM_PITS 6 // affects branching factor
-#define SHELLS_PER_PIT 4 // affects depth of tree
-
 // Useful constants to index into arrays. For example, can use heuristic[max] to refer to the heuristic
 // the max player is using.
 #define max 0
 #define min 1
 #define store 0
-
-// Game status constants
-#define MAX_WINS (NUM_PITS * SHELLS_PER_PIT * 2) // value of a win for max
-#define MIN_WINS -MAX_WINS // value of a win for min
-#define DRAW 0 // value of a draw
-#define INCOMPLETE -1 // value of an incomplete game (to see whether a game has ended, compare return value of getGameStatus() to this)
 
 // Constants relevant to reading board files
 #define READ 0
@@ -90,24 +80,8 @@ typedef double (*heuristics_t) (rep_t rep, int, int);
 #define MIN(x,y)(((x)<(y))?(x):(y))
 #define MAX(x,y)(((x)<(y))?(y):(x))
 
-
 // Global variables
 extern int verbose; // sets whether output is verbose (defined in file with main() routine)
-
-/* Function prototypes */
-// Board-related routines (board.c)
-void initBoard(int board[2][NUM_PITS+1], int* side);
-void genRandomBoard(int board[2][NUM_PITS+1], int* side, int depth);
-void cloneBoard(int srcBoard[2][NUM_PITS+1] , int dstBoard[2][NUM_PITS+1]);
-int readBoard(char* fileName, int board[2][NUM_PITS+1], int* side, short mode);
-void writeBoard(char* fileName, int board[2][NUM_PITS+1], int side, short mode);
-int isEqual(int board1[2][NUM_PITS+1], int board2[2][NUM_PITS+1]);
-void printBoard_mancala(rep_t rep, int side);
-
-// Game-rules related routines (move.c)
-int getGameStatus(int board[2][NUM_PITS+1]);
-void makeMove(int board[2][NUM_PITS+1] , int* side, int move);
-int getNumLegalMoves(int board[2][NUM_PITS+1], int side);
 
 // Utility routines (util.c)
 double getElapsed(Timer start);
@@ -134,19 +108,7 @@ void resetTrapCounter();
 int makeMinmaxMove(rep_t rep, int* side, int depth, heuristics_t heuristic, int budget, int randomTieBreaks, int noisyMM, int* bestMoves, int* numBestMoves, double* termPercentage, double *moveVals) ;
 int getAlphaBetaTreeSize(rep_t rep, int, int,  heuristics_t heuristic, int);
 void genAlphaBetaTree(rep_t rep, int, int,  heuristics_t heuristic, int);
-
-// Heuristic routines (heuristic.c)
-/*double h1(rep_t rep, int side, int dummy);
-double h2(rep_t rep, int side, int dummy);
-double h3(rep_t rep, int side, int numPlayouts);
-double h4(rep_t rep, int side, int dummy);
-double h5(rep_t rep, int side, int dummy);
-double h6(rep_t rep, int side, int numPlayouts);
-*/
 void setNoiseParams(int, double);
-// Random play routines (random.c)
-int pickRandomMove(int board[2][NUM_PITS+1], int side);
-int makeRandomMove(int board[2][NUM_PITS+1], int *side);
 
 //BFB (bfb.c)
 int makeBFBMove(rep_t rep, int *side, int tsId, int numIterations, double C, double CT, heuristics_t heuristic, int budget, int* bestMoves, int* numBestMoves, int backupOp, int threshold, int policy);

@@ -1,7 +1,19 @@
 CFLAGS = -lm -Wall -g 
 
-ggames: wilcoxon.c common.h domain genericGames.c uct.c uct.h minmax.c heuristic.c move.c board.c util.c random.c bfb.c brue.c type.h type.c sts.c cits.c 
-	gcc genericGames.c uct.c backup_operators.c bfb.c sts.c cits.c brue.c type.c util.c value_iteration.c  domain.o -o ggames $(CFLAGS)
+ggames: common.h domain ggp genericGames.c uct.c uct.h minmax.c heuristic.c move.c board.c util.c random.c bfb.c brue.c type.h type.c sts.c cits.c
+	gcc -c genericGames.c -o genericGames.c.o $(CFLAGS)
+	gcc -c uct.c -o uct.c.o $(CFLAGS)
+	gcc -c backup_operators.c -o backup_operators.c.o $(CFLAGS)
+	gcc -c bfb.c -o bfb.c.o $(CFLAGS)
+	gcc -c sts.c -o sts.c.o $(CFLAGS)
+	gcc -c cits.c -o cits.c.o $(CFLAGS)
+	gcc -c brue.c -o brue.c.o $(CFLAGS)
+	gcc -c type.c -o type.c.o $(CFLAGS)
+	gcc -c util.c -o util.c.o $(CFLAGS)
+	gcc -c value_iteration.c -o value_iteration.c.o $(CFLAGS)
+	ld -r genericGames.c.o uct.c.o backup_operators.c.o bfb.c.o sts.c.o cits.c.o brue.c.o type.c.o util.c.o value_iteration.c.o domain.o -o games.o
+	g++ ggp.o games.o -o ggames
+	rm genericGames.c.o uct.c.o backup_operators.c.o bfb.c.o sts.c.o cits.c.o brue.c.o type.c.o util.c.o value_iteration.c.o domain.o ggp.o games.o
 	
 evalstates: common.h domain evalstates.c uct.c minmax.c heuristic.c move.c board.c phi.c util.c random.c bfb.c brue.c type.h type.c sts.c cits.c 
 	gcc evalstates.c  util.c value_iteration.c  domain.o -o evalstates $(CFLAGS) 
@@ -11,7 +23,7 @@ trackrewards: common.h domain trackrewards.c uct.c minmax.c heuristic.c move.c b
 	
 domain: synth mancala zop c4 sailing domain.c domain.h
 	gcc -c domain.c -o tmpdomain.o $(CFLAGS) 
-	ld -r tmpdomain.o synth.o mancala.o zop.o c4.o sailing.o -o domain.o 
+	ld -r tmpdomain.o synth.o mancala.o zop.o c4.o sailing.o -o domain.o
 	rm tmpdomain.o	
 
 synth: synth.c synth.h
@@ -35,6 +47,9 @@ mancala: mancala.c mancala.h move.c board.c heuristic.c
 	gcc -c minmax.c -o tmpmm.o $(CFLAGS) 
 	ld -r tmpmancala.o tmpboard.o tmpmove.o  tmpheuristic.o tmprandom.o tmpmm.o -o mancala.o  
 	rm tmpmm.o tmpmove.o tmpboard.o tmprandom.o tmpmancala.o tmpheuristic.o
+
+ggp: ggp.h ggp.cpp ggp_unity.cpp
+	g++ -c ggp_unity.cpp -o ggp.o
 
 chess: chess.cpp chess.h normalNoise.c normalNoiseH.h domain.h mmuct.c common.h minmax.c mmuct.c heuristic.c move.c board.c util.c random.c mmuct_test.c uct.c domain.c synth.h synth.c mancala.h mmuct.h
 	g++ chess.cpp /media/data/Research/mmuct/gnuchess/gnuchess-6.0.1/src/engine/*.c* -o chess $(CFLAGS)
