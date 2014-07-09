@@ -133,7 +133,7 @@ void minmax_backup(treeNode *node) {
 
 /**
  * A non-parameteric approach
- *//*
+ */
 void wilcoxon_backup(treeNode *node, double ret){
 	int i,numOfVectors=0,winner=-1;
 	updateStatistics(node,ret); //updates the average
@@ -160,7 +160,7 @@ void wilcoxon_backup(treeNode *node, double ret){
 			free(childData[i]);
 		}
 	}
-}*/
+}
 
 void variance_backup(treeNode *node, double ret, int ci_threshold) {
 		if (node->n < ci_threshold) {
