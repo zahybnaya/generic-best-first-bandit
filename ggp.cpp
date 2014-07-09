@@ -119,7 +119,7 @@ double h2_ggp(rep_t rep, int side, int dummy) {
 void generateRandomStart_ggp(rep_t rep, int *side) {
 	GDL::State *state = (GDL::State *)rep;
 	*state = gdl.getInitState();
-/*
+
 	int i, moves = random() % 9; //TODO: param/generify to be domain dependant. for example, 9 moves is all possible in tic tac toe
 	for (i = 0; i < moves; i++) {
 		GDL::StringVec aMoves = gdl.getPossibleMoves(*side, *state);
@@ -130,11 +130,11 @@ void generateRandomStart_ggp(rep_t rep, int *side) {
 		m[0] = aMoves[random() % aMoves.size()];
 		m[1] = bMoves[random() % bMoves.size()];
 		*state = gdl.getNextState(*state, m);
-	}*/
+	}
 }
 
 void compile_ggp() {
-	std::string filename = "./gpp-reasoner/tictactoe.kif"; //TODO: Get this from argument
+	std::string filename = "./gpp-reasoner/hex.kif"; //TODO: Get this from argument
 	KIF kif;
 	
 	bool result = kif.parseFile(filename, true);
