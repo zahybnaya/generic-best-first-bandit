@@ -1,7 +1,7 @@
 #include "type.h"
 
 void backprop_sts(void *void_ts, treeNode *node, double rollout, int generated, int typeId, int threshold) {
-  type_system *ts = void_ts;
+  type_system *ts = (type_system *)void_ts;
   int aboveType = false;
   int i;
   
@@ -31,8 +31,8 @@ void backprop_sts(void *void_ts, treeNode *node, double rollout, int generated, 
 		} else {
 		  //need to increase the size of the type system
 		  ts->numTypes++;
-		  ts->types = realloc(ts->types, ts->numTypes * sizeof(treeNode *));
-		  ts->birthdays = realloc(ts->birthdays, ts->numTypes * sizeof(int));
+		  ts->types = (treeNode **)realloc(ts->types, ts->numTypes * sizeof(treeNode *));
+		  ts->birthdays = (int *)realloc(ts->birthdays, ts->numTypes * sizeof(int));
 		  
 		  ts->types[ts->numTypes - 1] = node->children[i];
 		  ts->birthdays[ts->numTypes - 1] = ts->visits;

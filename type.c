@@ -73,10 +73,10 @@ int selectMove(treeNode* node, double C) {
 
 
 void *init_type_system(int t) {
-  type_system *ts = calloc(1, sizeof(type_system));
+  type_system *ts = (type_system *)calloc(1, sizeof(type_system));
   ts->numTypes = 1;
-  ts->types = calloc(ts->numTypes, sizeof(treeNode *));
-  ts->birthdays = calloc(ts->numTypes, sizeof(int));
+  ts->types = (treeNode **)calloc(ts->numTypes, sizeof(treeNode *));
+  ts->birthdays = (int *)calloc(ts->numTypes, sizeof(int));
       
   switch (t) {   
     case STS:

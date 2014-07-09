@@ -6,4 +6,5 @@
 #include "./gpp-reasoner/libgdl/src/gdl/kbtypes.cpp"
 #include "./gpp-reasoner/libgdl/src/gdl/knowledgebase.cpp"
 #include "./gpp-reasoner/libgdl/src/tools.cpp"
+#include "ggp.h"
 #include "ggp.cpp"
