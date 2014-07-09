@@ -2,6 +2,7 @@
 #include "domain.h"
 #include "uct.h"
 #include "phi.c"
+#include <math.h>
 #include "t_values.c"
 #include "wilcoxon.c"
 
@@ -272,7 +273,7 @@ static double getProbForGreater(int i,int j, treeNode* node){
 		sdi = node->children[i]->M2/(double)(node->children[i]->n - 1);
 	if(node->children[j]->n >1)
 		sdj = node->children[j]->M2/(double)(node->children[j]->n - 1);
-	double s = (sdi+sdj);
+	double s = pow((sdi+sdj),1);
 	s = s>0?s:0.1;
 	//printf("xi:%f, xj:%f, sdi:%f, sdj:%f \n",xi,xj,sdi,sdj);
 	assert(s>0);
@@ -288,7 +289,7 @@ static double getProbForGreater(int i,int j, treeNode* node){
  * */
 static double getProbForMaximialChild(int mi, treeNode* node) {
 	int i;
-	double answer = 1;
+	double pr, logAnswer=0;
 	treeNode* child = node->children[mi];
 	if (!child)
 		return 0;
@@ -296,9 +297,11 @@ static double getProbForMaximialChild(int mi, treeNode* node) {
 	  if (i==mi||!node->children[i]) { 
 		  continue;
 	  }
-	  answer*=getProbForGreater(mi,i,node);
+	  pr= getProbForGreater(mi,i,node);
+	  logAnswer+=log(pr);
 	}
-	return answer;
+	printf("%f\n",exp(logAnswer));
+	return exp(logAnswer);
 }
 
 /***
@@ -319,13 +322,13 @@ void weighted_mm_backup(treeNode *node, double ret) {
     node->scoreSum = (node->n) * (nodeScore/ttlPp); 
 }
 
-/* Weighted Minimax*/
+/* Weighted Minimax for static tree*/
 static double weightedMM(treeNode* node,heuristics_t heuristic) {
 	int i;
 	double val;
 	double bestScore = 0;
 	char s[1512],b[256]; 
-	sprintf(s,"*side:%d visits:%d depth:%d ",node->side,node->n,node->depth);
+	
 	if ((val = _DOM->getGameStatus(node->rep)) != INCOMPLETE){
 		if ((heuristic == _DOM->hFunctions.h3) || (heuristic == _DOM->hFunctions.h4) || (heuristic == _DOM->hFunctions.h5)) {
 			val = (val/MAX_WINS);

@@ -232,7 +232,7 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 		wilcoxon_backup(node, ret);}
 	else if (backupOp == COULOM) 
 		coulom(node, ret);
-	else if (backupOp == MINMAX) // use minimaxing back-up
+	else if (backupOp == MINMAX) 
 		minmax_backup(node);
 	else if (backupOp == WEIGHTED_MM)
 		weighted_mm_backup(node, ret);
