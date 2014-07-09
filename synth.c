@@ -198,14 +198,14 @@ static int addTrapById(const uid id, const int k, Hvals h){
     while(d>0){
         uid elements = succesorsIds(id,d--,&from,&to);
         int i=0;
-        double trapVal = firstUse ? MIN_WINS : MAX_WINS-EPS;
+        double trapVal = firstUse ? SYNTH_MIN_WINS : SYNTH_MAX_WINS-EPS;
         firstUse = false;
         for (i=0;i<elements;i++){
             if(debuglog)printf("HVALS_ADD:%d=%.2f\n",from+i,trapVal);
             addH(h,from+i,trapVal);
         }
     }
-    addH(h,id,MAX_WINS-EPS);
+    addH(h,id,SYNTH_MAX_WINS-EPS);
     return 1;
 }
 
@@ -227,7 +227,7 @@ static int addTrap(const int depth, const double r, const int k, Hvals h){
 /*
 
 */
-int getNumOfChildren_synth(){
+int getNumOfChildren_synth(rep_t rep, int side){
     return b+1;
 }
 
@@ -254,7 +254,7 @@ Hvals* initHvals(){
 /*
  Generates a random game-tree
 */
-void generateRandomStart_synth(rep_t rep,int side){
+void generateRandomStart_synth(rep_t rep,int *side){
     initHvals();
     *(uid*)rep=1;
 //    mmNode* n =  generateMmNode(rep,side,false);
@@ -268,7 +268,7 @@ void generateRandomStart_synth(rep_t rep,int side){
 /*
 */
 int estimateTreeSize_synth(int treeSize){
- return pow(getNumOfChildren_synth()-1,treeSize);
+ return pow(getNumOfChildren_synth(0,0)-1,treeSize);
 }
 
 
@@ -292,7 +292,7 @@ rep_t cloneRep_synth(rep_t orig){
 
 int getGameStatus_synth(rep_t rep){
     int result = applyHeuristics_synth((heuristics_t)NULL,rep,max,0);
-    if(result == MAX_WINS||result == MIN_WINS) {
+    if(result == SYNTH_MAX_WINS||result == SYNTH_MIN_WINS) {
         return result;
     }
     uid crep = *(uid*)rep;
@@ -303,12 +303,12 @@ int getGameStatus_synth(rep_t rep){
             }else{
                 winDetermine = crep;
             }
-            int val = (winDetermine%2==0)?MAX_WINS:MIN_WINS;
+            int val = (winDetermine%2==0)?SYNTH_MAX_WINS:SYNTH_MIN_WINS;
             addH(hvals,crep,val);
             return val;
     }
 
-    return INCOMPLETE;
+    return SYNTH_INCOMPLETE;
 }
 
 
@@ -356,31 +356,31 @@ double applyHeuristics_synth(heuristics_t h, rep_t rep, int side, int budget) {
 
 //     switch(crep){
 //        case 14:
-//            hVal=MIN_WINS;
+//            hVal=SYNTH_MIN_WINS;
 //            break;
 //        case 15:
-//            hVal=MIN_WINS;
+//            hVal=SYNTH_MIN_WINS;
 //            break;
 //        case 12:
-//            hVal=MAX_WINS-EPSILON;
+//            hVal=SYNTH_MAX_WINS-EPSILON;
 //            break;
 //        case 13:
-//            hVal=MAX_WINS-EPSILON;
+//            hVal=SYNTH_MAX_WINS-EPSILON;
 //            break;
 //        case 4:
-//            hVal=MAX_WINS-2*EPSILON;
+//            hVal=SYNTH_MAX_WINS-2*EPSILON;
 //            break;
 //        case 5:
-//            hVal=MAX_WINS-2*EPSILON;
+//            hVal=SYNTH_MAX_WINS-2*EPSILON;
 //            break;
 //        case 3:
-//            hVal=MAX_WINS-EPSILON;
+//            hVal=SYNTH_MAX_WINS-EPSILON;
 //            break;
 //        case 6:
-//            hVal=MAX_WINS-EPSILON;
+//            hVal=SYNTH_MAX_WINS-EPSILON;
 //            break;
 //        case 7:
-//            hVal=MAX_WINS-0.1*EPSILON;
+//            hVal=SYNTH_MAX_WINS-0.1*EPSILON;
 //            break;
 //        default:
 //            return hVal=1;
@@ -536,11 +536,11 @@ printf("Depth: %d, pref: %d suffix: %d\n",depth,pref,suffix);
     assert(side==max);
 
     int m=3;
-    assert(getGameStatus_synth(&m)==INCOMPLETE);
+    assert(getGameStatus_synth(&m)==SYNTH_INCOMPLETE);
     m=8;
-    assert(getGameStatus_synth(&m)==MAX_WINS);
+    assert(getGameStatus_synth(&m)==SYNTH_MAX_WINS);
     m=15;
-    assert(getGameStatus_synth(&m)==MIN_WINS);
+    assert(getGameStatus_synth(&m)==SYNTH_MIN_WINS);
 
     assert(estimateTreeSize_synth(3)==8);
 
@@ -553,7 +553,7 @@ printf("Depth: %d, pref: %d suffix: %d\n",depth,pref,suffix);
     heuristics_t dummy=NULL;
     assert(applyHeuristics_synth(dummy,&m,max,2)==1);
     m = 10;
-    assert(applyHeuristics_synth(dummy,&m,max,2)==MAX_WINS);
+    assert(applyHeuristics_synth(dummy,&m,max,2)==SYNTH_MAX_WINS);
 
 }
 */

@@ -67,9 +67,9 @@ void genRandomBoard(int board[2][NUM_PITS+1], int* side, int depth) {
 
     // Now play the game from this position to the specified depth using two MM-12-H players
     /*for (j = 0; j < depth; j++)
-      if (getGameStatus(board) == INCOMPLETE)
+      if (getGameStatus(board) == MANCALA_INCOMPLETE)
 	makeMinmaxMove(board,  side, 12, (heuristics_t)h1, 0, false, false, bestMoves, &numBestMoves, &termPercentage);*/
-  } while (getGameStatus(board) != INCOMPLETE); // if the game has already ended, the board is useless so start over
+  } while (getGameStatus(board) != MANCALA_INCOMPLETE); // if the game has already ended, the board is useless so start over
 }
 
 /* Copies srcBoard --> dstBoard */

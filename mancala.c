@@ -9,7 +9,7 @@ typedef int board_t [2][NUM_PITS+1];
 /*
  implementation of the getNumOfChildren
 */
-int getNumOfChildren_mancala(){
+int getNumOfChildren_mancala(rep_t rep, int side) {
     return NUM_PITS+1;
 }
 
