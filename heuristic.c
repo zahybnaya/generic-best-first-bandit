@@ -1,5 +1,6 @@
 #include "mancala.h"
 #include "common.h"
+#include <math.h>
 
 /* Collection of leaf estimation routines for Mancala */
 
@@ -158,6 +159,15 @@ double h5(rep_t rep, int side, int dummy) {
 		return -1;
 
 	return 0;
+}
+
+
+/***
+ * Segmentation - heuristcs
+ */
+double h7(rep_t rep, int side, int segmentation) {
+	double fine = h6(rep, side, 1); 
+	return floor(fine/segmentation);
 }
 
 

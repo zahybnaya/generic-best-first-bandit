@@ -45,6 +45,7 @@ double h3(rep_t rep, int side, int numPlayouts);
 double h4(rep_t rep, int side, int dummy);
 double h5(rep_t rep, int side, int dummy);
 double h6(rep_t rep, int side, int numPlayouts);
+double h7(rep_t rep, int side, int numPlayouts);
 
 /* Function prototypes */
 // Board-related routines (board.c)

@@ -141,7 +141,7 @@ void wilcoxon_backup(treeNode *node, double ret){
 	childData[0] = NULL;
 	for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
 	    if (node->children[i]) { 
-		    childData[i] = allLeaves(node->children[i]);
+		    //childData[i] = allLeaves(node->children[i]);
 		    numOfVectors++;
 	    }else{
 		    childData[i] = NULL;

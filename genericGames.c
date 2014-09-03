@@ -61,7 +61,7 @@ int main(int argc, char* argv[]) {
 		int turns[2] = {0, 0}; //the total number of turns each player played across all games.
 		// Variables used for pretty printing parameter settings
 		const char* playerStrings[] = {"max", "min"};
-		const char* hStrings[] = {"heuristic 1", "heuristic 2", "playouts", "random leaf values", "coarsened h1", "finer playouts"};
+		const char* hStrings[] = {"heuristic 1", "heuristic 2", "playouts", "segmentation playout", "coarsened h1", "finer playouts"};
 		char heurString[][30] = {"heuristic 1", "heuristic 1"};
 		const char* backupOpStrings[] = {"average", "minimax", "confidence","weighted_minimax", "variance", "variance_all", "size", "ci_all", "coulom", "wilcoxon"};
 		double bolzmanConstant = -2.44, probWeight = 0.5;
@@ -172,7 +172,7 @@ int main(int argc, char* argv[]) {
 												case 6:
 														heuristic[max] = _DOM->hFunctions.h6;
 														break;
-										}
+											}
 
 										strcpy(heurString[max], hStrings[atoi(argv[i])-1]);
 								}
@@ -695,7 +695,7 @@ static int printMessage(const char** backupOpStrings,int howManybackups) {
 		puts("Algorithm Options:");
 		puts("------------------");
 		puts("-T <trap_gap> <trap_size> <how_many_traps>");
-		puts("-h1/h2 <n>:    Sets heuristic for player 1/2. Values = 1 (basic), 2 (alternate), 3 (playouts), 4 (random),");
+		puts("-h1/h2 <n>:    Sets heuristic for player 1/2. Values = 1 (basic), 2 (alternate), 3 (playouts), 4 (segmented playout),");
 		puts("               5 (coarsened h1), 6 (finer playouts). Default = 1");
 		puts("-d1/d2 <n>:    Sets depth of minimax search for player 1/2. Default = 8.");
 		puts("-md1/md2 <n>:  Sets depth of minimax search for player 1/2 for MMUCT algorithm (default 3)");

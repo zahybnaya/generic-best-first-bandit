@@ -54,28 +54,28 @@ void destroyVector(vector* v){
 /**
  * Recursive function to collect all rewards
  */
-void collectRewards(treeNode* node,vector *v){
-	int i;
-	if (node->n <= 1) {
-		pushVector(v,node->scoreSum);
-		return;
-	}
-	for (i = 1; i < _DOM->getNumOfChildren(); i++) {
-		if (node->children[i]){
-			collectRewards(node->children[i],v);
-		}
-	}
-}
-
-
-/**
- * DFS to find all rewards from this node
- */
-vector* allLeaves(treeNode* node){
-	vector* v = createVector(10);
-	collectRewards(node,v);
-	return v;
-}
+//void collectRewards(treeNode* node,vector *v){
+//	int i;
+//	if (node->n <= 1) {
+//		pushVector(v,node->scoreSum);
+//		return;
+//	}
+//	for (i = 1; i < _DOM->getNumOfChildren(node); i++) {
+//		if (node->children[i]){
+//			collectRewards(node->children[i],v);
+//		}
+//	}
+//}
+//
+//
+///**
+// * DFS to find all rewards from this node
+// */
+//vector* allLeaves(treeNode* node){
+//	vector* v = createVector(10);
+//	collectRewards(node,v);
+//	return v;
+//}
 /*** 
  * 	Compare function for qsort
  */
