@@ -167,7 +167,16 @@ double h5(rep_t rep, int side, int dummy) {
  */
 double h7(rep_t rep, int side, int segmentation) {
 	double fine = h6(rep, side, 1); 
-	return floor(fine/segmentation);
+	// ties are persistent
+	if (fine ==0) {
+		return 0;
+	}
+	int sign = fine>0?1:-1; 
+	int bucket = abs(fine - 0) / segmentation;  
+	double start_bucket =bucket*segmentation;
+	double end_bucket   = start_bucket+segmentation-1; 
+	double bucket_value = sign*(start_bucket+end_bucket)/2;
+	return bucket_value;
 }
 
 
