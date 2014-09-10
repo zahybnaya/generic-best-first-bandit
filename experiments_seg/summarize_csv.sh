@@ -4,7 +4,7 @@
 #
 #
 RESULT_FILE='../seg_mancala_data.csv'
-echo "iterations,a1,a2,seg,max_alg, min_alg, num_of_games,num_of_draws,num_of_incomplete,max_win,min_win,total_win_games,max_time,min_time,score" > ${RESULT_FILE}
+echo "iterations,a1,a2,seg,domain,max_alg, min_alg, num_of_games,num_of_draws,num_of_incomplete,max_win,min_win,total_win_games,max_time,min_time,score,unknown" > ${RESULT_FILE}
 grep '^[0-9],' *.csv | sed 's/K/000,/g' | sed 's/VS/,/g' | sed 's/B/,/g' | sed 's/:/,/g' | sed 's/ /,/g' | sed 's/.csv//g' >> ${RESULT_FILE}
 
 
