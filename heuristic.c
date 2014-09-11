@@ -172,11 +172,14 @@ double h7(rep_t rep, int side, int segmentation) {
 		return 0;
 	}
 	int sign = fine>0?1:-1; 
-	int bucket = abs(fine - 0) / segmentation;  
+	if (segmentation == MANCALA_MAX_WINS){
+		//printf("fine %f, return %d\n",fine,sign);
+		return double(sign);
+	}
+	int bucket = abs(fine) / segmentation;  
 	double start_bucket =bucket*segmentation;
 	double end_bucket   = start_bucket+segmentation-1; 
 	double bucket_value = sign*(start_bucket+end_bucket)/2;
-	printf("fine value= %f bucket_value:%f\n",fine,bucket_value);
 	return bucket_value;
 }
 
