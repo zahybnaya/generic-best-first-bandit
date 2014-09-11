@@ -6,6 +6,23 @@
 #include "t_values.c"
 #include "wilcoxon.c"
 
+double standardDeviationAggregated(treeNode *node) {
+	//Use the wikipedia formula
+	int i;
+	int all_visits=0;
+	double var=0.0;
+	for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
+		if (node->children[i]){
+			all_visits+=node->children[i]->n;
+			double mu=node->children[i]->scoreSum/node->children[i]->n;
+			var+=(node->children[i]->n-1)*node->children[i]->ci + node->children[i]->n*pow(mu,2);
+		}
+	}
+	var -= all_visits*pow(node->scoreSum/node->n,2);
+	var = (1/(all_visits-1))*var;
+	return var;
+}
+
 double standardDeviation(treeNode *node) {
   return sqrt(node->M2 / (double)(node->n - 1));
 }
@@ -21,6 +38,43 @@ double confidenceInterval(treeNode *node) {
   
   return 2 * criticalValue * sqrt(variance / (double)node->n);
 }
+
+void subset_backup_agg(treeNode *node, double ret, int ci_threshold, double (confidenceMeasure)(treeNode *)) {
+		updateStatistics(node, ret);
+		if (node->n < ci_threshold)
+		  return;
+		int i;
+		double score, bestScore = avgRewards(node);//Average score of the parent because we only consider children that are better than that
+		bestScore = node->side == max ? bestScore : -bestScore;
+		double bestChildConfidence = INF;
+		node->ci = confidenceMeasure(node);
+		for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
+			if (node->children[i] && node->children[i]->n >= ci_threshold) { // if child exists, is it the best scoring child?
+				score = assignedScore(node->children[i]);
+				score = node->side == max ? score : -score;
+				if (node->children[i]->ci < node->ci && score > bestScore) {
+					bestScore = score;
+					bestChildConfidence = node->children[i]->ci;
+				}
+			}
+		}
+		if (bestChildConfidence < INF) {
+			bestScore = node->side == max ? bestScore : -bestScore;//reversing
+			node->scoreSum = node->n * bestScore;
+			node->ci = bestChildConfidence;
+			return;
+		}
+
+		double aggScoreSum=0;
+		int aggVisits=0;
+		for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
+			if (node->children[i]) { 
+				aggScoreSum+=node->children[i]->scoreSum/node->children[i]->n;
+				aggVisits+=node->children[i]->n;
+			}
+		node->scoreSum =  node->n*(aggScoreSum/aggVisits); //aggregated value
+}
+
 
 void subset_backup(treeNode *node, double ret, int ci_threshold, double (confidenceMeasure)(treeNode *)) {
 		updateStatistics(node, ret);
