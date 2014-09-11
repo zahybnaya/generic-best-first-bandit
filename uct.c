@@ -151,7 +151,6 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 		if ((_DOM->dom_name == MANCALA &&
 				       	((heuristic == _DOM->hFunctions.h3) || ((heuristic == _DOM->hFunctions.h4) && budget==_DOM->max_wins) || (heuristic == _DOM->hFunctions.h5))) || (_DOM->dom_name == GGP && heuristic == _DOM->hFunctions.h2))
 			ret /= _DOM->max_wins; // rescale
-			printf("%f\n",ret);
 
 		if ((dotFormat) && (node->n == 0)) // on first visit to a terminal node, color it red
 			printf("n%d [color=\"red\"];", node->id);
