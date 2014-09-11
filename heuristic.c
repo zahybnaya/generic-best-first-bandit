@@ -176,6 +176,7 @@ double h7(rep_t rep, int side, int segmentation) {
 	double start_bucket =bucket*segmentation;
 	double end_bucket   = start_bucket+segmentation-1; 
 	double bucket_value = sign*(start_bucket+end_bucket)/2;
+	printf("fine value= %f bucket_value:%f\n",fine,bucket_value);
 	return bucket_value;
 }
 
