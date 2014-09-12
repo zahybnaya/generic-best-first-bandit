@@ -135,7 +135,7 @@ void updateStatistics(treeNode *node, double sample) {
 static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int budget, int backupOp , int isRoot, int ci_threshold, int* parentCIWin, int* 						parentCITotal, double* avgDepth, int* minDepth, int* treeDepth) {
 	double ret;
 	int move,i;
-
+	C = fabs(assignedScore(node));
 	assert(node != NULL); // should never be calling uctRecurse on a non-existent node
 	if ((ret = _DOM->getGameStatus(node->rep))!= _DOM->incomplete) {
 		fflush(stdout);
@@ -241,6 +241,7 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 		ci_backup(node, ret, ci_threshold);
 	else if (backupOp == VARIANCE_ALL)
 		subset_backup(node, ret, ci_threshold, standardDeviation);
+	//	subset_backup_agg(node,ret,ci_threshold, standardDeviationAggregated);
 	else if (backupOp == VARIANCE)
 		variance_backup(node, ret, ci_threshold);
 	else if (backupOp == SIZE)

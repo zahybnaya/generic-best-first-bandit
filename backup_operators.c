@@ -72,6 +72,7 @@ void subset_backup_agg(treeNode *node, double ret, int ci_threshold, double (con
 				aggScoreSum+=node->children[i]->scoreSum/node->children[i]->n;
 				aggVisits+=node->children[i]->n;
 			}
+		}
 		node->scoreSum =  node->n*(aggScoreSum/aggVisits); //aggregated value
 }
 
