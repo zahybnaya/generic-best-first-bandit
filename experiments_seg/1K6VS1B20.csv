@@ -1,17 +1,17 @@
 Parameters:
-Random seed: -105127645
+Random seed: 916359201
 Domain used is: 0
 # Pits: 6, Stones per pit: 4
 Player 0 (max) --- UCT, C 2.500, Num iterations 1000, with variance_all backups, using segmentation playout
 Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, using segmentation playout
-1
+0
 0
 
--1
--1
+1
+1
 
--1
 1
+-1
 
 1
 1
@@ -20,25 +20,31 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 -1
 
 1
-1
+0
 
 1
 1
 
-1
 -1
+1
 
--1
+1
 -1
 
 1
 1
 
-1
+-1
 1
 
-1
+-1
+-1
+
+-1
+0
+
 1
+0
 
 1
 1
@@ -47,23 +53,26 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 -1
 
 -1
-1
+0
 
 1
 1
 
-1
+-1
 -1
 
 0
 -1
 
 1
-1
+-1
 
 1
-1
+-1
 
+0
+-1
+
 1
 1
 
@@ -73,7 +82,7 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
-1
+0
 1
 
 -1
@@ -82,59 +91,47 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 0
 -1
 
--1
 1
+1
 
 1
 1
 
+0
 -1
-1
 
 1
 -1
-
-1
-1
 
-1
-1
-
-1
-1
+-1
+-1
 
-1
-1
+-1
+0
 
 1
 1
 
-1
 1
+0
 
 1
 -1
 
 1
 0
-
--1
-1
 
 1
-1
+0
 
-1
 -1
-
 1
-1
 
 1
 -1
 
--1
 -1
+1
 
 1
 1
@@ -145,14 +142,20 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 -1
 
-0
+-1
 1
 
 1
 1
 
+1
 1
+
+0
+0
+
 -1
+-1
 
 1
 1
@@ -160,23 +163,32 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
-1
 1
+-1
 
-1
 1
+-1
 
-1
+-1
 1
 
 -1
 1
 
-1
+-1
 1
 
 1
+0
+
+0
+0
+
+0
 1
+
+-1
+0
 
 1
 1
@@ -184,8 +196,8 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
--1
--1
+0
+1
 
 1
 1
@@ -194,9 +206,9 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 
 1
-1
+0
 
--1
+0
 -1
 
 1
@@ -205,23 +217,23 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
+0
 -1
-1
 
 1
-1
+-1
 
-1
+-1
 1
 
-1
 0
-
 1
--1
 
+-1
 1
+
 1
+-1
 
 -1
 1
@@ -239,16 +251,10 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 
 1
--1
+1
 
 1
 1
-
--1
--1
-
--1
--1
 
 1
 1
@@ -257,15 +263,15 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 -1
 
 1
+0
+
 -1
+-1
 
 1
 1
 
-1
 1
-
--1
 1
 
 1
@@ -275,19 +281,16 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 -1
 
 1
--1
+0
 
 1
 1
 
--1
--1
-
+0
 1
--1
 
-1
 1
+-1
 
 1
 -1
@@ -298,56 +301,59 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
-0
 1
+1
 
 1
 1
 
-1
 1
+0
 
 1
 1
 
--1
+0
 1
 
+1
 -1
+
+1
 1
 
 1
 1
 
--1
 1
+-1
 
 -1
-1
+-1
 
 1
 1
 
 1
-0
-
 1
+
+-1
 1
 
 1
 1
 
 1
-1
+-1
 
+0
 -1
+
 1
+1
 
--1
 -1
-
 -1
-1
 
 1
 -1
@@ -359,7 +365,7 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 
 0
--1
+1
 
 1
 1
@@ -368,13 +374,13 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 
 1
--1
+0
 
--1
--1
+1
+1
 
 -1
-1
+0
 
 1
 -1
@@ -383,20 +389,17 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 
 -1
-1
+-1
 
 1
-1
+0
 
+0
 -1
-1
 
 1
 1
 
--1
-0
-
 1
 -1
 
@@ -407,13 +410,25 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 
 1
+0
+
+0
+-1
+
+0
 1
 
+0
 1
+
 1
+-1
 
+-1
 1
+
 1
+-1
 
 1
 1
@@ -424,8 +439,8 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
-0
 -1
+-1
 
 1
 1
@@ -436,20 +451,17 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 -1
 1
 
--1
+1
 -1
 
 -1
-1
-
 -1
-0
 
 1
-1
+-1
 
-0
 1
+-1
 
 -1
 -1
@@ -458,30 +470,21 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 
 1
-1
-
--1
 1
 
 1
 1
 
-1
+0
 -1
 
-1
 1
-
 1
-0
 
 1
 1
 
 1
-1
-
--1
 1
 
 1
@@ -493,32 +496,26 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
-1
+-1
 1
 
 1
 -1
-
-1
-1
 
--1
-1
+0
+0
 
 1
-1
+-1
 
 1
 1
 
--1
--1
-
--1
-1
+0
+0
 
-1
 1
+-1
 
 1
 1
@@ -526,17 +523,17 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
+0
 1
--1
 
 -1
 1
 
-1
 1
+-1
 
 1
--1
+1
 
 -1
 -1
@@ -544,38 +541,29 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
-1
 1
+0
 
 1
 1
 
-1
 1
+-1
 
 -1
-1
+0
 
 1
 1
 
 -1
 -1
-
-1
-1
 
 1
 1
 
-1
 0
-
 -1
-1
-
-1
-1
 
 1
 -1
@@ -587,58 +575,43 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 
 1
-1
+-1
 
 1
 -1
 
-1
 1
-
-1
--1
-
-1
-1
-
-1
-1
+0
 
 1
 1
 
-1
-1
+-1
+-1
 
-1
-1
+-1
+-1
 
-1
-1
+0
+-1
 
 1
 1
 
-1
 -1
+0
 
 -1
-1
-
-1
-1
-
-1
-1
+-1
 
-1
-1
+-1
+-1
 
-1
-1
+0
+-1
 
+0
 -1
-1
 
 1
 -1
@@ -649,53 +622,35 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 -1
 
-1
+0
 1
 
--1
 -1
-
 1
-1
 
--1
 -1
-
 1
-1
 
-1
 -1
-
 1
--1
 
 1
 1
 
-1
 1
-
 1
--1
-
--1
--1
 
 1
 1
 
--1
 1
+-1
 
-1
+-1
 1
 
-1
 -1
-
 1
-1
 
 1
 0
@@ -706,32 +661,26 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 -1
 
-0
 -1
+-1
 
 1
 1
 
 1
--1
-
--1
--1
+1
 
 1
 1
 
-1
 -1
+0
 
-1
+-1
 1
 
-1
 1
-
 1
--1
 
 1
 1
@@ -742,19 +691,16 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
-1
 1
+0
 
 1
 -1
 
--1
 1
+0
 
--1
 1
-
-0
 1
 
 -1
@@ -763,8 +709,11 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
-1
+-1
 -1
+
+-1
+1
 
 0
 0
@@ -773,52 +722,52 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 
 1
-1
+-1
 
 1
+1
+
 -1
+1
 
 1
 1
 
+0
 1
+
+0
 1
 
--1
+0
 1
 
 -1
--1
-
-1
 1
 
 1
 1
 
 1
-0
+-1
 
 1
 1
 
+0
 -1
-1
 
-1
 1
+-1
 
 1
-1
+0
 
 -1
--1
+1
 
 1
 1
-
--1
--1
 
 1
 1
@@ -830,55 +779,52 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 -1
 
 -1
-1
-
-1
 -1
-
-1
-1
 
-1
 -1
+0
 
 1
 1
 
 1
 1
-
--1
--1
 
 1
 -1
 
-1
 -1
+1
 
--1
 -1
+0
 
-1
 -1
+1
 
 1
 1
 
 1
-1
+-1
 
 -1
+0
+
+0
 1
 
 1
 1
 
 -1
-1
+-1
 
-1
 1
+0
+
+-1
+0
 
 1
 1
@@ -886,35 +832,44 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 -1
 
-1
-1
+0
+-1
 
 -1
 1
 
-0
 1
+0
 
--1
 1
-
 -1
+
 1
+0
 
 1
+-1
+
+0
 1
 
 -1
 1
 
 1
+0
+
 1
+-1
 
 -1
 -1
 
 1
+0
+
 1
+-1
 
 1
 1
@@ -922,25 +877,31 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
+0
 -1
+
 1
+1
 
 1
 -1
 
-1
+0
 1
 
 1
--1
+1
 
 1
 1
 
+0
 -1
+
 1
+0
 
--1
+0
 -1
 
 1
@@ -952,17 +913,17 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 -1
 1
 
--1
--1
+0
+1
 
 1
 -1
 
-1
-1
+-1
+-1
 
 1
-1
+-1
 
 -1
 1
@@ -970,29 +931,29 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
-1
 1
+-1
 
 1
-1
+-1
 
 1
-1
+-1
 
 1
 1
 
-1
 1
+-1
 
-1
 1
+0
 
 1
-1
-
 -1
+
 -1
+0
 
 1
 1
@@ -1003,8 +964,11 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 -1
 
-1
+0
+-1
+
 1
+0
 
 1
 1
@@ -1012,29 +976,29 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
-1
 -1
-
 1
+
 1
+-1
 
 1
+-1
+
 1
+-1
 
 1
 1
 
 1
-0
-
 -1
-1
 
-1
+0
 1
 
 1
--1
+0
 
 1
 0
@@ -1043,61 +1007,64 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 
 1
+0
+
+0
 1
 
 1
 1
 
-1
 -1
+-1
 
 1
-1
+0
 
 1
 1
 
 1
-1
+-1
 
-1
+-1
 1
 
 -1
-1
+-1
 
 1
-1
+-1
 
-1
+0
 1
 
 1
 1
 
-1
 -1
+-1
 
-1
 1
+-1
 
 1
 1
 
 1
-1
+-1
 
 1
-1
+0
 
-1
+-1
 1
 
+0
 1
--1
 
 1
--1
+1
 
 1
 1
@@ -1105,22 +1072,22 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 -1
 1
 
--1
 1
+1
 
 1
 0
 
-1
 1
+0
 
-1
+0
 1
 
 1
 -1
 
-1
+-1
 1
 
 -1
@@ -1128,6 +1095,9 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 
 1
 -1
+
+0
+0
 
 1
 1
@@ -1135,22 +1105,16 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
-0
 -1
-
 -1
-0
 
--1
 1
-
--1
 1
 
 1
 -1
 
-1
+0
 1
 
 1
@@ -1160,12 +1124,9 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 
 -1
-1
-
-1
-1
+-1
 
-1
+-1
 1
 
 1
@@ -1180,7 +1141,10 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
+1
 1
+
+0
 -1
 
 1
@@ -1189,41 +1153,29 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
-1
 1
-
 -1
-1
 
 1
-1
+0
 
 1
 1
 
-1
 -1
-
-1
-1
-
 -1
-1
 
--1
 1
-
 -1
-1
 
 1
 -1
 
 1
--1
+1
 
--1
 1
+1
 
 1
 1
@@ -1231,127 +1183,127 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
--1
+0
 1
 
 1
 1
 
 1
-1
+-1
 
 -1
 1
 
-1
 -1
-
-1
 -1
-
-1
-1
 
 -1
 1
 
-1
 -1
-
-1
-1
+-1
 
 1
 1
 
-1
+-1
 1
 
-1
 1
+0
 
 1
--1
+0
 
-1
 0
+-1
 
 1
 -1
 
+-1
 0
+
 1
+-1
 
 1
 1
 
-1
+0
+0
+
+-1
 1
 
+-1
 1
+
+0
 -1
 
 1
 1
 
-1
 1
+0
 
-1
+-1
 -1
 
 1
-1
-
 -1
-1
 
 1
-1
+0
 
-1
+0
 1
 
-1
-1
+-1
+-1
 
+0
+-1
+
 1
 1
 
 1
--1
+0
 
 1
 1
 
--1
 1
+0
 
 1
 1
 
 1
+0
+
 -1
+1
 
 1
 1
 
-0
+1
 1
 
 1
 1
 
+0
 -1
-1
 
 1
 1
 
 1
--1
-
--1
 1
 
 1
@@ -1359,41 +1311,44 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 
 1
 1
+
+0
+0
 
 1
 1
 
--1
+1
 1
 
 1
 1
 
 -1
-1
+-1
 
-1
 0
+1
 
 -1
-1
+-1
 
 1
+-1
+
 1
+-1
 
 1
 1
 
-1
+0
 1
 
 -1
 1
 
 1
--1
-
--1
 1
 
 1
@@ -1406,7 +1361,7 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 
 1
--1
+0
 
 1
 1
@@ -1420,26 +1375,17 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
--1
 1
+-1
 
 1
-0
-
 1
--1
 
-0
 1
-
--1
 1
 
 1
 0
-
-1
--1
 
 1
 1
@@ -1450,35 +1396,32 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
--1
 -1
-
-1
 1
 
 1
 1
 
 1
-1
+-1
 
-1
-1
+-1
+-1
 
-1
+-1
 -1
 
-1
+-1
 1
 
 1
--1
+1
 
 1
 1
 
 1
-1
+0
 
 1
 1
@@ -1486,23 +1429,23 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
-1
+-1
 1
 
 1
 1
 
--1
+1
 -1
 
-1
+-1
 -1
 
 1
 1
 
 1
--1
+1
 
 1
 1
@@ -1513,29 +1456,23 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 -1
 1
 
-0
 1
-
 1
--1
 
-1
 1
-
 -1
-1
 
 -1
 1
 
-1
+0
 1
 
-1
-1
+0
+-1
 
 1
-1
+-1
 
 1
 1
@@ -1546,77 +1483,77 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
-1
-1
+-1
+-1
 
 1
 1
 
--1
+0
 -1
 
 -1
 0
 
-1
+-1
 1
 
 1
 -1
 
 1
-1
+0
 
-1
+-1
 1
 
 1
 1
 
-1
+-1
 -1
 
 1
-1
+-1
 
 1
-1
+0
 
 1
 1
 
-1
+0
+-1
+
 1
+0
 
 1
 0
 
--1
 -1
-
-1
 -1
 
--1
 1
+0
 
 1
 1
 
-1
-1
+-1
+-1
 
 1
-1
+-1
 
-1
+0
 1
 
--1
 1
+-1
 
 1
-1
+-1
 
 1
 1
@@ -1624,9 +1561,6 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 -1
 1
 
-0
--1
-
 1
 1
 
@@ -1636,82 +1570,82 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
--1
 0
-
-1
 1
 
 1
 1
 
 1
--1
+0
 
-1
 -1
-
-1
 -1
 
+1
 1
+
+-1
 -1
 
 1
 1
 
-1
+-1
 -1
 
-1
 -1
+1
 
 1
 -1
 
--1
+0
 1
 
--1
+0
 1
 
+-1
 0
-1
 
 -1
-1
+0
 
-1
+0
 1
 
 1
 1
 
 1
-1
+-1
 
 1
 1
 
 1
-1
+-1
 
-1
+-1
 1
+
+0
+-1
 
 1
 1
 
 -1
-1
+-1
 
-1
 1
+-1
 
 1
 1
 
-0
+1
 0
 
 -1
@@ -1720,25 +1654,34 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
-1
 1
-
 -1
-1
 
 1
 1
 
-1
-1
+-1
+-1
 
-1
+-1
+-1
+
+-1
+-1
+
+-1
 1
 
 -1
+1
+
 -1
+1
 
+-1
 1
+
+0
 1
 
 1
@@ -1747,31 +1690,31 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 -1
 
--1
--1
+1
+1
 
--1
+1
 -1
 
 -1
 -1
 
-1
--1
+0
+0
 
 1
 1
 
--1
 1
+0
 
 1
 -1
 
 1
-1
+0
 
-1
+0
 1
 
 1
@@ -1783,17 +1726,17 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 -1
 
-1
-1
+-1
+-1
 
 1
--1
+0
 
 1
 1
 
 1
-0
+-1
 
 1
 -1
@@ -1801,35 +1744,44 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
--1
+0
 1
 
 1
 1
 
--1
 1
-
--1
 1
 
 1
 -1
 
-1
+0
+-1
+
+0
+-1
+
 1
+0
 
 1
+-1
+
 1
+-1
 
 -1
 1
 
 0
+-1
+
 1
+1
 
--1
 1
+1
 
 -1
 1
@@ -1840,58 +1792,61 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
-1
 -1
-
-1
 1
 
 1
-1
+-1
 
 1
-1
+-1
 
 1
+0
+
 -1
+-1
 
-1
+0
 1
 
-1
-1
+-1
+-1
 
 1
 -1
 
-1
 -1
+0
 
-1
+0
 1
 
 0
 1
 
 1
-1
+-1
 
 1
-1
+0
 
 1
 1
 
 1
-1
+0
 
 1
 1
 
-1
-1
+-1
+-1
 
+0
 1
+
+0
 1
 
 1
@@ -1906,8 +1861,8 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
-1
 -1
+1
 
 1
 -1
@@ -1915,7 +1870,7 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
--1
+0
 1
 
 1
@@ -1924,11 +1879,14 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
-1
+-1
 1
 
+-1
 -1
+
 1
+-1
 
 1
 1
@@ -1936,11 +1894,14 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
+0
 -1
+
 1
+-1
 
 -1
-1
+-1
 
 1
 1
@@ -1951,22 +1912,22 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
-1
-1
+0
+0
 
 1
 1
 
-1
 1
+-1
 
-1
 1
+0
 
 1
 1
 
-1
+-1
 1
 
 1
@@ -1978,22 +1939,28 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
+-1
 1
+
 1
+-1
 
+0
 1
+
 1
+-1
 
 1
 1
 
-1
+0
 1
 
 1
 1
 
-1
+0
 -1
 
 1
@@ -2002,29 +1969,29 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
-1
+-1
 1
 
 1
 1
 
--1
 1
+0
 
-1
+0
 -1
 
-1
 -1
+-1
 
 1
 1
 
--1
 1
-
 1
+
 1
+0
 
 1
 1
@@ -2032,62 +1999,47 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
-1
 -1
+-1
 
-1
 1
-
--1
 1
 
-1
+0
 1
 
 -1
 -1
 
+0
 -1
-1
 
-1
-1
-
-1
 1
-
--1
 1
 
 1
--1
+0
 
 1
 -1
 
-0
--1
-
 1
 1
 
 1
 1
 
+0
 -1
+
 -1
+0
 
 1
-1
-
 1
--1
 
--1
 1
-
 1
--1
 
 1
 1
@@ -2102,13 +2054,7 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 -1
 
 1
-1
-
-1
 -1
-
-1
-1
 
 1
 1
@@ -2119,8 +2065,8 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
-1
-1
+0
+-1
 
 -1
 1
@@ -2138,7 +2084,7 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 
 1
-1
+-1
 
 1
 1
@@ -2146,29 +2092,23 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
-1
 -1
-
 1
-1
 
-1
+0
 1
 
-1
+-1
 1
 
 1
 1
 
-1
+0
 1
-
--1
--1
 
 1
-1
+0
 
 1
 -1
@@ -2185,16 +2125,22 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
-1
+0
 1
 
+-1
 1
+
+-1
+0
+
+-1
 1
 
 1
 1
 
-1
+-1
 1
 
 1
@@ -2203,7 +2149,10 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
-1
+-1
+-1
+
+0
 1
 
 1
@@ -2222,19 +2171,16 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 
 1
-0
+1
 
 1
 1
 
--1
 1
-
--1
 -1
 
 1
--1
+1
 
 -1
 -1
@@ -2245,50 +2191,44 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
-1
-1
+-1
+-1
 
 1
-1
-
 -1
-1
 
 1
 -1
 
--1
 -1
+1
 
 1
 1
-
--1
-0
 
 1
+1
+
 -1
+1
 
 1
 -1
 
--1
 -1
-
-1
 1
 
 1
 1
 
 1
-1
+0
 
 1
-1
-
 -1
--1
+
+1
+0
 
 1
 1
@@ -2300,115 +2240,115 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 
 1
--1
+0
 
-1
+0
 1
 
-1
+0
 1
 
 1
 1
 
-1
+0
 1
 
 -1
-1
-
-1
-1
+0
 
-1
+-1
 1
 
 -1
 -1
 
-1
 -1
+-1
 
-1
 1
+0
 
-1
-1
+0
+0
 
 -1
-1
+0
 
 1
 1
 
-1
+0
 1
 
 1
 -1
 
-1
 1
+-1
 
-1
+0
 1
 
-1
 1
+-1
 
 1
 -1
 
-1
+-1
 1
 
-1
-1
+-1
+-1
 
-1
 1
+0
 
-1
 1
+-1
 
-1
 -1
+-1
 
 1
 1
 
-1
+-1
 1
 
 1
 1
 
-1
-1
+-1
+-1
 
 1
 1
 
 -1
-1
+0
 
-1
 1
+0
 
 1
 1
+
+-1
+-1
 
 1
 1
 
+0
 1
--1
 
 1
 -1
 
 1
--1
+1
 
 1
 1
@@ -2417,16 +2357,16 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 -1
 
 1
-1
-
 -1
-1
 
 -1
-1
+-1
 
+1
 1
+
 0
+1
 
 1
 1
@@ -2437,20 +2377,38 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
+0
 -1
-1
 
 1
 1
 
-1
-1
+-1
+-1
 
 -1
-1
+-1
 
+0
+-1
+
+-1
+0
+
+-1
+0
+
 1
 1
+
+-1
+-1
+
+-1
+-1
+
+0
+-1
 
 1
 0
@@ -2458,16 +2416,16 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
--1
+1
 -1
 
 1
--1
+0
 
 1
 1
 
--1
+1
 -1
 
 1
@@ -2479,43 +2437,34 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 -1
 -1
 
-1
 1
-
 -1
-1
 
 1
--1
+1
 
--1
 1
+0
 
 1
 1
 
-0
 1
-
 -1
--1
 
 1
 -1
 
--1
+0
 1
 
-1
 -1
-
 -1
-1
 
--1
--1
+0
+0
 
--1
+1
 -1
 
 1
@@ -2525,10 +2474,7 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 
 1
-0
-
 1
-1
 
 1
 1
@@ -2536,50 +2482,38 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
-1
+-1
 1
 
-1
 -1
-
-1
-1
+0
 
 1
 1
 
 -1
-1
-
-1
 -1
 
 1
 0
 
-1
 1
+-1
 
-1
+-1
 1
 
-1
 1
+-1
 
 1
 -1
 
 -1
-1
-
-1
-1
-
 1
-1
 
-1
 1
+0
 
 1
 1
@@ -2588,16 +2522,16 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 -1
 
 -1
-1
+-1
 
-1
-1
+0
+0
 
 1
 1
 
-0
 1
+0
 
 1
 1
@@ -2605,35 +2539,32 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
--1
 1
+-1
 
 1
 -1
 
-1
+0
 1
 
--1
 1
-
 1
--1
 
 1
-0
-
 -1
--1
 
 -1
+1
+
 -1
+1
 
 1
--1
+1
 
--1
--1
+0
+0
 
 1
 1
@@ -2642,7 +2573,10 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 
 1
+0
+
 0
+1
 
 1
 1
@@ -2650,83 +2584,95 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 -1
 1
 
-1
+0
 -1
 
-1
 1
+0
 
 1
 1
 
--1
 1
+0
 
 1
 -1
 
--1
 -1
-
 1
+
 -1
+-1
 
-0
 -1
+1
 
 1
 1
 
-1
+-1
 1
 
 1
 -1
 
 1
--1
+0
 
 1
 1
 
-1
+0
 1
 
 1
 1
 
-1
 -1
+1
 
 1
--1
+1
 
+0
 -1
+
+1
 1
 
 -1
 -1
 
 -1
-1
+0
 
 -1
 1
 
+0
 1
+
+-1
 1
 
 1
 1
+
+-1
+-1
 
 1
 1
 
 1
+-1
+
+0
 1
 
+0
 -1
-1
 
 1
 1
@@ -2734,7 +2680,7 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
-1
+0
 1
 
 1
@@ -2743,50 +2689,68 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
-1
 -1
+0
 
 1
 1
 
+0
 1
+
+-1
 -1
 
 1
 1
 
-1
 -1
-
 1
-1
 
-1
 1
+0
 
-1
 -1
+-1
 
 0
+1
+
+-1
+-1
+
+-1
 1
 
 1
 -1
 
+0
 -1
+
 -1
+1
 
 1
 1
 
--1
+0
 -1
 
 1
+1
+
 -1
+-1
+
+0
+0
 
 1
 1
+
+-1
+0
 
 1
 1
@@ -2795,6 +2759,9 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 -1
 
 1
+-1
+
+0
 1
 
 1
@@ -2803,11 +2770,17 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
-1
-1
+-1
+-1
 
 1
-1
+-1
+
+-1
+-1
+
+-1
+-1
 
 1
 -1
@@ -2815,23 +2788,26 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
--1
 1
-
 -1
--1
 
 1
 -1
 
+1
 -1
+
+0
 1
 
 1
 1
 
 1
+1
+
 1
+-1
 
 1
 -1
@@ -2852,7 +2828,10 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 
 -1
+1
+
 -1
+0
 
 1
 1
@@ -2860,65 +2839,80 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 0
 1
 
-1
+0
+-1
+
 -1
+-1
 
 1
 1
 
 1
+0
+
+-1
 -1
 
 1
-1
+0
 
 1
 1
 
 1
-1
+0
 
 1
-1
+0
 
+1
 -1
+
 0
+-1
 
 1
 1
 
--1
 1
+1
 
 -1
 -1
 
-1
+-1
 1
 
+1
 1
+
 1
+-1
 
 -1
 1
 
 0
--1
+0
 
 1
-1
+0
 
--1
+1
 -1
 
 1
 0
 
-1
 -1
+1
 
+0
 -1
+
 1
+1
 
 1
 1
@@ -2929,29 +2923,41 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
-1
+0
 1
 
 1
+-1
+
+0
 -1
 
 -1
 -1
 
-0
 1
-
 1
-0
 
+1
 1
+
 -1
+1
 
 1
+-1
+
 1
+-1
 
+0
 1
+
+-1
+0
+
 1
+-1
 
 1
 1
@@ -2962,8 +2968,8 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 1
 1
 
--1
 1
+1
 
 1
 1
@@ -2971,31 +2977,25 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 -1
 1
 
+0
 1
--1
 
-1
 -1
+0
 
-1
 -1
-
-1
 1
 
 1
 1
 
 1
-1
-
-1
-1
+0
 
-1
+-1
 1
 
-0
+-1
 1
 
 1
@@ -3006,6 +3006,6 @@ Player 1 (min) --- UCT, C 2.500, Num iterations 1000, with average backups, usin
 
 domain, max_alg, min_alg ,num_of_games,num_of_draws,num_of_incomplete,max_win,min_win,total_max_win,total_min_win,max_time,min_time,score
 
-0,UCT,UCT,1000,614,0,0.572539,0.427461,221,165,0.005239,0.004885,-0.000000
-** Total UCT nodes 51269359**
+0,UCT,UCT,1000,464,0,0.597015,0.402985,320,216,0.005168,0.004793,-0.000000
+** Total UCT nodes 57532710**
 ** Total BFB nodes 0**
