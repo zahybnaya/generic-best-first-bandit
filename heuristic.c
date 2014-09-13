@@ -66,6 +66,24 @@ static int finerPlayout(int board[2][NUM_PITS+1], int side) {
 }
 
 
+static int finerPlayouts_with_pits(int board[2][NUM_PITS+1], int side){ 
+	int maxScore,minScore,j,val;
+	int dummyBoard[2][NUM_PITS+1];
+	// To avoid clobbering original board, we operate on a copy
+	cloneBoard(board, dummyBoard);
+	// Play randomly to the end
+	while ((val = getGameStatus(dummyBoard)) == MANCALA_INCOMPLETE)
+		makeMove(dummyBoard, &side, pickRandomMove(dummyBoard, side));
+	maxScore = dummyBoard[max][store];
+	minScore = dummyBoard[min][store];
+	//printf("%d %d\n",maxScore,minScore);
+	for (j = 1; j < NUM_PITS+1; j++) {
+		maxScore += dummyBoard[min][j];
+		minScore += dummyBoard[max][j];
+		//printf("%d %d\n",maxScore,minScore);
+	}
+	return maxScore-minScore;
+}
 
 /* Basic heuristic -- returns the difference of the stores. */
 double h1(rep_t rep, int side, int dummy) {
@@ -166,20 +184,25 @@ double h5(rep_t rep, int side, int dummy) {
  * Segmentation - heuristcs
  */
 double h7(rep_t rep, int side, int segmentation) {
-	double fine = h6(rep, side, 1); 
+	int ** board =(int**)rep;
+	TO_REGULAR_ARR(board);
+	double fine = finerPlayouts_with_pits(__board, side); 
+//	printf("fine:%f\n",fine);
+	//double fine = h6(rep,side,1);
 	// ties are persistent
 	if (fine ==0) {
 		return 0;
 	}
 	int sign = fine>0?1:-1; 
-	if (segmentation == MANCALA_MAX_WINS){
-		//printf("fine %f, return %d\n",fine,sign);
-		return sign;
-	}
-	int bucket = abs(fine) / segmentation;  
+	int bucket = (abs(fine)-1) / segmentation;  
 	double start_bucket =bucket*segmentation;
-	double end_bucket   = start_bucket+segmentation-1; 
-	double bucket_value = sign*(start_bucket+end_bucket)/2;
+	double end_bucket   = start_bucket+segmentation; 
+	//double bucket_value = sign*(start_bucket+end_bucket)/2;
+	double bucket_value = sign*end_bucket;
+//	printf("end_bucket %f, start_bucket %f, bucket %d value %f\n",end_bucket,start_bucket,bucket,bucket_value);
+	bucket_value /= MANCALA_MAX_WINS; //Now rescales to {-1,1}
+//	printf("%f\n",bucket_value);
+	assert(bucket_value>=-1 && bucket_value <=1);
 	return bucket_value;
 }
 
