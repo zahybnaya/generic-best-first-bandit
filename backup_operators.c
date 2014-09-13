@@ -7,19 +7,20 @@
 #include "wilcoxon.c"
 
 double standardDeviationAggregated(treeNode *node) {
-	//Use the wikipedia formula
-	int i;
-	int all_visits=0;
-	double var=0.0;
+	int i, all_visits=0;
+	double var=0.0,mu;
 	for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
 		if (node->children[i]){
 			all_visits+=node->children[i]->n;
-			double mu=node->children[i]->scoreSum/node->children[i]->n;
+			mu=node->children[i]->scoreSum/node->children[i]->n;
 			var+=(node->children[i]->n-1)*node->children[i]->ci + node->children[i]->n*pow(mu,2);
+			//printf("var:%f (node->children[i]->n-1):%d,node->children[i]->ci:%f,  node->children[i]->n: %d pow(mu,2):%f\n",var,(node->children[i]->n-1),node->children[i]->ci , node->children[i]->n,pow(mu,2));
 		}
 	}
 	var -= all_visits*pow(node->scoreSum/node->n,2);
-	var = (1/(all_visits-1))*var;
+	//printf("var:%f -=all_visits:%d*pow(node->scoreSum/node->n,2):%f",var,all_visits,pow(node->scoreSum/node->n,2));
+	var = (1/(double)(all_visits-1))*var;
+	//printf("SD: Usuall value would be %f. But we return %f\n",sqrt(node->M2 / (double)(node->n - 1)), var);
 	return var;
 }
 
@@ -65,16 +66,20 @@ void subset_backup_agg(treeNode *node, double ret, int ci_threshold, double (con
 			return;
 		}
 
+
 		double aggScoreSum=0;
 		int aggVisits=0;
 		for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
 			if (node->children[i]) { 
-				aggScoreSum+=node->children[i]->scoreSum/node->children[i]->n;
+				aggScoreSum+=node->children[i]->scoreSum;
 				aggVisits+=node->children[i]->n;
 			}
 		}
 		node->scoreSum =  node->n*(aggScoreSum/aggVisits); //aggregated value
+		//printf("Usuall value would be %f. But we return %f\n",node->realScoreSum,node->scoreSum);
 }
+
+
 
 
 void subset_backup(treeNode *node, double ret, int ci_threshold, double (confidenceMeasure)(treeNode *)) {
