@@ -28,6 +28,20 @@ double standardDeviation(treeNode *node) {
   return sqrt(node->M2 / (double)(node->n - 1));
 }
 
+int t_test(treeNode* n1, treeNode* n2){
+	double x1=n1->scoreSum/n1->n;
+	double x2=n2->scoreSum/n2->n;
+	double s1=n1->M2 / (double)(n1->n - 1);
+	double s2=n2->M2 / (double)(n2->n - 1);
+	double t = (x1-x2)/sqrt(s1/n1->n+s2/n2->n);
+	int k = n1->n>n2->n?n2->n:n1->n;
+	double t_critical = t_values[k - 1];
+	if (abs(t)<t_critical){
+		return 0;
+	}
+	return t>0?1:-1;
+}
+
 double confidenceInterval(treeNode *node) {
   double variance = node->M2 / (double)(node->n - 1);
   double criticalValue;
@@ -38,6 +52,40 @@ double confidenceInterval(treeNode *node) {
     criticalValue = z975;
   
   return 2 * criticalValue * sqrt(variance / (double)node->n);
+}
+
+void inferrior_nodes(treeNode *node, double ret ) {
+	updateStatistics(node, ret);
+	int i,j,infer_i,t;
+	bool inferriors[_DOM->getNumOfChildren(node->rep, node->side)];
+	for (i = 0; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
+		inferriors[i]=false;
+	}
+	for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
+		if (!node->children[i]){
+			continue;
+		} 
+		for (j = i; j < _DOM->getNumOfChildren(node->rep, node->side); j++) {
+			if (!node->children[j]){
+				continue;
+			}
+			t = t_test(node->children[i],node->children[j]);
+			if (t==0){
+				continue;
+			}
+			infer_i=t>0?i:j;
+			inferriors[infer_i]=true;
+		}
+	}
+	double aggScoreSum=0;
+	int aggVisits=0;
+	for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
+		if (inferriors[i]) { 
+			aggScoreSum+=node->children[i]->scoreSum;
+			aggVisits+=node->children[i]->n;
+		}
+	}
+	node->scoreSum =  node->n*(aggScoreSum/aggVisits); //aggregated value
 }
 
 void subset_backup_agg(treeNode *node, double ret, int ci_threshold, double (confidenceMeasure)(treeNode *)) {
