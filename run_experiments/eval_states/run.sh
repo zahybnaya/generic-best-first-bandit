@@ -8,77 +8,39 @@
 
 #!/bin/bash
 
-./evalstates -i 1000   -t 1  -h 3 -g 1  >> states.csv
-./evalstates -i 10000  -t 1  -h 3 -g 1 | awk '{if(NR>1)print}' >> states.csv
-./evalstates -i 100000 -t 1  -h 3 -g 1 | awk '{if(NR>1)print}' >> states.csv
-./evalstates -i 500000 -t 1  -h 3 -g 1 | awk '{if(NR>1)print}' >> states.csv
+cp ../../evalstates . 
+RESULT_FILE="../../results/evalstates/states.csv"
+./evalstates -i 10      -h 3 -g 100 >> $RESULT_FILE
+./evalstates -i 100     -h 3 -g 100 >> $RESULT_FILE
+./evalstates -i 200     -h 3 -g 100 >> $RESULT_FILE
+./evalstates -i 300     -h 3 -g 100 >> $RESULT_FILE
+./evalstates -i 400     -h 3 -g 100 >> $RESULT_FILE
+./evalstates -i 500     -h 3 -g 100 >> $RESULT_FILE
+./evalstates -i 600     -h 3 -g 100 >> $RESULT_FILE
+./evalstates -i 700     -h 3 -g 100 >> $RESULT_FILE
+./evalstates -i 800     -h 3 -g 100 >> $RESULT_FILE
+./evalstates -i 900     -h 3 -g 100 >> $RESULT_FILE
+./evalstates -i 1000    -h 3 -g 100 >> $RESULT_FILE
+./evalstates -i 2000    -h 3 -g 100 >> $RESULT_FILE
+./evalstates -i 3000    -h 3 -g 100 >> $RESULT_FILE
+./evalstates -i 4000    -h 3 -g 100 >> $RESULT_FILE
+./evalstates -i 5000    -h 3 -g 100 >> $RESULT_FILE
+./evalstates -i 10000   -h 3 -g 100 >> $RESULT_FILE
+./evalstates -i 100000  -h 3 -g 100 >> $RESULT_FILE
+./evalstates -i 500000  -h 3 -g 100 >> $RESULT_FILE
 
-./evalstates -i 1000   -t 10  -h 3 -g 1 | awk '{if(NR>1)print}' >> states.csv
-./evalstates -i 10000  -t 10  -h 3 -g 1 | awk '{if(NR>1)print}' >> states.csv
-./evalstates -i 100000 -t 10  -h 3 -g 1 | awk '{if(NR>1)print}' >> states.csv
-./evalstates -i 500000 -t 10  -h 3 -g 1 | awk '{if(NR>1)print}' >> states.csv
 
-./evalstates -i 1000   -t 30  -h 3 -g 1  | awk '{if(NR>1)print}'>> states.csv
-./evalstates -i 10000  -t 30  -h 3 -g 1  | awk '{if(NR>1)print}'>> states.csv
-./evalstates -i 100000 -t 30  -h 3 -g 1  | awk '{if(NR>1)print}'>> states.csv
-./evalstates -i 500000 -t 30  -h 3 -g 1  | awk '{if(NR>1)print}'>> states.csv
 
-./evalstates -i 1000   -t 1  -h 6 -g 1  | awk '{if(NR>1)print}'>> states.csv
-./evalstates -i 10000  -t 1  -h 6 -g 1  | awk '{if(NR>1)print}'>> states.csv
-./evalstates -i 100000 -t 1  -h 6 -g 1  | awk '{if(NR>1)print}'>> states.csv
-./evalstates -i 500000 -t 1  -h 6 -g 1  | awk '{if(NR>1)print}'>> states.csv
 
-./evalstates -i 1000   -t 10  -h 6 -g 1 | awk '{if(NR>1)print}' >> states.csv
-./evalstates -i 10000  -t 10  -h 6 -g 1 | awk '{if(NR>1)print}' >> states.csv
-./evalstates -i 100000 -t 10  -h 6 -g 1 | awk '{if(NR>1)print}' >> states.csv
-./evalstates -i 500000 -t 10  -h 6 -g 1 | awk '{if(NR>1)print}' >> states.csv
 
-./evalstates -i 1000   -t 30  -h 6 -g 1 | awk '{if(NR>1)print}' >> states.csv
-./evalstates -i 10000  -t 30  -h 6 -g 1 | awk '{if(NR>1)print}' >> states.csv
-./evalstates -i 100000 -t 30  -h 6 -g 1 | awk '{if(NR>1)print}' >> states.csv
-./evalstates -i 500000 -t 30  -h 6 -g 1 | awk '{if(NR>1)print}' >> states.csv
 
-# ./evalstates -i 1000   -t 10  -h 3 -g 50 >> states.csv
-# ./evalstates -i 10000  -t 10  -h 3 -g 50 >> states.csv
-# ./evalstates -i 100000 -t 10  -h 3 -g 50 >> states.csv
-# ./evalstates -i 500000 -t 10  -h 3 -g 50 >> states.csv
-# 
-# ./evalstates -i 1000   -t 30  -h 3 -g 50 >> states.csv
-# ./evalstates -i 10000  -t 30  -h 3 -g 50 >> states.csv
-# ./evalstates -i 100000 -t 30  -h 3 -g 50 >> states.csv
-# ./evalstates -i 500000 -t 30  -h 3 -g 50 >> states.csv
-# 
-# ./evalstates -i 1000   -t 50  -h 3 -g 50 >> states.csv
-# ./evalstates -i 10000  -t 50  -h 3 -g 50 >> states.csv
-# ./evalstates -i 100000 -t 50  -h 3 -g 50 >> states.csv
-# ./evalstates -i 500000 -t 50  -h 3 -g 50 >> states.csv
-# 
-# ./evalstates -i 1000   -t 100 -h 3 -g 50 >> states.csv
-# ./evalstates -i 10000  -t 100 -h 3 -g 50 >> states.csv
-# ./evalstates -i 100000 -t 100 -h 3 -g 50 >> states.csv
-# ./evalstates -i 500000 -t 100 -h 3 -g 50 >> states.csv
-# 
-# ./evalstates -i 1000   -t 10  -h 6 -g 50 >> states.csv
-# ./evalstates -i 10000  -t 10  -h 6 -g 50 >> states.csv
-# ./evalstates -i 100000 -t 10  -h 6 -g 50 >> states.csv
-# ./evalstates -i 500000 -t 10  -h 6 -g 50 >> states.csv
-# 
-# ./evalstates -i 1000   -t 30  -h 6 -g 50 >> states.csv
-# ./evalstates -i 10000  -t 30  -h 6 -g 50 >> states.csv
-# ./evalstates -i 100000 -t 30  -h 6 -g 50 >> states.csv
-# ./evalstates -i 500000 -t 30  -h 6 -g 50 >> states.csv
-# 
-# ./evalstates -i 1000   -t 50  -h 6 -g 50 >> states.csv
-# ./evalstates -i 10000  -t 50  -h 6 -g 50 >> states.csv
-# ./evalstates -i 100000 -t 50  -h 6 -g 50 >> states.csv
-# ./evalstates -i 500000 -t 50  -h 6 -g 50 >> states.csv
-# 
-# ./evalstates -i 1000   -t 100 -h 6 -g 50 >> states.csv
-# ./evalstates -i 10000  -t 100 -h 6 -g 50 >> states.csv
-# ./evalstates -i 100000 -t 100 -h 6 -g 50 >> states.csv
-# ./evalstates -i 500000 -t 100 -h 6 -g 50 >> states.csv
-# 
-# ./evalstates -i 1000   -t 1000 -h 6 -g 50 >> states.csv
-# ./evalstates -i 10000  -t 10000 -h 6 -g 50 >> states.csv
-# ./evalstates -i 100000 -t 100000 -h 6 -g 50 >> states.csv
-# ./evalstates -i 500000 -t 500000 -h 6 -g 50 >> states.csv
+
+
+
+
+
+
+
+
+
+
