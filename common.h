@@ -72,6 +72,7 @@ typedef struct timeval Timer;
 typedef void* rep_t;
 typedef unsigned int uid;
 typedef double (*heuristics_t) (rep_t rep, int, int);
+typedef unsigned short int BOOL;
 
 // Macros
 #define MISSING(x) { printf("Missing argument for option %s\n", x); return 0; }

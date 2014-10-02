@@ -15,13 +15,18 @@ ggames: common.h domain ggp genericGames.c uct.c uct.h minmax.c heuristic.c move
 	g++ ggp.o games.o -o ggames
 	rm genericGames.c.o uct.c.o backup_operators.c.o bfb.c.o sts.c.o cits.c.o brue.c.o type.c.o util.c.o value_iteration.c.o domain.o ggp.o games.o
 	
-evalstates: common.h domain evalstates.c uct.c minmax.c heuristic.c move.c board.c phi.c util.c random.c bfb.c brue.c type.h type.c sts.c cits.c 
-	gcc evalstates.c  util.c value_iteration.c  domain.o -o evalstates $(CFLAGS) 
-		
+
+evalstates: common.h ggp domain evalstates.c uct.c minmax.c backup_operators.c heuristic.c move.c board.c phi.c util.c random.c bfb.c brue.c type.h type.c sts.c cits.c 
+	gcc -c evalstates.c -o evalstates.c.o ${CFLAGS}
+	gcc -c util.c -o util.o ${CFLAGS}
+	gcc -c value_iteration.c -o value_iteration.o ${CFLAGS}
+	ld -r evalstates.c.o util.o value_iteration.o domain.o -o evalstates.o
+	g++ ggp.o evalstates.o -o evalstates
+
 trackrewards: common.h domain trackrewards.c uct.c minmax.c heuristic.c move.c board.c phi.c util.c random.c bfb.c brue.c type.h type.c sts.c cits.c 
 	gcc trackrewards.c  util.c value_iteration.c  backup_operators.c domain.o -o trackrewards $(CFLAGS) 
 	
-domain: synth mancala zop c4 sailing domain.c domain.h
+domain: mancala synth zop c4 sailing domain.c domain.h
 	gcc -c domain.c -o tmpdomain.o $(CFLAGS) 
 	ld -r tmpdomain.o synth.o mancala.o zop.o c4.o sailing.o -o domain.o
 	rm tmpdomain.o	

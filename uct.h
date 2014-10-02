@@ -1,3 +1,5 @@
+#ifndef  __MANCALA__H__
+#define  __MANCALA__H__
 #define SIMPLE_REGRET_UCT 0 //set to 1 to enable a different algorithm (see minimizing simple regret in MCTS)
 #define z975 1.96
 
@@ -41,5 +43,7 @@ void subset_backup_agg(treeNode *node, double ret, int ci_threshold, double (con
 double avgRewards(treeNode *node);
 double assignedScore(treeNode *node);
 double standardDeviation(treeNode *node);
-double standardDeviationAggregated(treeNode *node);
+double standardDeviationAggregated(treeNode *node,BOOL i[]);
 double confidenceInterval(treeNode *node);
+
+#endif

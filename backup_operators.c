@@ -6,18 +6,20 @@
 #include "t_values.c"
 #include "wilcoxon.c"
 
-double standardDeviationAggregated(treeNode *node) {
+static double supperrior_sum(treeNode* node, BOOL inferriors[], double* outAggScoreSum,int* outAggVisits );
+double standardDeviationAggregated(treeNode *node,BOOL inferriors[]) {
 	int i, all_visits=0;
-	double var=0.0,mu;
+	double var=0.0,mu,mux=0;
 	for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
-		if (node->children[i]){
+		if (!inferriors[i] && node->children[i]){
 			all_visits+=node->children[i]->n;
 			mu=node->children[i]->scoreSum/node->children[i]->n;
+			mux+=node->children[i]->scoreSum;
 			var+=(node->children[i]->n-1)*node->children[i]->ci + node->children[i]->n*pow(mu,2);
 			//printf("var:%f (node->children[i]->n-1):%d,node->children[i]->ci:%f,  node->children[i]->n: %d pow(mu,2):%f\n",var,(node->children[i]->n-1),node->children[i]->ci , node->children[i]->n,pow(mu,2));
 		}
 	}
-	var -= all_visits*pow(node->scoreSum/node->n,2);
+	var -= pow(mux,2)/all_visits;
 	//printf("var:%f -=all_visits:%d*pow(node->scoreSum/node->n,2):%f",var,all_visits,pow(node->scoreSum/node->n,2));
 	var = (1/(double)(all_visits-1))*var;
 	//printf("SD: Usuall value would be %f. But we return %f\n",sqrt(node->M2 / (double)(node->n - 1)), var);
@@ -28,16 +30,20 @@ double standardDeviation(treeNode *node) {
   return sqrt(node->M2 / (double)(node->n - 1));
 }
 
-int t_test(treeNode* n1, treeNode* n2){
+int t_test(treeNode* n1, treeNode* n2, double(sd_calc)(treeNode*),int side){
 	double x1=n1->scoreSum/n1->n;
 	double x2=n2->scoreSum/n2->n;
-	double s1=n1->M2 / (double)(n1->n - 1);
-	double s2=n2->M2 / (double)(n2->n - 1);
+	double s1=sd_calc(n1);
+	double s2=sd_calc(n2);
 	double t = (x1-x2)/sqrt(s1/n1->n+s2/n2->n);
 	int k = n1->n>n2->n?n2->n:n1->n;
+	k = k>(int)(sizeof(t_values)/sizeof(double)-1)?(int)(sizeof(t_values)/sizeof(double)-1):k;
 	double t_critical = t_values[k - 1];
 	if (abs(t)<t_critical){
 		return 0;
+	}
+	if (side==min) {
+		t*=-1;
 	}
 	return t>0?1:-1;
 }
@@ -54,13 +60,17 @@ double confidenceInterval(treeNode *node) {
   return 2 * criticalValue * sqrt(variance / (double)node->n);
 }
 
-void inferrior_nodes(treeNode *node, double ret ) {
-	updateStatistics(node, ret);
-	int i,j,infer_i,t;
-	bool inferriors[_DOM->getNumOfChildren(node->rep, node->side)];
-	for (i = 0; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
-		inferriors[i]=false;
-	}
+
+static double getCi(treeNode* n){return n->ci;};
+
+
+/**
+ * Fills the boolean of which child is inferrior according to t test
+ * */
+void detect_inferriors(treeNode* node,BOOL inferriors[])
+{
+	int i,j,infer_i;
+	double t;
 	for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
 		if (!node->children[i]){
 			continue;
@@ -69,23 +79,108 @@ void inferrior_nodes(treeNode *node, double ret ) {
 			if (!node->children[j]){
 				continue;
 			}
-			t = t_test(node->children[i],node->children[j]);
+			t = t_test(node->children[i],node->children[j],getCi,node->side);
 			if (t==0){
 				continue;
 			}
-			infer_i=t>0?i:j;
+			infer_i=t>0?j:i; // positive means i > j
+			int other = infer_i==i?j:i;
+			assert(node->side==max?((node->children[infer_i]->scoreSum/node->children[infer_i]->n) <
+				       (node->children[other]->scoreSum/node->children[other]->n)):
+				       ((node->children[infer_i]->scoreSum/node->children[infer_i]->n) >
+				       (node->children[other]->scoreSum/node->children[other]->n))
+				       );
 			inferriors[infer_i]=true;
 		}
 	}
+}
+
+/**
+ *  Returns the cdp value of the tree
+ *  Recursively computes the cdp value of the UCT-constructed tree rooted at 'node' 
+ **/
+double cdp_tree_value(treeNode* node){
+	int i;
+	double val;
+	assert(node != NULL);
+	if ((val = _DOM->getGameStatus(node->rep)) != _DOM->incomplete){
+		node->ci = 0;
+		node->scoreSum = val/_DOM->max_wins;//rescale
+		return node->scoreSum;
+	}
+	if (node->n == 1) {
+	  assert((node->scoreSum > _DOM->min_wins) && (node->scoreSum < _DOM->max_wins)); // make sure heuristic is bounded by terminal node values
+	  node->ci=0;
+	  return node->scoreSum; // the node was already evaluated when doing UCT, so just use that value
+	}
+	int count_children = _DOM->getNumOfChildren(node->rep, node->side);
+	BOOL* inferriors = (BOOL*)calloc(count_children,sizeof(BOOL));
+	for (i = 1; i < count_children; i++) {
+		treeNode* child=node->children[i];
+		if (child) { // only descend if child exists
+			val = cdp_tree_value(child); 
+		}
+	}
+	//printf("BEFORE*INFER:[");
+	//for (i = 0; i < count_children; i++) {
+	//	printf("%d", inferriors[i]);
+	//}
+	//printf("]\n");
+	detect_inferriors(node,inferriors);
+//	printf("INFER:[");
+//	for (i = 0; i < count_children; i++) {
+//		printf("%d", inferriors[i]);
+//	}
+//	printf("]\n");
+	node->ci = standardDeviationAggregated(node,inferriors);
+	double sum = supperrior_sum(node,inferriors,&node->scoreSum,&node->n);
+	free(inferriors);
+	return sum;
+}
+
+static double calculateFirstReward(treeNode* node)
+{
 	double aggScoreSum=0;
-	int aggVisits=0;
+	int aggVisits=0,i;
 	for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
-		if (inferriors[i]) { 
+		if (node->children[i]) { 
+			aggScoreSum+=node->children[i]->realScoreSum;
+			aggVisits+=node->children[i]->n;
+		}
+	}
+	//assert(node->n-aggVisits==1);
+	return (node->realScoreSum - aggScoreSum);
+}
+
+static double supperrior_sum(treeNode* node, BOOL inferriors[], double* outAggScoreSum,int* outAggVisits )
+{
+	double firstReward=calculateFirstReward(node);
+	double aggScoreSum=0;
+	int aggVisits=0,i;
+	for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
+		if (!inferriors[i] &&  node->children[i]) { 
 			aggScoreSum+=node->children[i]->scoreSum;
 			aggVisits+=node->children[i]->n;
 		}
 	}
-	node->scoreSum =  node->n*(aggScoreSum/aggVisits); //aggregated value
+	*outAggVisits = aggVisits+1;
+	*outAggScoreSum = aggScoreSum+firstReward;
+	return (*outAggScoreSum/ *outAggVisits ) ;
+}
+
+
+void inferrior_nodes(treeNode *node, double ret ) {
+	updateStatistics(node, ret);
+	int i;
+	BOOL inferriors[_DOM->getNumOfChildren(node->rep, node->side)];
+	for (i = 0; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
+		inferriors[i]=false;
+	}
+	detect_inferriors(node,inferriors);
+	double* dummy1=0; 
+	int* dummy2=0;
+	int ss = supperrior_sum(node,inferriors,dummy1,dummy2);  
+	node->scoreSum =  node->n*ss;
 }
 
 void subset_backup_agg(treeNode *node, double ret, int ci_threshold, double (confidenceMeasure)(treeNode *)) {

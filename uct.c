@@ -241,8 +241,8 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 	else if (backupOp == CI)
 		ci_backup(node, ret, ci_threshold);
 	else if (backupOp == VARIANCE_ALL)
-		//subset_backup(node, ret, ci_threshold, standardDeviation);
-		subset_backup_agg(node,ret,ci_threshold, standardDeviationAggregated);
+		subset_backup(node, ret, ci_threshold, standardDeviation);
+		//subset_backup_agg(node,ret,ci_threshold, standardDeviationAggregated);
 	else if (backupOp == VARIANCE)
 		variance_backup(node, ret, ci_threshold);
 	else if (backupOp == SIZE)
@@ -417,6 +417,10 @@ static double minmaxUCT(treeNode* node) {
 
 	return bestScore;
 }
+
+
+
+
 
 //Value and confidence interval
 typedef struct vci {
