@@ -187,7 +187,7 @@ double h7(rep_t rep, int side, int segmentation) {
 	int ** board =(int**)rep;
 	TO_REGULAR_ARR(board);
 	double fine = finerPlayouts_with_pits(__board, side); 
-//	printf("fine:%f\n",fine);
+	//printf("fine:%f\n",fine);
 	//double fine = h6(rep,side,1);
 	// ties are persistent
 	if (fine ==0) {
@@ -196,12 +196,11 @@ double h7(rep_t rep, int side, int segmentation) {
 	int sign = fine>0?1:-1; 
 	int bucket = (abs(fine)-1) / segmentation;  
 	double start_bucket =bucket*segmentation;
-	double end_bucket   = start_bucket+segmentation; 
-	//double bucket_value = sign*(start_bucket+end_bucket)/2;
+	double end_bucket   =MIN(start_bucket+segmentation, MANCALA_MAX_WINS); 
 	double bucket_value = sign*end_bucket;
-//	printf("end_bucket %f, start_bucket %f, bucket %d value %f\n",end_bucket,start_bucket,bucket,bucket_value);
+	//printf("end_bucket %f, start_bucket %f, bucket %d value %f\n",end_bucket,start_bucket,bucket,bucket_value);
 	bucket_value /= MANCALA_MAX_WINS; //Now rescales to {-1,1}
-//	printf("%f\n",bucket_value);
+	//printf("%f\n",bucket_value);
 	assert(bucket_value>=-1 && bucket_value <=1);
 	return bucket_value;
 }

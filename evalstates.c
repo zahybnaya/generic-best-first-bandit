@@ -23,6 +23,8 @@ void printMsg() {
 	puts(" -t ci minimal threshold ");
 	puts(" -i number of iterations ") ;
 	puts(" -s seed ") ;
+	puts(" -b segmentation for h4 ") ;
+	puts(" -c exploration constant (9999 for random)") ;
 	puts(" -h heuristic ") ;
 	puts(" -gs gold standard level ") ;
 }
@@ -39,7 +41,7 @@ int executeFoldTrees(int argc, char* argv[]) {
 	rep_t testState;
 
 	/* defaults */
-	_DOM = init_domain(MANCALA); //currently mancala
+	_DOM = init_domain(MANCALA); 
 	int numGames = 10;
 	rep_t dummy1 = 0;
 	int dummy2= 0;
@@ -47,10 +49,11 @@ int executeFoldTrees(int argc, char* argv[]) {
 	int bestMoves[children_count];
 	int numIterations = 5000;
 	heuristics_t heuristic =  _DOM->hFunctions.h3;
-	int budget[2] = {1,1};
 	int noisyMM = false;
-	double C[2] = {2.5,2.5};
+	double C = 2.5;
 	int gs_level = 12,hfunc=3;
+	int segmentation = 1;
+	int budget[2] = {1,1};
 	double termPercentage;
 	int ci_threshold = 30;
 	int randomTieBreaks = false; // determine whether the MM player will break ties randomly
@@ -64,10 +67,14 @@ int executeFoldTrees(int argc, char* argv[]) {
 			numGames = atoi(argv[++arg]);
 		}else if (strcmp(argv[arg],"-t")==0){
 			ci_threshold = atoi(argv[++arg]);
+		}else if (strcmp(argv[arg],"-c")==0){
+			C = atof(argv[++arg]);
 		} else if (strcmp(argv[arg],"-i")==0){
 			numIterations = atoi(argv[++arg]);
 		} else if (strcmp(argv[arg],"-s")==0){
 			seed = (unsigned int)atoi(argv[++arg]);
+		} else if (strcmp(argv[arg],"-b")==0){
+			segmentation = (unsigned int)atoi(argv[++arg]);
 		} else if (strcmp(argv[arg],"-gs")==0){
 			gs_level = atoi(argv[++arg]);
 		} else if (strcmp(argv[arg],"-h")==0){
@@ -96,30 +103,27 @@ int executeFoldTrees(int argc, char* argv[]) {
 
 	}
 	
+	budget[0] = segmentation;
+	budget[1] = segmentation;
 	//printf("Seed, Instance, GS_level,  CI_Threshold, iterations, H , GS_Move, GS_Move_Val, CIB_Parental_Percantage , CIB_Average_depth, CIB_Min_Depth, CIB_Tree_Depth, CIB_Move, CIB_Move_Val, CIB_GS_Move_Val, UCT_Move, UCT_Move_Val, UCT_GS_Move_Val, Parental_Percantage , Average_depth, Min_Depth, Tree_Depth, CI_Move, CI_Move_Val, CI_GS_Move_Val, MMF_Move, MMF_Move_Val, MMF_GS_Val\n");
 	
 	//Header for tree building algorithms
-	printf("Seed, Instance, GS_level,  Iterations, H , GS_Move, GS_Move_Val,");
-	printf(" UCT_Move, UCT_Move_Val, UCT_GS_Move_Val,");
-	printf(" CDP_Move, CDP_Move_Val, CDP_GS_Move_Val,");
-       	printf(" MM_Move, MM_Move_Val, MM_GS_Move_Val\n");
-
+	printf("Seed, Instance, GS_level,  Iterations, H ,Segmentation, GS_Move, GS_Move_Val,");
+	printf(" UCT_value, CDP_value, MM_value\n");
 	double *mmVals = (double*)calloc(children_count, sizeof(double));
-	
 	for (s = 0; s < numGames; s++) {
 		srandom(seed+s);
 		testState = _DOM->allocate();
 		_DOM->generateRandomStart(testState,&side);
-		//Seed, Instance, GS_level,  CI_Threshold, iterations, h
-		printf("%d, %d, %d, %d, h%d", seed+s, s, gs_level,  numIterations, hfunc);
-		//Make minmax move to depth 16
+		//Seed, Instance, GS_level,  CI_Threshold, iterations, h, seg
+		printf("%d, %d, %d, %d, h%d, %d", seed+s, s, gs_level,  numIterations, hfunc,segmentation );
 		side = max;
 		makeMinmaxMove(testState, &side, gs_level , heuristic, budget[side], randomTieBreaks, noisyMM, bestMoves, &numBestMoves, &termPercentage, mmVals);
 		int goldStandard = maxVal(mmVals,children_count);
 		//GS_Move, GS_Move_Val,
 		printf(" , %d, %f, ", goldStandard , mmVals[goldStandard]);
 		side = max;
-		foldTree(testState, &side, numIterations, C[side], heuristic, budget[side], ci_threshold, goldStandard);
+		foldTree(testState, &side, numIterations, C, heuristic, budget[side], ci_threshold, goldStandard);
 		_DOM->destructRep(testState);
 	}
 	
@@ -266,10 +270,14 @@ treeNode* buildUCTTree(rep_t rep, int *side, int numIterations, double C,
 	int i;
 	int parentCIWin=0,parentCITotal=0,minDepth=INF,treeDepth=0;
 	double avgDepth=0;
-	
 	treeNode* rootNode = createRootNode(side,rep);
-	for (i = 0; i < numIterations; i++)
-		uctRecurse(rootNode, C, heuristic, budget, backOp, true, ci_threshold, &parentCIWin, &parentCITotal, &avgDepth, &minDepth, &treeDepth);
+	if (C==9999){
+		for (i = 0; i < numIterations; i++)
+			uctRecurseRandom(rootNode, C, heuristic, budget, backOp, true, ci_threshold, &parentCIWin, &parentCITotal, &avgDepth, &minDepth, &treeDepth);
+	}else{
+		for (i = 0; i < numIterations; i++)
+			uctRecurse(rootNode, C, heuristic, budget, backOp, true, ci_threshold, &parentCIWin, &parentCITotal, &avgDepth, &minDepth, &treeDepth);
+	}
 	if (backOp == CI || backOp == WEIGHTED_MM) {
 	  printf("%f , %f, %d, %d, " ,parentCIWin / (double)parentCITotal, avgDepth, minDepth, treeDepth);
 	}
@@ -296,57 +304,52 @@ void foldTree(rep_t rep, int *side, int numIterations, double C,
 		int budget,
 		int ci_threshold, 
 	    	int goldStandard) {
-	int i;
 	treeNode* tree = buildUCTTree(rep, side, numIterations, C, heuristic, budget, AVERAGE, INF);
-	const int children_count = _DOM->getNumOfChildren(rep,*side); 
-	double* uct_vals = (double*)calloc(children_count,sizeof(double));
-	if (uct_vals==0){puts(" uct_vals not allocated ");}
-	double* uct_mm_vals = (double*)calloc(children_count,sizeof(double));
-	if (uct_mm_vals==0){puts(" uct_mm_vals not allocated ");}
-	double* uct_cdp_vals = (double*)calloc(children_count,sizeof(double));
-	if (uct_cdp_vals==0){puts(" uct_cdp_vals not allocated ");}
-	
-	for (i = 1; i < children_count; i++) {
-		//printf(" i=%d \n", i); 
-		if (tree->children[i]) { // if this child was explored
-			//printf("assigning to i=%d, ", i-1); 
-			uct_vals[i-1]= tree->children[i]->scoreSum / (double)tree->children[i]->n;
-			uct_mm_vals[i-1]= minmaxUCT(tree->children[i]);
-			//vci *VCI = vciMinmaxUCT(tree->children[i], ci_threshold,&parentCIWin,&parentCITotal,&avgDepth,&minDepth,&treeDepth); // do a minmax backup this child
-			//uct_ci_vals[i-1] = weightedMM(tree->children[i],heuristic);
-			uct_cdp_vals[i-1] = cdp_tree_value(tree->children[i]);
-			//free(VCI);
-			
-		}else {
-			assert(i>0);
-			//printf("assigning to i=%d, ", i-1); 
-			uct_vals[i-1]=uct_mm_vals[i-1]=uct_cdp_vals[i-1] = -1*INF;
-		}
-		// negamax
-		if (*side == min){
-			uct_vals[i-1]= -uct_vals[i-1];
-			uct_mm_vals[i-1]= -uct_mm_vals[i-1];
-			uct_cdp_vals[i-1]= -uct_cdp_vals[i-1];
-		}
-	//printf(" **i=%d \n", i); 
-	}
-	int bestMoveOfUct = maxVal(uct_vals,children_count-1);
-	int bestMoveOfUct_mm = maxVal(uct_mm_vals,children_count-1);
-	int bestMoveOfUct_cdp = maxVal(uct_cdp_vals,children_count-1);
-
-	//UCT_Move, UCT_Move_Val, UCT_GS_Move_Val, 
-	printf("%d, ", bestMoveOfUct); 
-	printf("%f, ", uct_vals[bestMoveOfUct]); 
-	//printf("\ngoldStandard: %d uct_vals[goldStandard] %f \n ", goldStandard, uct_vals[goldStandard]); 
-	printf("%f, ", uct_vals[goldStandard]); 
-	///printf("\nGoldstandard %d, children_count %d\n", goldStandard, children_count); 
-	//CDP_Move, CDP_Move_Val, CDP_GS_Move_Val, 
-	printf("%d, %f , %f, ",bestMoveOfUct_cdp, uct_cdp_vals[bestMoveOfUct_cdp], uct_cdp_vals[goldStandard]); 
-	//MMF_Move, MMF_Move_Val, MMF_GS_Val\n");
-	printf("%d, %f , %f\n",bestMoveOfUct_mm, uct_mm_vals[bestMoveOfUct_mm], uct_mm_vals[goldStandard]); 
-	free(uct_vals);
-	free(uct_mm_vals);
-	free(uct_cdp_vals);
+	double uct_value = tree->scoreSum/tree->n ;
+	double mm_value  = minmaxUCT(tree);
+//	double cdp_value = cdp_tree_value(tree,t_test);
+	double cdp_value = cdp_tree_value(tree,variance_test);
+	printf("%f, ", uct_value); 
+	printf("%f, ", cdp_value ); 
+	printf("%f\n ", mm_value ); 
+//	const int children_count = _DOM->getNumOfChildren(rep,*side); 
+//	double* uct_vals = (double*)calloc(children_count,sizeof(double));
+//	if (uct_vals==0){puts(" uct_vals not allocated ");}
+//	double* uct_mm_vals = (double*)calloc(children_count,sizeof(double));
+//	if (uct_mm_vals==0){puts(" uct_mm_vals not allocated ");}
+//	double* uct_cdp_vals = (double*)calloc(children_count,sizeof(double));
+//	if (uct_cdp_vals==0){puts(" uct_cdp_vals not allocated ");}
+//
+//	for (i = 1; i < children_count; i++) {
+//		//printf(" i=%d \n", i); 
+//		if (tree->children[i]) { // if this child was explored
+//			//printf("assigning to i=%d, ", i-1); 
+//			uct_vals[i-1]= tree->children[i]->scoreSum / (double)tree->children[i]->n;
+//			uct_mm_vals[i-1]= minmaxUCT(tree->children[i]);
+//			//vci *VCI = vciMinmaxUCT(tree->children[i], ci_threshold,&parentCIWin,&parentCITotal,&avgDepth,&minDepth,&treeDepth); // do a minmax backup this child
+//			//uct_ci_vals[i-1] = weightedMM(tree->children[i],heuristic);
+//			uct_cdp_vals[i-1] = cdp_tree_value(tree->children[i]);
+//			//free(VCI);
+//			
+//		}else {
+//			assert(i>0);
+//			//printf("assigning to i=%d, ", i-1); 
+//			uct_vals[i-1]=uct_mm_vals[i-1]=uct_cdp_vals[i-1] = -1*INF;
+//		}
+//		// negamax
+//		if (*side == min){
+//			uct_vals[i-1]= -uct_vals[i-1];
+//			uct_mm_vals[i-1]= -uct_mm_vals[i-1];
+//			uct_cdp_vals[i-1]= -uct_cdp_vals[i-1];
+//		}
+//	//printf(" **i=%d \n", i); 
+//	}
+//	int bestMoveOfUct = maxVal(uct_vals,children_count-1);
+//	int bestMoveOfUct_mm = maxVal(uct_mm_vals,children_count-1);
+//	int bestMoveOfUct_cdp = maxVal(uct_cdp_vals,children_count-1);
+//	free(uct_vals);
+//	free(uct_mm_vals);
+//	free(uct_cdp_vals);
 	freeTree(tree);
 }
 

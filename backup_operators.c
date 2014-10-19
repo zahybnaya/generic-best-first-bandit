@@ -6,7 +6,14 @@
 #include "t_values.c"
 #include "wilcoxon.c"
 
+typedef int(*inferrior_criterion)(treeNode* n1, treeNode* n2, double(sd_calc)(treeNode*),int side);
+
 static double supperrior_sum(treeNode* node, BOOL inferriors[], double* outAggScoreSum,int* outAggVisits );
+
+
+/**
+ * Returns the combined variance of all non-inferrior children
+ * */
 double standardDeviationAggregated(treeNode *node,BOOL inferriors[]) {
 	int i, all_visits=0;
 	double var=0.0,mu,mux=0;
@@ -21,7 +28,9 @@ double standardDeviationAggregated(treeNode *node,BOOL inferriors[]) {
 	}
 	var -= pow(mux,2)/all_visits;
 	//printf("var:%f -=all_visits:%d*pow(node->scoreSum/node->n,2):%f",var,all_visits,pow(node->scoreSum/node->n,2));
-	var = (1/(double)(all_visits-1))*var;
+	if (all_visits>1){
+		var = (1/(double)(all_visits-1))*var;
+	}
 	//printf("SD: Usuall value would be %f. But we return %f\n",sqrt(node->M2 / (double)(node->n - 1)), var);
 	return var;
 }
@@ -30,14 +39,34 @@ double standardDeviation(treeNode *node) {
   return sqrt(node->M2 / (double)(node->n - 1));
 }
 
+
+
+int satterthaiteWelch(double s1, double s2, int n1, int n2){
+	if (n1==1 || n2==1){
+		return 1;
+	}
+	double df = pow(s1/n1 + s2/n2,2);
+	if (df>0) {
+		double denom = pow(s1/n1,2)/(n1-1) +  pow(s2/n2,2)/(n2-1); 
+		if (denom > 0){
+		//	printf("%f:%f=%d   s1:%f,s2:%f,n1:%d,n2:%d  \n",df,denom,(int)(df/denom),s1,s2,n1,n2);
+			return df/denom; 
+		}
+	}
+	return 1;
+}
+
+
 int t_test(treeNode* n1, treeNode* n2, double(sd_calc)(treeNode*),int side){
 	double x1=n1->scoreSum/n1->n;
 	double x2=n2->scoreSum/n2->n;
 	double s1=sd_calc(n1);
 	double s2=sd_calc(n2);
 	double t = (x1-x2)/sqrt(s1/n1->n+s2/n2->n);
-	int k = n1->n>n2->n?n2->n:n1->n;
+	int k =  satterthaiteWelch(s1,s2,n1->n,n2->n);
+	//printf("size of t values: %d sw result: %d",(int)(sizeof(t_values)/sizeof(double)-1),k);
 	k = k>(int)(sizeof(t_values)/sizeof(double)-1)?(int)(sizeof(t_values)/sizeof(double)-1):k;
+	//printf("k ending up being: %d\n",k-1);
 	double t_critical = t_values[k - 1];
 	if (abs(t)<t_critical){
 		return 0;
@@ -61,13 +90,24 @@ double confidenceInterval(treeNode *node) {
 }
 
 
-static double getCi(treeNode* n){return n->ci;};
+double getCi(treeNode* n){return n->ci;};
 
+
+int variance_test(treeNode* n1,treeNode* n2,double(sd_calc)(treeNode*),int side){
+  if (sd_calc(n1) < sd_calc(n2)){
+	  double n1_val = n1->scoreSum/n1->n;
+	  double n2_val = n2->scoreSum/n2->n;
+	  if ((side == max)? (n1_val > n2_val) :  (n2_val > n1_val)){
+		  return 1;
+	  }
+  }
+  return 0;
+}
 
 /**
  * Fills the boolean of which child is inferrior according to t test
  * */
-void detect_inferriors(treeNode* node,BOOL inferriors[])
+void detect_inferriors(treeNode* node,BOOL inferriors[], inferrior_criterion criterion )
 {
 	int i,j,infer_i;
 	double t;
@@ -79,7 +119,7 @@ void detect_inferriors(treeNode* node,BOOL inferriors[])
 			if (!node->children[j]){
 				continue;
 			}
-			t = t_test(node->children[i],node->children[j],getCi,node->side);
+			t = criterion(node->children[i],node->children[j],getCi,node->side);
 			if (t==0){
 				continue;
 			}
@@ -99,7 +139,7 @@ void detect_inferriors(treeNode* node,BOOL inferriors[])
  *  Returns the cdp value of the tree
  *  Recursively computes the cdp value of the UCT-constructed tree rooted at 'node' 
  **/
-double cdp_tree_value(treeNode* node){
+double cdp_tree_value(treeNode* node,inferrior_criterion criterion){
 	int i;
 	double val;
 	assert(node != NULL);
@@ -118,24 +158,28 @@ double cdp_tree_value(treeNode* node){
 	for (i = 1; i < count_children; i++) {
 		treeNode* child=node->children[i];
 		if (child) { // only descend if child exists
-			val = cdp_tree_value(child); 
+			val = cdp_tree_value(child,criterion); 
 		}
 	}
-	//printf("BEFORE*INFER:[");
-	//for (i = 0; i < count_children; i++) {
-	//	printf("%d", inferriors[i]);
-	//}
-	//printf("]\n");
-	detect_inferriors(node,inferriors);
-//	printf("INFER:[");
-//	for (i = 0; i < count_children; i++) {
-//		printf("%d", inferriors[i]);
-//	}
-//	printf("]\n");
+	detect_inferriors(node,inferriors,criterion);
 	node->ci = standardDeviationAggregated(node,inferriors);
+	//printf("setting node->ci to be %f\n",node->ci);
 	double sum = supperrior_sum(node,inferriors,&node->scoreSum,&node->n);
 	free(inferriors);
 	return sum;
+}
+
+
+
+void print_inferroris(BOOL inferriors[], int count)
+{
+	printf("INFER:[");
+	int i;
+	for (i = 0; i < count; i++) {
+		printf("%d", inferriors[i]);
+	}
+	printf("]\n");
+
 }
 
 static double calculateFirstReward(treeNode* node)
@@ -176,7 +220,7 @@ void inferrior_nodes(treeNode *node, double ret ) {
 	for (i = 0; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
 		inferriors[i]=false;
 	}
-	detect_inferriors(node,inferriors);
+	detect_inferriors(node,inferriors,t_test);
 	double* dummy1=0; 
 	int* dummy2=0;
 	int ss = supperrior_sum(node,inferriors,dummy1,dummy2);  
