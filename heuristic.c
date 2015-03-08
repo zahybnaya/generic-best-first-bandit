@@ -215,8 +215,9 @@ double h6(rep_t rep, int side, int numPlayouts) {
 
 	for (i = 0; i < numPlayouts; i++)
 		playoutSum += finerPlayout(__board, side);
-
-	return (double)playoutSum/(double)numPlayouts;
+	double value = (double)playoutSum/(double)numPlayouts;
+	value /= MANCALA_MAX_WINS; //Now rescales to {-1,1}
+	return value;
 }
 
 

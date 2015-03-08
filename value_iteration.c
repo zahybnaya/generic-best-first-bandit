@@ -136,8 +136,7 @@ double ****value_iteration() {
   
   //print_mat(V1, V2);
   //printf("\n\n");
-  
-  printf("yoyoyoyo %f\n", V2[0][0][0][1]);
+ // printf("yoyoyoyo %f\n", V2[0][0][0][1]);
   free(stateRep);
   freeMatrix(V1);
   

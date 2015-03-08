@@ -256,6 +256,7 @@ int *generateWeather(int wind) {
 }
 
 double ****V = 0;
+extern double noise_level;
 
 double h1_sailing(rep_t rep, int side, int horizion) {
   int *dummy = allocate_sailing();
@@ -268,7 +269,7 @@ double h1_sailing(rep_t rep, int side, int horizion) {
     } else {
       int move;
       do {
-	move = (random() % 8) + 1;
+        move = (random() % 8) + 1;
       } while (!isValidChild_sailing(dummy, 0, move));
       makeMove_sailing(dummy, 0, move);
     }
@@ -278,7 +279,8 @@ double h1_sailing(rep_t rep, int side, int horizion) {
     V = value_iteration();
   
   int *game = dummy;
-  double epsi = (random() % 10000000) / (double)50000000 - 0.1; //randomly choose from [-0.1,0.1]
+  double epsi = ((double)rand() / (double)RAND_MAX)*(noise_level*2) -noise_level ;
+ // double epsi = (random() % 10000000) / (double)50000000 - 0.1; //randomly choose from [-0.1,0.1]
   double val = V[game[BOAT_X]][game[BOAT_Y]][game[WIND] - 1][game[TACK] + 1];
   destructRep_sailing(game);
   return (1 + epsi) * val;

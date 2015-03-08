@@ -3,28 +3,6 @@
 DOM* init_domain(DOM_NAME name){
 	DOM* retVal = (DOM*)malloc(sizeof(DOM));
 	switch (name) {
-		case GGP:
-			compile_ggp();
-			retVal->dom_name = GGP;
-			retVal->max_wins = GGP_MAX_WINS;
-			retVal->min_wins = GGP_MIN_WINS;
-			retVal->incomplete = GGP_INCOMPLETE;
-			retVal->draw = GGP_DRAW;
-			retVal->getNumOfChildren = getNumOfChildren_ggp;
-			retVal->estimateTreeSize = estimateTreeSize_ggp;
-			retVal->isValidChild = isValidChild_ggp;
-			retVal->applyHeuristics = applyHeuristics_ggp;
-			retVal->cloneRep = cloneRep_ggp;
-			retVal->makeMove = makeMove_ggp;
-			retVal->getGameStatus = getGameStatus_ggp;
-			retVal->destructRep = destructRep_ggp;
-			retVal->allocate = allocate_ggp;
-			retVal->generateRandomStart = generateRandomStart_ggp;
-			retVal->copy = copy_ggp;
-			retVal->printBoard = printBoard_ggp;
-			retVal->hFunctions.h1 = h1_ggp;
-			retVal->hFunctions.h2 = h2_ggp;
-			break;
 		case SAILING:
 			retVal->dom_name = SAILING;
 			retVal->max_wins = SAILING_MAX_WINS;

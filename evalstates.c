@@ -9,13 +9,16 @@ DOM* _DOM;
 int verbose = false;
 int debuglog = false;
 int logIteration=0;
+double noise_level;
 static void foldTree(rep_t rep, int *side, int numIterations, double C, heuristics_t heuristic,
 		int budget, int ci_threshold, 
-	    	int goldStandard);
+	    	int goldStandard,double z);
 	
 static int maxVal(const double vals[], int length);
 treeNode* buildUCTTree(rep_t rep, int *side, int numIterations, double C, heuristics_t heuristic, int budget, int backOp, int ci_threshold);
 void buildTree(rep_t rep, int *side, int numIterations, double C, heuristics_t heuristic, int budge, int ci_threshold, int goldStandard, int backOp);
+
+int executeFoldTrees_mdp(int argc, char* argv[]) ;
 
 void printMsg() {
 	puts(" Evaluates individual states." );
@@ -26,35 +29,39 @@ void printMsg() {
 	puts(" -b segmentation for h4 ") ;
 	puts(" -c exploration constant (9999 for random)") ;
 	puts(" -h heuristic ") ;
+	puts(" -z cdp_coefficient ") ;
+	puts(" -ns noise level") ;
 	puts(" -gs gold standard level ") ;
 }
 
 int executeFoldTrees(int argc, char* argv[]) ;
 
 int main(int argc, char* argv[]) {
-	return executeFoldTrees(argc,argv);
+	return executeFoldTrees_mdp(argc,argv);
 }
 
-int executeFoldTrees(int argc, char* argv[]) {
+int executeFoldTrees_mdp(int argc, char* argv[]) {
 
 	int s, side = max, numBestMoves, arg = 0;
 	rep_t testState;
 
 	/* defaults */
-	_DOM = init_domain(MANCALA); 
+	_DOM = init_domain(SAILING);  
 	int numGames = 10;
 	rep_t dummy1 = 0;
 	int dummy2= 0;
 	int children_count = _DOM->getNumOfChildren(dummy1,dummy2);
 	int bestMoves[children_count];
 	int numIterations = 5000;
-	heuristics_t heuristic =  _DOM->hFunctions.h3;
+	heuristics_t heuristic =  _DOM->hFunctions.h1;
 	int noisyMM = false;
-	double C = 2.5;
-	int gs_level = 12,hfunc=3;
+	double C = 0.5;
+	int gs_level = 12,hfunc=1;
 	int segmentation = 1;
 	int budget[2] = {1,1};
 	double termPercentage;
+	double z = 1.0;
+	double ns = 0.1;
 	int ci_threshold = 30;
 	int randomTieBreaks = false; // determine whether the MM player will break ties randomly
 	unsigned int seed = 0;
@@ -69,7 +76,108 @@ int executeFoldTrees(int argc, char* argv[]) {
 			ci_threshold = atoi(argv[++arg]);
 		}else if (strcmp(argv[arg],"-c")==0){
 			C = atof(argv[++arg]);
-		} else if (strcmp(argv[arg],"-i")==0){
+		} else if (strcmp(argv[arg],"-z")==0){
+			z = atof(argv[++arg]);
+		}else if (strcmp(argv[arg],"-i")==0){
+			numIterations = atoi(argv[++arg]);
+		} else if (strcmp(argv[arg],"-s")==0){
+			seed = (unsigned int)atoi(argv[++arg]);
+		} else if (strcmp(argv[arg],"-b")==0){
+			segmentation = (unsigned int)atoi(argv[++arg]);
+		} else if (strcmp(argv[arg],"-ns")==0){
+			ns = atof(argv[++arg]);
+		} else if (strcmp(argv[arg],"-gs")==0){
+			gs_level = atoi(argv[++arg]);
+		} else if (strcmp(argv[arg],"-h")==0){
+			hfunc=atoi(argv[++arg]);
+			switch(hfunc){
+			       	case 1:
+					heuristic =  _DOM->hFunctions.h1;
+				       	break;
+			       	case 2:
+					heuristic =  _DOM->hFunctions.h2;
+					break;
+				case 3:
+					heuristic =  _DOM->hFunctions.h3;
+					break;
+				case 4:
+					heuristic =  _DOM->hFunctions.h4;
+					break;
+				case 5:
+					heuristic =  _DOM->hFunctions.h5;
+					break;
+				case 6:
+					heuristic =  _DOM->hFunctions.h6;
+					break;
+			}
+		}
+
+	}
+	
+	budget[0] = segmentation;
+	budget[1] = segmentation;
+	
+	//Header for tree building algorithms
+	printf("Seed, Instance, GS_level,  Iterations, H ,Segmentation, C,  Z, Noise, GS_Move, GS_Move_Val,");
+	printf(" UCT_value, CDP_value, MM_value\n");
+	double ****V = 0; //value_iteration
+	V = value_iteration();
+	srandom(seed+s);
+	testState = _DOM->allocate(); //allocate_sailing()
+	_DOM->generateRandomStart(testState,&side); //always the same one. 
+	int *game = testState;
+	double goldStandard = V[game[BOAT_X]][game[BOAT_Y]][game[WIND] - 1][game[TACK] + 1];
+	noise_level=ns;
+	for (s = 0; s < numGames; s++) {
+		//Seed, Instance, GS_level,  CI_Threshold, iterations, h, seg, C,z,ns
+		printf("%d, %d, %d, %d, h%d, %d, %.2f, %.2f, %.2f", seed+s, s, gs_level, numIterations, hfunc,segmentation,C,z,ns );
+		//GS_Move, GS_Move_Val,
+		printf(" , %d, %f, ", -1 , goldStandard);
+		foldTree(testState, &side, numIterations, C, heuristic, budget[side], ci_threshold, goldStandard,z);
+	}
+	_DOM->destructRep(testState);
+	return 0;
+}
+
+
+int executeFoldTrees(int argc, char* argv[]) {
+
+	int s, side = max, numBestMoves, arg = 0;
+	rep_t testState;
+
+	/* defaults */
+	_DOM = init_domain(MANCALA);  //MDP 
+	int numGames = 10;
+	rep_t dummy1 = 0;
+	int dummy2= 0;
+	int children_count = _DOM->getNumOfChildren(dummy1,dummy2);
+	int bestMoves[children_count];
+	int numIterations = 5000;
+	heuristics_t heuristic =  _DOM->hFunctions.h3;
+	int noisyMM = false;
+	double C = 0.5;
+	int gs_level = 12,hfunc=3;
+	int segmentation = 1;
+	int budget[2] = {1,1};
+	double termPercentage;
+	double z = 1.0;
+	int ci_threshold = 30;
+	int randomTieBreaks = false; // determine whether the MM player will break ties randomly
+	unsigned int seed = 0;
+ 	/** parameters */
+	for (arg=0;arg<argc;arg++){
+		if (strcmp(argv[arg],"?")==0){
+			printMsg();
+			return -1;
+		} else if (strcmp(argv[arg],"-g")==0){
+			numGames = atoi(argv[++arg]);
+		}else if (strcmp(argv[arg],"-t")==0){
+			ci_threshold = atoi(argv[++arg]);
+		}else if (strcmp(argv[arg],"-c")==0){
+			C = atof(argv[++arg]);
+		} else if (strcmp(argv[arg],"-z")==0){
+			z = atof(argv[++arg]);
+		}else if (strcmp(argv[arg],"-i")==0){
 			numIterations = atoi(argv[++arg]);
 		} else if (strcmp(argv[arg],"-s")==0){
 			seed = (unsigned int)atoi(argv[++arg]);
@@ -105,25 +213,24 @@ int executeFoldTrees(int argc, char* argv[]) {
 	
 	budget[0] = segmentation;
 	budget[1] = segmentation;
-	//printf("Seed, Instance, GS_level,  CI_Threshold, iterations, H , GS_Move, GS_Move_Val, CIB_Parental_Percantage , CIB_Average_depth, CIB_Min_Depth, CIB_Tree_Depth, CIB_Move, CIB_Move_Val, CIB_GS_Move_Val, UCT_Move, UCT_Move_Val, UCT_GS_Move_Val, Parental_Percantage , Average_depth, Min_Depth, Tree_Depth, CI_Move, CI_Move_Val, CI_GS_Move_Val, MMF_Move, MMF_Move_Val, MMF_GS_Val\n");
 	
 	//Header for tree building algorithms
-	printf("Seed, Instance, GS_level,  Iterations, H ,Segmentation, GS_Move, GS_Move_Val,");
+	printf("Seed, Instance, GS_level,  Iterations, H ,Segmentation, C,  Z, GS_Move, GS_Move_Val,");
 	printf(" UCT_value, CDP_value, MM_value\n");
 	double *mmVals = (double*)calloc(children_count, sizeof(double));
 	for (s = 0; s < numGames; s++) {
 		srandom(seed+s);
 		testState = _DOM->allocate();
 		_DOM->generateRandomStart(testState,&side);
-		//Seed, Instance, GS_level,  CI_Threshold, iterations, h, seg
-		printf("%d, %d, %d, %d, h%d, %d", seed+s, s, gs_level,  numIterations, hfunc,segmentation );
+		//Seed, Instance, GS_level,  CI_Threshold, iterations, h, seg, Z, C
+		printf("%d, %d, %d, %d, h%d, %d, %.2f, %.2f", seed+s, s, gs_level, numIterations, hfunc,segmentation,C,z );
 		side = max;
 		makeMinmaxMove(testState, &side, gs_level , heuristic, budget[side], randomTieBreaks, noisyMM, bestMoves, &numBestMoves, &termPercentage, mmVals);
 		int goldStandard = maxVal(mmVals,children_count);
 		//GS_Move, GS_Move_Val,
 		printf(" , %d, %f, ", goldStandard , mmVals[goldStandard]);
 		side = max;
-		foldTree(testState, &side, numIterations, C, heuristic, budget[side], ci_threshold, goldStandard);
+		foldTree(testState, &side, numIterations, C, heuristic, budget[side], ci_threshold, goldStandard,z);
 		_DOM->destructRep(testState);
 	}
 	
@@ -271,13 +378,8 @@ treeNode* buildUCTTree(rep_t rep, int *side, int numIterations, double C,
 	int parentCIWin=0,parentCITotal=0,minDepth=INF,treeDepth=0;
 	double avgDepth=0;
 	treeNode* rootNode = createRootNode(side,rep);
-	if (C==9999){
-		for (i = 0; i < numIterations; i++)
-			uctRecurseRandom(rootNode, C, heuristic, budget, backOp, true, ci_threshold, &parentCIWin, &parentCITotal, &avgDepth, &minDepth, &treeDepth);
-	}else{
-		for (i = 0; i < numIterations; i++)
-			uctRecurse(rootNode, C, heuristic, budget, backOp, true, ci_threshold, &parentCIWin, &parentCITotal, &avgDepth, &minDepth, &treeDepth);
-	}
+	for (i = 0; i < numIterations; i++)
+		uctRecurse(rootNode, C, heuristic, budget, backOp, true, ci_threshold, &parentCIWin, &parentCITotal, &avgDepth, &minDepth, &treeDepth);
 	if (backOp == CI || backOp == WEIGHTED_MM) {
 	  printf("%f , %f, %d, %d, " ,parentCIWin / (double)parentCITotal, avgDepth, minDepth, treeDepth);
 	}
@@ -303,15 +405,18 @@ void foldTree(rep_t rep, int *side, int numIterations, double C,
 		heuristics_t heuristic,
 		int budget,
 		int ci_threshold, 
-	    	int goldStandard) {
-	treeNode* tree = buildUCTTree(rep, side, numIterations, C, heuristic, budget, AVERAGE, INF);
-	double uct_value = tree->scoreSum/tree->n ;
+	    	int goldStandard, double z) {
+	treeNode* tree = buildUCTTree(rep, side, numIterations,C, heuristic, budget, AVERAGE, INF);
+	assert(tree->n == numIterations);
+	double uct_value = tree->scoreSum/tree->n;
 	double mm_value  = minmaxUCT(tree);
-//	double cdp_value = cdp_tree_value(tree,t_test);
-	double cdp_value = cdp_tree_value(tree,variance_test);
+//	cdp_tree_value(tree,t_test);
+	cdp_tree_value(tree,variance_test,z);
+	double cdp_value = tree->scoreSum/tree->n;
 	printf("%f, ", uct_value); 
 	printf("%f, ", cdp_value ); 
 	printf("%f\n ", mm_value ); 
+	freeTree(tree);
 //	const int children_count = _DOM->getNumOfChildren(rep,*side); 
 //	double* uct_vals = (double*)calloc(children_count,sizeof(double));
 //	if (uct_vals==0){puts(" uct_vals not allocated ");}
@@ -350,7 +455,6 @@ void foldTree(rep_t rep, int *side, int numIterations, double C,
 //	free(uct_vals);
 //	free(uct_mm_vals);
 //	free(uct_cdp_vals);
-	freeTree(tree);
 }
 
 

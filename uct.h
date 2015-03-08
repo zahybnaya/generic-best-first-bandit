@@ -22,6 +22,7 @@ typedef struct node {
 	struct node** children; /* pointers to the children of this node -- note that index 0 remains
 				   unused (which is reserved for the store), so we have consistent move
 				   indexing/numbering */
+	double first_reward;
 } treeNode;
 
 typedef struct _child{int index; double value; double SD;} child_data; 

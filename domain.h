@@ -7,7 +7,6 @@
 #include "zop.h"
 #include "c4.h"
 #include "sailing.h"
-#include "ggp.h"
 
 /***
  * This is a representation of a domain

@@ -4,8 +4,8 @@
 #include "domain.h"
 
 // Game parameters
-#define NUM_PITS 6 // affects branching factor
-#define SHELLS_PER_PIT 4 // affects depth of tree
+#define NUM_PITS 10 // 6 // affects branching factor
+#define SHELLS_PER_PIT 8// 4// affects depth of tree
 #define ESTIMATED_MANCALA_BRANCHING_FACTOR 3.4
 
 #define MANCALA_MAX_WINS (NUM_PITS * SHELLS_PER_PIT * 2)

@@ -1,6 +1,6 @@
-CFLAGS = -lm -Wall -g 
+CFLAGS = -lm 
 
-ggames: common.h domain ggp genericGames.c uct.c uct.h minmax.c heuristic.c move.c board.c util.c random.c bfb.c brue.c type.h type.c sts.c cits.c
+ggames: common.h domain genericGames.c uct.c uct.h minmax.c heuristic.c move.c board.c util.c random.c bfb.c brue.c type.h type.c sts.c cits.c
 	gcc -c genericGames.c -o genericGames.c.o $(CFLAGS)
 	gcc -c uct.c -o uct.c.o $(CFLAGS)
 	gcc -c backup_operators.c -o backup_operators.c.o $(CFLAGS)
@@ -11,17 +11,18 @@ ggames: common.h domain ggp genericGames.c uct.c uct.h minmax.c heuristic.c move
 	gcc -c type.c -o type.c.o $(CFLAGS)
 	gcc -c util.c -o util.c.o $(CFLAGS)
 	gcc -c value_iteration.c -o value_iteration.c.o $(CFLAGS)
-	ld -r genericGames.c.o uct.c.o backup_operators.c.o bfb.c.o sts.c.o cits.c.o brue.c.o type.c.o util.c.o value_iteration.c.o domain.o -o games.o
-	g++ ggp.o games.o -o ggames
-	rm genericGames.c.o uct.c.o backup_operators.c.o bfb.c.o sts.c.o cits.c.o brue.c.o type.c.o util.c.o value_iteration.c.o domain.o ggp.o games.o
+	#ld -r genericGames.c.o uct.c.o backup_operators.c.o bfb.c.o sts.c.o cits.c.o brue.c.o type.c.o util.c.o value_iteration.c.o domain.o -o games.o
+	gcc genericGames.c.o uct.c.o backup_operators.c.o bfb.c.o sts.c.o cits.c.o brue.c.o type.c.o util.c.o value_iteration.c.o domain.o -o ggames
+	#g++ ggp.o games.o -o ggames
+	rm genericGames.c.o uct.c.o backup_operators.c.o bfb.c.o sts.c.o cits.c.o brue.c.o type.c.o util.c.o value_iteration.c.o domain.o  
 	
 
-evalstates: common.h ggp domain evalstates.c uct.c minmax.c backup_operators.c heuristic.c move.c board.c phi.c util.c random.c bfb.c brue.c type.h type.c sts.c cits.c 
+evalstates: common.h domain evalstates.c uct.c minmax.c backup_operators.c heuristic.c move.c board.c phi.c util.c random.c bfb.c brue.c type.h type.c sts.c cits.c sailing.h
 	gcc -c evalstates.c -o evalstates.c.o ${CFLAGS}
 	gcc -c util.c -o util.o ${CFLAGS}
 	gcc -c value_iteration.c -o value_iteration.o ${CFLAGS}
 	ld -r evalstates.c.o util.o value_iteration.o domain.o -o evalstates.o
-	g++ ggp.o evalstates.o -o evalstates
+	g++  evalstates.o -o evalstates_mdp_10
 
 trackrewards: common.h domain trackrewards.c uct.c minmax.c heuristic.c move.c board.c phi.c util.c random.c bfb.c brue.c type.h type.c sts.c cits.c 
 	gcc trackrewards.c  util.c value_iteration.c  backup_operators.c domain.o -o trackrewards $(CFLAGS) 

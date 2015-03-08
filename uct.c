@@ -110,9 +110,11 @@ static int selectMove(treeNode* node, double C, int isSimpleRegret) {
 void updateStatistics(treeNode *node, double sample) {
   if (node->n == 0) {
     node->n++;
+    node->first_reward = sample;
+    //printf("node:%p assigning first reward to be  %f\n",node, node->first_reward );
     node->scoreSum = sample;
     node->realScoreSum = sample;
-    node->ci = 0;
+    node->ci = INF;
     return;
   }
   
@@ -139,17 +141,17 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 	assert(node != NULL); // should never be calling uctRecurse on a non-existent node
 	if ((ret = _DOM->getGameStatus(node->rep))!= _DOM->incomplete) {
 		fflush(stdout);
-		
-		if (_DOM->dom_name == SAILING)
-		  ret = 0;
-		
+		if (_DOM->dom_name == SAILING){
+			//printf(" Node %p is terminal returning 0", node);
+			ret = 0;
+		}
 		// This is a terminal node (i.e. can't generate any more children)
 		// If we are estimating the leaf nodes using coarse random playout(s), coarsened h1 or random values, then all
 		// those estimates are from the set {-1, 0, +1}. The terminal nodes are given values from the set {MIN_WINS, DRAW, MAX_WINS}
 		// which are substantially larger. To make these values comparable in magnitude, we need to rescale the terminal
 		// node values. If we are using engineered heuristics, then no rescaling is necessary.
 		if ((_DOM->dom_name == MANCALA &&
-				       	((heuristic == _DOM->hFunctions.h3) || (heuristic == _DOM->hFunctions.h4) || (heuristic == _DOM->hFunctions.h5))) || (_DOM->dom_name == GGP && heuristic == _DOM->hFunctions.h2))
+				       	((heuristic == _DOM->hFunctions.h3) || (heuristic == _DOM->hFunctions.h6) || (heuristic == _DOM->hFunctions.h4) || (heuristic == _DOM->hFunctions.h5))) || (_DOM->dom_name == GGP && heuristic == _DOM->hFunctions.h2))
 			ret /= _DOM->max_wins; // rescale
 		assert(ret>=-1 && ret <=1);
 
@@ -165,6 +167,7 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 		// This is the first visit to this state -- we estimate its utility according to the user-specified
 		// heuristic (playouts or other heuristics)
 		ret = heuristic(node->rep , node->side, budget);
+		//printf(" Node %p evaluated as h value (calling updateStatistics): %f \n",node ,ret );
 		// Update node score / count and return
 		updateStatistics(node, ret);
 		return ret;
@@ -185,6 +188,7 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 		node->children[move] = (treeNode*) calloc(1, sizeof(treeNode));
 		node->children[move]->rep = _DOM->cloneRep(node->rep);// copy over the current board to child
 		node->children[move]->side = node->side; // copy over the current side on move to child
+		node->children[move]->first_reward= 0;
 		node->children[move]->depth = node->depth + 1;
 		if (dotFormat) { // we are visiting a node for the first time -- assign it an id and print the edge leading to it
 			node->children[move]->id = ++id;
@@ -194,20 +198,22 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 		// is what is stored in the child node
 		_DOM->makeMove(node->children[move]->rep, &(node->children[move]->side), move);
 		node->children[move]->children = (treeNode**)calloc(_DOM->getNumOfChildren(node->children[move]->rep, node->children[move]->side), sizeof(treeNode*));
-		if(debuglog)printf("Created a node for move %d\n",move);
-		
 		if (node->depth > *treeDepth)
 			*treeDepth = node->depth;
+
+		//printf("Creating node %p->%p  \n" ,node,node->children[move] );
 	}
 
 	// Descend recursively
 	ret = uctRecurse(node->children[move], C, heuristic, budget, backupOp, false, ci_threshold, parentCIWin, parentCITotal, avgDepth, minDepth, treeDepth);
-
 	//In a stochastic domain
 	//Update ret to include the cost of getting to the child node from this parent.
-	if (_DOM->dom_name == SAILING && isChanceNode_sailing(node->rep) == false)
+	if (_DOM->dom_name == SAILING && isChanceNode_sailing(node->rep) == false){
 	  ret += actionCost_sailing(node->rep, move);
-	
+	  //printf(" node:%p Added cost %f ret is now : %f \n",node,actionCost_sailing(node->rep, move), ret );
+	}
+
+	//printf(" ret is now : %f \n", ret );
 	// Update score and node counts and return the outcome of this episode
 	if (_DOM->dom_name == SAILING && isChanceNode_sailing(node->rep) == true && backupOp != AVERAGE) {
 	  //in chance nodes we need to average all children, and only need to recalculate if we're not using average backpropagation
@@ -229,6 +235,7 @@ static double uctRecurse(treeNode* node, double C, heuristics_t heuristic, int b
 	  return ret;
 	}
 	if (backupOp == AVERAGE){ // use averaging back-up
+		//printf(" Calling update_statistic on node %p with  cost %f   \n",node, ret );
 		updateStatistics(node, ret);}
 	else if (backupOp == WILCOXON) {
 		wilcoxon_backup(node, ret);}
@@ -281,9 +288,6 @@ int makeUCTMove(rep_t rep, int *side, int numIterations, double C,
 	double bestScore;
 	treeNode* rootNode;
 	*numBestMoves = 0; // reset size of set of best moves
-	
-	if (debuglog) puts("UCT");
-	
 	// Create the root node of the UCT tree; populate the board and side on move fields
 	rootNode = createRootNode(side, rep);
 
@@ -387,35 +391,41 @@ static double minmaxUCT(treeNode* node) {
 	int i;
 	double val;
 	double bestScore;
-
-	// Should never be reaching a non-existent node
 	assert(node != NULL);
-
-	// Initialize bestScore to a very unfavorable value based on who is on move
 	bestScore = (node->side == max) ? _DOM->min_wins : _DOM->max_wins;
-
-	// Is this a terminal node?
-	if ((val = _DOM->getGameStatus(node->rep)) != _DOM->incomplete)
+	if ((val = _DOM->getGameStatus(node->rep)) != _DOM->incomplete){
+		if (_DOM->dom_name == SAILING){
+			val = 0;
+		}
 		return val; // return something from the set {MIN_WINS, DRAW, MAX_WINS}
-
-	// Is this a leaf node? (can determine this by looking at the UCT visit count to this node)
+	}
 	if (node->n == 1) {
 	  assert((node->scoreSum > _DOM->min_wins) && (node->scoreSum < _DOM->max_wins)); // make sure heuristic is bounded by terminal node values
 	  return node->scoreSum; // the node was already evaluated when doing UCT, so just use that value
 	}
-
-	// Otherwise, we are at an internal node, so descend recursively
+	int best_move = -1 ,ttlVisits=0;
+	double averageval = 0;
 	for (i = 1; i < _DOM->getNumOfChildren(node->rep, node->side); i++) {
 	  if (node->children[i]) { // only descend if child exists
 	    val = minmaxUCT(node->children[i]); // compute minimax value of i^th child
-	    if ((node->side == max) && (val > bestScore)) // maximizing level -- is this child score higher than the best so far?
+	    averageval+= val*node->children[i]->n;
+	    ttlVisits+=node->children[i]->n;
+	    if ((node->side == max) && (val > bestScore)){ // maximizing level -- is this child score higher than the best so far?
 	      bestScore = val;
+	      best_move = i;
+	    }
+	      
 	    else if ((node->side == min) && (val < bestScore)) // minimizing level -- is this child score lower than the best so far?
 	      bestScore = val;
 	  }
 	}
-
-	return bestScore;
+	if (_DOM->dom_name == SAILING){
+	       if(isChanceNode_sailing(node->rep)){
+		       return averageval/ttlVisits;
+	       }
+		return bestScore + actionCost_sailing(node->rep, best_move);
+	}
+	return bestScore; 
 }
 
 

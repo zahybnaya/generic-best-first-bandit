@@ -22,8 +22,8 @@
 #define SAILING_STATE_DET 0    //A deterministic state
 #define SAILING_STATE_CHANCE 1 //A stochastic state
 
-#define SAILING_MAX_WINS 1 //Just something different from incomplete
-#define SAILING_MIN_WINS 0 //Not used
+#define SAILING_MAX_WINS  99999999 //Just something different from incomplete
+#define SAILING_MIN_WINS -99999999 //Not used
 #define SAILING_INCOMPLETE -1
 #define SAILING_DRAW 0 //Not used
 
